@@ -9,8 +9,8 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
             Leaderboard
           </h1>
           <p className="mt-2 text-sm text-gray-700">
-                  Ranking of Carbon Retirement on Toucan
-                </p>
+            Ranking of Carbon Retirement on Toucan
+          </p>
         </div>
       </header>
       <main>
@@ -74,20 +74,23 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
                             }
                           >
                             <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              {index}
+                              {index + 1}
                             </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {user.address}
                             </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                               {user.retired_nct}
+                              {index == 1 && (
+                                <a
+                                  href="#"
+                                  className="pl-4 text-indigo-600 hover:text-indigo-900"
+                                >
+                                  Claim NFT
+                                </a>
+                              )}
                             </td>
-                            {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {person.name}</span>
-                        </a>
-                      </td> */}
+                            {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{.role}</td> */}
                           </tr>
                         ))}
                       </tbody>
