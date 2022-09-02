@@ -1,9 +1,10 @@
+import { GetServerSidePropsContext } from "next";
 import Layout from "../components/layout";
 import Leaderboard from "../components/leaderboard";
-import SimpleFooter from "../components/simpleFooter";
-import SimpleHeader from "../components/simpleHeader";
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const resp = await fetch(
     "http://toucan-leaderboard.herokuapp.com/leaderboard"
   );

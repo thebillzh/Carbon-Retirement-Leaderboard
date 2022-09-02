@@ -1,8 +1,9 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { Fragment, useMemo } from "react";
 
 const user = {
   name: "Anon User",
@@ -10,8 +11,8 @@ const user = {
   imageUrl: "",
 };
 const navigation = [
-  { name: "Leaderboard", href: "/", current: true },
-  { name: "About", href: "/about", current: false },
+  { name: "Leaderboard", href: "/" },
+  { name: "About", href: "/about" },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "/profile" },
@@ -24,6 +25,8 @@ function classNames(...classes) {
 }
 
 export default function SimpleHeader() {
+  const router = useRouter();
+  const path = useMemo(() => router.pathname, [router.pathname]);
   return (
     <>
       <div className="min-h-full">
@@ -51,21 +54,23 @@ export default function SimpleHeader() {
                     </div>
                   </div>
                   <div className="relative flex-1 hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current
-                            ? "border-indigo-500 text-gray-900"
-                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
-                          "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
+                    {navigation.map((item) => {
+                      return (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className={classNames(
+                            item.href === path
+                              ? "border-indigo-500 text-gray-900"
+                              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
+                            "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                          )}
+                          aria-current={item.href === path ? "page" : undefined}
+                        >
+                          {item.name}
+                        </a>
+                      );
+                    })}
                   </div>
                   <div className="hidden sm:ml-6 sm:flex sm:items-center">
                     {/* <button
@@ -153,12 +158,12 @@ export default function SimpleHeader() {
                       as="a"
                       href={item.href}
                       className={classNames(
-                        item.current
+                        item.href === path
                           ? "bg-indigo-50 border-indigo-500 text-indigo-700"
                           : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800",
                         "block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
                       )}
-                      aria-current={item.current ? "page" : undefined}
+                      aria-current={item.href === path ? "page" : undefined}
                     >
                       {item.name}
                     </Disclosure.Button>
