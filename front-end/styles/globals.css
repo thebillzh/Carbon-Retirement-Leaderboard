@@ -2,10 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* html,
+html,
 body {
-  padding: 0;
+  min-width: 100vw;
+  background-color: #f9fafb;
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body > div:first-child,
+div#__next {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -15,4 +35,12 @@ a {
 
 * {
   box-sizing: border-box;
-} */
+}
+
+input[type="text"]:focus {
+  box-shadow: 2px 2px #111827;
+}
+
+input[type="email"]:focus {
+  box-shadow: 2px 2px #111827;
+}

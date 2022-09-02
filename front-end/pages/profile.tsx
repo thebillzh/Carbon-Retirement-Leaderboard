@@ -1,4 +1,5 @@
 import { PaperClipIcon } from "@heroicons/react/solid";
+import Image from "next/image";
 
 const attachments = [
   { name: "resume_front_end_developer.pdf", href: "#" },
@@ -18,10 +19,12 @@ export default function Example() {
           <div className="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
             <div className="flex items-center space-x-5">
               <div className="flex-shrink-0">
-                <div className="relative">
-                  <img
-                    className="h-16 w-16 rounded-full"
+                <div className="relative h-16 w-16">
+                  <Image
+                    className="relative rounded-full"
                     src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
+                    layout="fill"
+                    objectFit="contain"
                     alt=""
                   />
                   <span
