@@ -20,6 +20,7 @@ import {
 import { randomBytes } from "crypto";
 import jwt from "jsonwebtoken";
 import { DateTime } from "luxon";
+import { useRouter } from "next/router";
 import { SignInReq } from "pages/api/common/sign_in";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -52,6 +53,7 @@ export type ABCCall = <Resp = any>({
  * All the call to the backend should use this hook
  */
 export default function useABC() {
+  const router = useRouter();
   const [token, setToken] = useState<string>();
   const { setLoading } = useLoading();
   const { setModal } = useModal();
@@ -84,7 +86,6 @@ export default function useABC() {
 
   // Disconnect the wallet and logout
   const logout = useCallback(async () => {
-    resetCommonContext();
     if (web3.isActive) {
       if (web3.connector.deactivate) {
         web3.connector.deactivate();
@@ -92,8 +93,14 @@ export default function useABC() {
         web3.connector.resetState();
       }
     }
+    resetCommonContext();
     removeCookie(T_TOKEN_COOKIE_NAME);
-  }, [resetCommonContext, web3.connector, web3.isActive]);
+    setToken(null);
+    if (router.isReady && router.pathname === "/") {
+      return;
+    }
+    await router.replace("/");
+  }, [resetCommonContext, router, web3.connector, web3.isActive]);
 
   /**
    * All the call to the backend should use this method

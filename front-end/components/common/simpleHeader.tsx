@@ -14,7 +14,7 @@ const navigation = [
 ];
 const userNavigation = [
   { name: "Your Profile", href: "/profile" },
-  { name: "Settings", href: "#" },
+  // { name: "Settings", href: "#" },
   { name: "Disconnect", href: "#" },
 ];
 
@@ -115,18 +115,18 @@ export default function SimpleHeader() {
                             return (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href=""
+                                  <button
+                                    type="button"
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
-                                      "block px-4 py-2 text-sm text-gray-700"
+                                      "block w-full px-4 py-2 text-left text-sm text-gray-700"
                                     )}
                                     onClick={() => {
                                       logout();
                                     }}
                                   >
                                     {item.name}
-                                  </a>
+                                  </button>
                                 )}
                               </Menu.Item>
                             );
