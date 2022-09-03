@@ -1,0 +1,26 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model t_users {
+  id              BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  wallet_pub      String   @unique(map: "uk_wallet_pub") @default("") @db.VarChar(127)
+  wallet_type     String   @default("") @db.VarChar(127)
+  uname           String   @default("") @db.VarChar(127)
+  face            String   @default("") @db.VarChar(255)
+  gender          Int      @default(0)
+  twitter         String   @default("") @db.VarChar(255)
+  email           String   @default("") @db.VarChar(255)
+  about           String   @default("") @db.Text
+  last_login_time DateTime @default(dbgenerated("'0001-01-01 00:00:00'")) @db.DateTime(0)
+  mtime           DateTime @default(now()) @db.DateTime(0)
+  ctime           DateTime @default(now()) @db.DateTime(0)
+
+  @@index([mtime], map: "ix_mtime")
+}

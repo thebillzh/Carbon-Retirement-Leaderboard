@@ -1,4 +1,4 @@
-import { PaperClipIcon } from "@heroicons/react/solid";
+import Layout from "@components/common/layout";
 import Image from "next/image";
 
 const attachments = [
@@ -10,9 +10,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Example() {
+export default function Profile() {
   return (
-    <>
+    <Layout>
       <div className="min-h-full">
         <main className="py-10">
           {/* Page header */}
@@ -75,7 +75,9 @@ export default function Example() {
                         <dt className="text-sm font-medium text-gray-500">
                           Twitter
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-900">@elonmusk</dd>
+                        <dd className="mt-1 text-sm text-gray-900">
+                          @elonmusk
+                        </dd>
                       </div>
                       <div className="sm:col-span-2">
                         <dt className="text-sm font-medium text-gray-500">
@@ -104,6 +106,6 @@ export default function Example() {
           </div>
         </main>
       </div>
-    </>
+    </Layout>
   );
 }

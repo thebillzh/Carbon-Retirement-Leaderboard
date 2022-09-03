@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import Layout from "../components/layout";
+import Layout from "../components/common/layout";
 import Leaderboard from "../components/leaderboard";
 
 export const getServerSideProps = async (
@@ -26,7 +26,7 @@ export interface User {
   retired_nct: string;
 }
 
-const Home = ({ rankData }: HomeProps) => {
+const Index = ({ rankData }: HomeProps) => {
   return (
     <Layout>
       <Leaderboard rankData={rankData} />
@@ -34,4 +34,4 @@ const Home = ({ rankData }: HomeProps) => {
   );
 };
 
-export default Home;
+export default Index;
