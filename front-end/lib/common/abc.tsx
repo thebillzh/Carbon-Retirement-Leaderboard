@@ -12,12 +12,15 @@ import base58 from "bs58";
 import {
   BACKEND_BASE_URL,
   LOGIN_MESSAGE_PREFIX,
+  POLYGON_MUMBAI_CHAIN_ID,
+  POLYGON_MUMBAI_RPC_URL,
   T_NONCE_HEADER_NAME,
   T_SIGN_HEADER_NAME,
   T_TIMESTAMP_HEADER_NAME,
   T_TOKEN_COOKIE_NAME,
 } from "constants/constants";
 import { randomBytes } from "crypto";
+import { utils } from "ethers";
 import jwt from "jsonwebtoken";
 import { DateTime } from "luxon";
 import { useRouter } from "next/router";
@@ -59,8 +62,9 @@ export default function useABC() {
   const { setModal } = useModal();
   const isMobile = useMobile();
   const { setUser, resetCommonContext } = useCommonContext();
-  const web3 = useWeb3React();
+  const wallet = useWeb3React();
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isSwitchingNetwork, setIsSwitchingNetwork] = useState(false);
 
   // Connect the wallet
   const login = useCallback(async () => {
@@ -68,8 +72,8 @@ export default function useABC() {
       if (!(window as any).ethereum) {
         return;
       }
-      if (!web3.isActive) {
-        await web3.connector.activate();
+      if (!wallet.isActive) {
+        await wallet.connector.activate();
       }
       if (!token) {
         setIsSigningIn(true);
@@ -82,15 +86,15 @@ export default function useABC() {
     } finally {
       setLoading({ visible: false });
     }
-  }, [isMobile, setLoading, token, web3.connector, web3.isActive]);
+  }, [isMobile, setLoading, token, wallet.connector, wallet.isActive]);
 
   // Disconnect the wallet and logout
   const logout = useCallback(async () => {
-    if (web3.isActive) {
-      if (web3.connector.deactivate) {
-        web3.connector.deactivate();
+    if (wallet.isActive) {
+      if (wallet.connector.deactivate) {
+        wallet.connector.deactivate();
       } else {
-        web3.connector.resetState();
+        wallet.connector.resetState();
       }
     }
     resetCommonContext();
@@ -100,7 +104,7 @@ export default function useABC() {
       return;
     }
     await router.replace("/");
-  }, [resetCommonContext, router, web3.connector, web3.isActive]);
+  }, [resetCommonContext, router, wallet.connector, wallet.isActive]);
 
   /**
    * All the call to the backend should use this method
@@ -176,9 +180,9 @@ export default function useABC() {
   // If token is in the cache, connect to it eagerly.
   useEffect(() => {
     if (token) {
-      void web3.connector.connectEagerly();
+      void wallet.connector.connectEagerly();
     }
-  }, [token, web3.connector]);
+  }, [token, wallet.connector]);
 
   // set token
   useEffect(() => {
@@ -191,28 +195,69 @@ export default function useABC() {
   // login
   // since there is a isActivating status, the login procedure should be done in a useEffect
   useEffect(() => {
-    if (!(window as any).ethereum || !web3.isActive || !isSigningIn || token)
-      return;
     const f = async () => {
+      if (
+        !(window as any).ethereum ||
+        !wallet.isActive ||
+        !isSigningIn ||
+        isSwitchingNetwork ||
+        token
+      ) {
+        return;
+      }
+
       try {
+        if (!wallet.account) throw new Error("Wallet not connected!");
+
+        if (wallet.chainId !== POLYGON_MUMBAI_CHAIN_ID) {
+          setIsSwitchingNetwork(true);
+          try {
+            setLoading({
+              visible: true,
+              message: `Switching to network: Polygon Mumbai`,
+            });
+            await wallet.provider.send("wallet_switchEthereumChain", [
+              { chainId: utils.hexValue(POLYGON_MUMBAI_CHAIN_ID) },
+            ]);
+          } catch (err) {
+            if (err.code === 4902) {
+              setLoading({
+                visible: true,
+                message: `Adding and switching to network: Polygon Mumbai`,
+              });
+              await wallet.provider.send("wallet_addEthereumChain", [
+                {
+                  chainName: "Polygon Munbai",
+                  chainId: utils.hexValue(POLYGON_MUMBAI_CHAIN_ID),
+                  nativeCurrency: {
+                    name: "MATIC",
+                    decimals: 18,
+                    symbol: "MATIC",
+                  },
+                  rpcUrls: [POLYGON_MUMBAI_RPC_URL],
+                },
+              ]);
+            }
+          }
+        }
+
         // Sign a message to check whether the user has the control of the private key
         const message = randomBytes(32).toString("hex");
         setLoading({
           visible: true,
           message: `Signing message in your wallet: ${message}`,
         });
-        const signer = web3.provider.getSigner();
+        const signer = wallet.provider.getSigner();
         const signature = await signer.signMessage(
           `${LOGIN_MESSAGE_PREFIX}${message}`
         );
 
-        if (!web3.account) throw new Error("Wallet not connected!");
         setLoading({ visible: true, message: "Signing in..." });
         await call({
           method: "post",
           path: "/common/sign_in",
           data: {
-            wallet_pub: web3.account,
+            wallet_pub: wallet.account,
             message,
             signature: signature,
           } as SignInReq,
@@ -233,6 +278,7 @@ export default function useABC() {
         logger.error(`[useDC] when pc login: ${e.message}`);
       } finally {
         setIsSigningIn(false);
+        setIsSwitchingNetwork(false);
         setLoading({ visible: false });
       }
     };
@@ -240,13 +286,15 @@ export default function useABC() {
   }, [
     call,
     isSigningIn,
+    isSwitchingNetwork,
     setLoading,
     setModal,
     setUser,
     token,
-    web3.account,
-    web3.isActive,
-    web3.provider,
+    wallet.account,
+    wallet.chainId,
+    wallet.isActive,
+    wallet.provider,
   ]);
 
   return { token, call, login, logout };

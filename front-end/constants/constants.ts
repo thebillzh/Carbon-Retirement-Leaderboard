@@ -15,3 +15,7 @@ export const INVITE_CODE_LENGTH = 8; // invite code length
 export const COMMON_CONTEXT_LOCAL_STORATE_KEY = "t-common"; // presist common context key in local storage
 export const LOGIN_MESSAGE_PREFIX =
   "You are signing in the Toucan Leaderboard with disposable ticket: "; // login message prefix
+
+export const POLYGON_MUMBAI_RPC_URL =
+  "https://polygon-mumbai.g.alchemy.com/v2/9augb8rZZ1c9rR_0voZWbn_ntnJk13_S";
+export const POLYGON_MUMBAI_CHAIN_ID = 80001;
