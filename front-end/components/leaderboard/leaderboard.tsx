@@ -68,22 +68,37 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
                           key={user.address}
                           className={index % 2 === 0 ? undefined : "bg-gray-50"}
                         >
-                          <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                            {index + 1}
-                          </td>
+                          {index === 0 && (
+                            <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              <div className="w-8 h-8 rounded-full bg-[#F3C23C] text-white flex justify-center items-center">
+                                {index + 1}
+                              </div>
+                            </td>
+                          )}
+                          {index === 1 && (
+                            <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              <div className="w-8 h-8 rounded-full bg-[#BDCBD8] text-white flex justify-center items-center">
+                                {index + 1}
+                              </div>
+                            </td>
+                          )}
+                          {index === 2 && (
+                            <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              <div className="w-8 h-8 rounded-full bg-[#D7A778] text-white flex justify-center items-center">
+                                {index + 1}
+                              </div>
+                            </td>
+                          )}
+                          {index > 2 && (
+                            <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-center text-gray-900 sm:pl-6">
+                              {index + 1}
+                            </td>
+                          )}
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {user.address}
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {user.retired_nct}
-                            {index == 1 && (
-                              <button
-                                type="button"
-                                className="pl-4 text-indigo-600 hover:text-indigo-900"
-                              >
-                                Claim NFT
-                              </button>
-                            )}
                           </td>
                           {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{.role}</td> */}
                         </tr>
