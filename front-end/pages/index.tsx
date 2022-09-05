@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import Layout from "../components/common/layout";
-import Leaderboard from "../components/leaderboard";
+import Leaderboard from "../components/leaderboard/leaderboard";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext

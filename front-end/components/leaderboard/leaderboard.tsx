@@ -1,4 +1,4 @@
-import { User } from "../pages";
+import { User } from "../../pages";
 
 export default function Leaderboard({ rankData }: { rankData: User[] }) {
   return (

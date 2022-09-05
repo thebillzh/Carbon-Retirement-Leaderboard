@@ -201,12 +201,33 @@ export default function SimpleHeader() {
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-4">
                 <div className="flex-shrink-0">
+                  <div className="relative h-10 w-10 rounded-full">
+                    {user && user.face ? (
+                      <Image
+                        className="rounded-full"
+                        src={user.face}
+                        layout="fill"
+                        objectFit="contain"
+                        alt=""
+                      />
+                    ) : (
+                      /* placeholder user profile */
+                      <svg
+                        className="h-full w-full text-gray-300"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    )}
+                  </div>
+
                   {/* <img
                         className="h-10 w-10 rounded-full"
                         src={user.imageUrl}
                         alt=""
                       /> */}
-                  <div className="h-10 w-10 rounded-full text-sm">
+                  {/* <div className="h-10 w-10 rounded-full text-sm">
                     <svg
                       className="h-full w-full text-gray-300"
                       fill="currentColor"
@@ -214,7 +235,7 @@ export default function SimpleHeader() {
                     >
                       <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
@@ -224,25 +245,47 @@ export default function SimpleHeader() {
                     {user?.twitter}
                   </div>
                 </div>
-                {/* <button
-                      type="button"
-                      className="ml-auto bg-white flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button> */}
               </div>
               <div className="mt-3 space-y-1">
-                {userNavigation.map((item) => (
+                {user ? (
+                  userNavigation.map((item) => {
+                    if (item.name === "Disconnect") {
+                      return (
+                        <Disclosure.Button
+                          key={item.name}
+                          as="button"
+                          className="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                          onClick={() => {
+                            logout();
+                          }}
+                        >
+                          {item.name}
+                        </Disclosure.Button>
+                      );
+                    } else {
+                      return (
+                        <Disclosure.Button
+                          key={item.name}
+                          as="a"
+                          href={item.href}
+                          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                        >
+                          {item.name}
+                        </Disclosure.Button>
+                      );
+                    }
+                  })
+                ) : (
                   <Disclosure.Button
-                    key={item.name}
-                    as="a"
-                    href={item.href}
-                    className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                    as="button"
+                    className="block w-full px-4 py-2 text-left text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                    onClick={() => {
+                      login();
+                    }}
                   >
-                    {item.name}
+                    Connect Wallet
                   </Disclosure.Button>
-                ))}
+                )}
               </div>
             </div>
           </Disclosure.Panel>

@@ -18,6 +18,7 @@ export interface TokenPayload {
   wallet_pub?: string; // wallet public key
   wallet_type?: string; // wallet type
   twitter?: string; // twitter
+  email?: string; //email
   uname?: string; // name
   face?: string; // avatar
   gender?: number; // gender 0 secret 1 female 2 male

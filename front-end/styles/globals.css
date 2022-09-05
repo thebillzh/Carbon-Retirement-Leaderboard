@@ -36,11 +36,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-input[type="text"]:focus {
-  box-shadow: 2px 2px #111827;
-}
-
-input[type="email"]:focus {
-  box-shadow: 2px 2px #111827;
-}
