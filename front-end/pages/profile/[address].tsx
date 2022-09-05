@@ -1,9 +1,8 @@
 import Layout from "@components/common/layout";
 import ProfileCard from "@components/profile/profileCard";
-import { useCommonContext } from "@contexts/commonContextProvider";
+import { useLoading } from "@contexts/loadingProvider";
 import useABC from "@lib/common/abc";
 import { t_users } from "@prisma/client";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -11,6 +10,8 @@ import { useEffect, useMemo, useState } from "react";
 export default function ProfileAddress() {
   const { call } = useABC();
   const [profile, setProfile] = useState<t_users>();
+  const [isLoading, setIsLoading] = useState(true);
+  const { setLoading } = useLoading();
   const router = useRouter();
   const address = useMemo(() => {
     if (router.isReady) {
@@ -20,23 +21,31 @@ export default function ProfileAddress() {
 
   useEffect(() => {
     const f = async () => {
-      if (router.isReady) {
-        const user = await call<t_users>({
-          method: "GET",
-          path: "/profile/get",
-          params: { address: router.query.address },
-        });
-        setProfile(user);
+      try {
+        if (router.isReady && isLoading) {
+          setLoading({ visible: true, isNeedBackground: false });
+          const user = await call<t_users>({
+            method: "GET",
+            path: "/profile/get",
+            params: { address: router.query.address },
+          });
+          setProfile(user);
+          setLoading({ visible: false });
+          setIsLoading(false);
+        }
+      } catch (err) {
+        setLoading({ visible: false });
+        setIsLoading(false);
       }
     };
     f();
-  }, [call, router.isReady, router.query.address]);
+  }, [call, isLoading, router.isReady, router.query.address, setLoading]);
 
   return (
     <Layout>
       {profile ? (
         <ProfileCard profile={profile} />
-      ) : (
+      ) : !isLoading ? (
         <div className="flex-grow flex flex-col justify-center max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-16">
             <div className="text-center">
@@ -60,6 +69,8 @@ export default function ProfileAddress() {
             </div>
           </div>
         </div>
+      ) : (
+        <></>
       )}
     </Layout>
   );
