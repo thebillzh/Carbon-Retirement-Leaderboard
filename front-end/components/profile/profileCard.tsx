@@ -86,17 +86,13 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                         <dt className="text-sm font-medium text-gray-500">
                           On Toucan since
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-900">
-                          -
-                        </dd>
+                        <dd className="mt-1 text-sm text-gray-900">-</dd>
                       </div>
                       <div className="sm:col-span-2">
                         <dt className="text-sm font-medium text-gray-500">
                           Total retirement
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-900">
-                          -
-                        </dd>
+                        <dd className="mt-1 text-sm text-gray-900">-</dd>
                       </div>
                       <div className="sm:col-span-2">
                         <dt className="text-sm font-medium text-gray-500">
@@ -123,7 +119,7 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                         <dt className="text-sm font-medium text-gray-500">
                           Community NFTs
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-900"></dd>
+                        <dd className="mt-1 text-sm text-gray-900">-</dd>
                       </div>
                       <div className="sm:col-span-2">
                         <dt className="text-sm font-medium text-gray-500">
