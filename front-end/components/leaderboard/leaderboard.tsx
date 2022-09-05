@@ -98,7 +98,7 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
                             {user.address}
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {user.retired_nct}
+                            {user.retired_nct.toFixed(0)}
                           </td>
                           {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{.role}</td> */}
                         </tr>

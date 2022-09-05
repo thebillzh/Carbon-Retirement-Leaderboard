@@ -23,7 +23,7 @@ interface HomeProps {
 
 export interface User {
   address: string;
-  retired_nct: string;
+  retired_nct: number;
 }
 
 const Index = ({ rankData }: HomeProps) => {

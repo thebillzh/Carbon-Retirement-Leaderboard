@@ -78,7 +78,7 @@ export default function SimpleHeader() {
                     <div>
                       <Menu.Button className="bg-white flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <span className="sr-only">Open user menu</span>
-                        <span className="h-8 w-8 rounded-full overflow-hidden">
+                        <span className="relative h-8 w-8 rounded-full overflow-hidden">
                           {user.face ? (
                             <Image
                               className="rounded-full"
