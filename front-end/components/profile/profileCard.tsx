@@ -87,7 +87,7 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                           On Toucan since
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                          December 2021
+                          -
                         </dd>
                       </div>
                       <div className="sm:col-span-2">
@@ -95,7 +95,7 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                           Total retirement
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                          500 tonnes
+                          -
                         </dd>
                       </div>
                       <div className="sm:col-span-2">

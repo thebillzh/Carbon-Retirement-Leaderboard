@@ -1,12 +1,21 @@
 export interface LoadingProps {
   visible: boolean; // is show loading or not
   message?: string; // title of loading
+  isNeedBackground?: boolean; // if show background or not
 }
 
-export default function Loading({ visible, message }: LoadingProps) {
+export default function Loading({
+  visible,
+  message,
+  isNeedBackground,
+}: LoadingProps) {
   return (
     visible && (
-      <div className="overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-0 h-full z-50 flex justify-center items-center bg-gray-900 bg-opacity-80 animate-in fade-in duration-500">
+      <div
+        className={`overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-0 h-full z-50 flex justify-center items-center ${
+          isNeedBackground === true && "bg-gray-900 bg-opacity-80"
+        } animate-in fade-in duration-500`}
+      >
         <div className="relative max-w-3xl px-8">
           <div className="relative p-4 bg-white rounded-lg flex flex-col justify-center items-center">
             <svg

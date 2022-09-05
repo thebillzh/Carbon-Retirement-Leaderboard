@@ -22,15 +22,31 @@ export function useLoading(): LoadingContextState {
 
 export const LoadingProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [props, setProps] = useState<LoadingProps>({ visible: false });
-  const setLoading = useCallback(({ visible, message }: LoadingProps) => {
-    setProps({ visible, message: message ? message : "" });
-  }, []);
+  const setLoading = useCallback(
+    ({ visible, message, isNeedBackground }: LoadingProps) => {
+      setProps({
+        visible,
+        message: message ? message : "",
+        isNeedBackground: isNeedBackground ?? true,
+      });
+    },
+    []
+  );
   return (
     <LoadingContext.Provider
-      value={{ visible: props.visible, message: props.message, setLoading }}
+      value={{
+        visible: props.visible,
+        message: props.message,
+        isNeedBackground: props.isNeedBackground,
+        setLoading,
+      }}
     >
       {children}
-      <Loading visible={props.visible} message={props.message} />
+      <Loading
+        visible={props.visible}
+        message={props.message}
+        isNeedBackground={props.isNeedBackground}
+      />
     </LoadingContext.Provider>
   );
 };
