@@ -1,0 +1,3306 @@
+"""
+Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive.
+"""
+directive @entity on OBJECT
+
+"""Defined a Subgraph ID for an object type"""
+directive @subgraphId(id: String!) on OBJECT
+
+"""
+creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API.
+"""
+directive @derivedFrom(field: String!) on FIELD_DEFINITION
+
+"""
+Direct the client to resolve this field locally, either from the cache or local resolvers.
+"""
+directive @client(
+  """
+  When true, the client will never use the cache for this value. See
+  https://www.apollographql.com/docs/react/essentials/local-state/#forcing-resolvers-with-clientalways-true
+  """
+  always: Boolean
+) on FIELD | FRAGMENT_DEFINITION | INLINE_FRAGMENT
+
+"""
+Export this locally resolved field as a variable to be used in the remainder of this query. See
+https://www.apollographql.com/docs/react/essentials/local-state/#using-client-fields-as-variables
+"""
+directive @export(
+  """The variable name to export this field as."""
+  as: String!
+) on FIELD
+
+"""
+Specify a custom store key for this result. See
+https://www.apollographql.com/docs/react/advanced/caching/#the-connection-directive
+"""
+directive @connection(
+  """Specify the store key."""
+  key: String!
+
+  """
+  An array of query argument names to include in the generated custom store key.
+  """
+  filter: [String!]
+) on FIELD
+
+type AccessRole {
+  id: ID!
+  contractAddress: String!
+  role: Bytes!
+  member: User!
+  granted: Boolean!
+}
+
+input AccessRole_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  contractAddress: String
+  contractAddress_not: String
+  contractAddress_gt: String
+  contractAddress_lt: String
+  contractAddress_gte: String
+  contractAddress_lte: String
+  contractAddress_in: [String!]
+  contractAddress_not_in: [String!]
+  contractAddress_contains: String
+  contractAddress_contains_nocase: String
+  contractAddress_not_contains: String
+  contractAddress_not_contains_nocase: String
+  contractAddress_starts_with: String
+  contractAddress_starts_with_nocase: String
+  contractAddress_not_starts_with: String
+  contractAddress_not_starts_with_nocase: String
+  contractAddress_ends_with: String
+  contractAddress_ends_with_nocase: String
+  contractAddress_not_ends_with: String
+  contractAddress_not_ends_with_nocase: String
+  role: Bytes
+  role_not: Bytes
+  role_in: [Bytes!]
+  role_not_in: [Bytes!]
+  role_contains: Bytes
+  role_not_contains: Bytes
+  member: String
+  member_not: String
+  member_gt: String
+  member_lt: String
+  member_gte: String
+  member_lte: String
+  member_in: [String!]
+  member_not_in: [String!]
+  member_contains: String
+  member_contains_nocase: String
+  member_not_contains: String
+  member_not_contains_nocase: String
+  member_starts_with: String
+  member_starts_with_nocase: String
+  member_not_starts_with: String
+  member_not_starts_with_nocase: String
+  member_ends_with: String
+  member_ends_with_nocase: String
+  member_not_ends_with: String
+  member_not_ends_with_nocase: String
+  member_: User_filter
+  granted: Boolean
+  granted_not: Boolean
+  granted_in: [Boolean!]
+  granted_not_in: [Boolean!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum AccessRole_orderBy {
+  id
+  contractAddress
+  role
+  member
+  granted
+}
+
+type Aggregation {
+  id: ID!
+  key: String!
+  value: BigInt!
+}
+
+input Aggregation_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  key: String
+  key_not: String
+  key_gt: String
+  key_lt: String
+  key_gte: String
+  key_lte: String
+  key_in: [String!]
+  key_not_in: [String!]
+  key_contains: String
+  key_contains_nocase: String
+  key_not_contains: String
+  key_not_contains_nocase: String
+  key_starts_with: String
+  key_starts_with_nocase: String
+  key_not_starts_with: String
+  key_not_starts_with_nocase: String
+  key_ends_with: String
+  key_ends_with_nocase: String
+  key_not_ends_with: String
+  key_not_ends_with_nocase: String
+  value: BigInt
+  value_not: BigInt
+  value_gt: BigInt
+  value_lt: BigInt
+  value_gte: BigInt
+  value_lte: BigInt
+  value_in: [BigInt!]
+  value_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum Aggregation_orderBy {
+  id
+  key
+  value
+}
+
+type BatchComment {
+  id: ID!
+  sender: User
+  batch: BatchToken!
+  comment: String!
+}
+
+input BatchComment_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  sender: String
+  sender_not: String
+  sender_gt: String
+  sender_lt: String
+  sender_gte: String
+  sender_lte: String
+  sender_in: [String!]
+  sender_not_in: [String!]
+  sender_contains: String
+  sender_contains_nocase: String
+  sender_not_contains: String
+  sender_not_contains_nocase: String
+  sender_starts_with: String
+  sender_starts_with_nocase: String
+  sender_not_starts_with: String
+  sender_not_starts_with_nocase: String
+  sender_ends_with: String
+  sender_ends_with_nocase: String
+  sender_not_ends_with: String
+  sender_not_ends_with_nocase: String
+  sender_: User_filter
+  batch: String
+  batch_not: String
+  batch_gt: String
+  batch_lt: String
+  batch_gte: String
+  batch_lte: String
+  batch_in: [String!]
+  batch_not_in: [String!]
+  batch_contains: String
+  batch_contains_nocase: String
+  batch_not_contains: String
+  batch_not_contains_nocase: String
+  batch_starts_with: String
+  batch_starts_with_nocase: String
+  batch_not_starts_with: String
+  batch_not_starts_with_nocase: String
+  batch_ends_with: String
+  batch_ends_with_nocase: String
+  batch_not_ends_with: String
+  batch_not_ends_with_nocase: String
+  batch_: BatchToken_filter
+  comment: String
+  comment_not: String
+  comment_gt: String
+  comment_lt: String
+  comment_gte: String
+  comment_lte: String
+  comment_in: [String!]
+  comment_not_in: [String!]
+  comment_contains: String
+  comment_contains_nocase: String
+  comment_not_contains: String
+  comment_not_contains_nocase: String
+  comment_starts_with: String
+  comment_starts_with_nocase: String
+  comment_not_starts_with: String
+  comment_not_starts_with_nocase: String
+  comment_ends_with: String
+  comment_ends_with_nocase: String
+  comment_not_ends_with: String
+  comment_not_ends_with_nocase: String
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum BatchComment_orderBy {
+  id
+  sender
+  batch
+  comment
+}
+
+type BatchToken {
+  id: ID!
+  creator: User!
+  owner: User!
+  projectVintage: ProjectVintage
+  serialNumber: String
+  quantity: BigInt
+  confirmationStatus: Int!
+  timestamp: BigInt!
+  tx: String!
+  contentURI: String
+  comments(skip: Int = 0, first: Int = 100, orderBy: BatchComment_orderBy, orderDirection: OrderDirection, where: BatchComment_filter): [BatchComment!]!
+  aggregated: Boolean
+}
+
+input BatchToken_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  projectVintage: String
+  projectVintage_not: String
+  projectVintage_gt: String
+  projectVintage_lt: String
+  projectVintage_gte: String
+  projectVintage_lte: String
+  projectVintage_in: [String!]
+  projectVintage_not_in: [String!]
+  projectVintage_contains: String
+  projectVintage_contains_nocase: String
+  projectVintage_not_contains: String
+  projectVintage_not_contains_nocase: String
+  projectVintage_starts_with: String
+  projectVintage_starts_with_nocase: String
+  projectVintage_not_starts_with: String
+  projectVintage_not_starts_with_nocase: String
+  projectVintage_ends_with: String
+  projectVintage_ends_with_nocase: String
+  projectVintage_not_ends_with: String
+  projectVintage_not_ends_with_nocase: String
+  projectVintage_: ProjectVintage_filter
+  serialNumber: String
+  serialNumber_not: String
+  serialNumber_gt: String
+  serialNumber_lt: String
+  serialNumber_gte: String
+  serialNumber_lte: String
+  serialNumber_in: [String!]
+  serialNumber_not_in: [String!]
+  serialNumber_contains: String
+  serialNumber_contains_nocase: String
+  serialNumber_not_contains: String
+  serialNumber_not_contains_nocase: String
+  serialNumber_starts_with: String
+  serialNumber_starts_with_nocase: String
+  serialNumber_not_starts_with: String
+  serialNumber_not_starts_with_nocase: String
+  serialNumber_ends_with: String
+  serialNumber_ends_with_nocase: String
+  serialNumber_not_ends_with: String
+  serialNumber_not_ends_with_nocase: String
+  quantity: BigInt
+  quantity_not: BigInt
+  quantity_gt: BigInt
+  quantity_lt: BigInt
+  quantity_gte: BigInt
+  quantity_lte: BigInt
+  quantity_in: [BigInt!]
+  quantity_not_in: [BigInt!]
+  confirmationStatus: Int
+  confirmationStatus_not: Int
+  confirmationStatus_gt: Int
+  confirmationStatus_lt: Int
+  confirmationStatus_gte: Int
+  confirmationStatus_lte: Int
+  confirmationStatus_in: [Int!]
+  confirmationStatus_not_in: [Int!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  tx: String
+  tx_not: String
+  tx_gt: String
+  tx_lt: String
+  tx_gte: String
+  tx_lte: String
+  tx_in: [String!]
+  tx_not_in: [String!]
+  tx_contains: String
+  tx_contains_nocase: String
+  tx_not_contains: String
+  tx_not_contains_nocase: String
+  tx_starts_with: String
+  tx_starts_with_nocase: String
+  tx_not_starts_with: String
+  tx_not_starts_with_nocase: String
+  tx_ends_with: String
+  tx_ends_with_nocase: String
+  tx_not_ends_with: String
+  tx_not_ends_with_nocase: String
+  contentURI: String
+  contentURI_not: String
+  contentURI_gt: String
+  contentURI_lt: String
+  contentURI_gte: String
+  contentURI_lte: String
+  contentURI_in: [String!]
+  contentURI_not_in: [String!]
+  contentURI_contains: String
+  contentURI_contains_nocase: String
+  contentURI_not_contains: String
+  contentURI_not_contains_nocase: String
+  contentURI_starts_with: String
+  contentURI_starts_with_nocase: String
+  contentURI_not_starts_with: String
+  contentURI_not_starts_with_nocase: String
+  contentURI_ends_with: String
+  contentURI_ends_with_nocase: String
+  contentURI_not_ends_with: String
+  contentURI_not_ends_with_nocase: String
+  comments_: BatchComment_filter
+  aggregated: Boolean
+  aggregated_not: Boolean
+  aggregated_in: [Boolean!]
+  aggregated_not_in: [Boolean!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum BatchToken_orderBy {
+  id
+  creator
+  owner
+  projectVintage
+  serialNumber
+  quantity
+  confirmationStatus
+  timestamp
+  tx
+  contentURI
+  comments
+  aggregated
+}
+
+scalar BigDecimal
+
+scalar BigInt
+
+input BlockChangedFilter {
+  number_gte: Int!
+}
+
+input Block_height {
+  hash: Bytes
+  number: Int
+  number_gte: Int
+}
+
+type BridgeTokenRequest {
+  id: ID!
+  sentTx: String
+  sentTimestamp: BigInt
+  receivedTx: String
+  receivedTimestamp: BigInt
+  originDomain: BigInt!
+  toDomain: BigInt!
+  sentToken: ToucanToken
+  receivedToken: ToucanToken
+  bridger: User!
+  amount: BigInt!
+  requesthash: Bytes!
+}
+
+input BridgeTokenRequest_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  sentTx: String
+  sentTx_not: String
+  sentTx_gt: String
+  sentTx_lt: String
+  sentTx_gte: String
+  sentTx_lte: String
+  sentTx_in: [String!]
+  sentTx_not_in: [String!]
+  sentTx_contains: String
+  sentTx_contains_nocase: String
+  sentTx_not_contains: String
+  sentTx_not_contains_nocase: String
+  sentTx_starts_with: String
+  sentTx_starts_with_nocase: String
+  sentTx_not_starts_with: String
+  sentTx_not_starts_with_nocase: String
+  sentTx_ends_with: String
+  sentTx_ends_with_nocase: String
+  sentTx_not_ends_with: String
+  sentTx_not_ends_with_nocase: String
+  sentTimestamp: BigInt
+  sentTimestamp_not: BigInt
+  sentTimestamp_gt: BigInt
+  sentTimestamp_lt: BigInt
+  sentTimestamp_gte: BigInt
+  sentTimestamp_lte: BigInt
+  sentTimestamp_in: [BigInt!]
+  sentTimestamp_not_in: [BigInt!]
+  receivedTx: String
+  receivedTx_not: String
+  receivedTx_gt: String
+  receivedTx_lt: String
+  receivedTx_gte: String
+  receivedTx_lte: String
+  receivedTx_in: [String!]
+  receivedTx_not_in: [String!]
+  receivedTx_contains: String
+  receivedTx_contains_nocase: String
+  receivedTx_not_contains: String
+  receivedTx_not_contains_nocase: String
+  receivedTx_starts_with: String
+  receivedTx_starts_with_nocase: String
+  receivedTx_not_starts_with: String
+  receivedTx_not_starts_with_nocase: String
+  receivedTx_ends_with: String
+  receivedTx_ends_with_nocase: String
+  receivedTx_not_ends_with: String
+  receivedTx_not_ends_with_nocase: String
+  receivedTimestamp: BigInt
+  receivedTimestamp_not: BigInt
+  receivedTimestamp_gt: BigInt
+  receivedTimestamp_lt: BigInt
+  receivedTimestamp_gte: BigInt
+  receivedTimestamp_lte: BigInt
+  receivedTimestamp_in: [BigInt!]
+  receivedTimestamp_not_in: [BigInt!]
+  originDomain: BigInt
+  originDomain_not: BigInt
+  originDomain_gt: BigInt
+  originDomain_lt: BigInt
+  originDomain_gte: BigInt
+  originDomain_lte: BigInt
+  originDomain_in: [BigInt!]
+  originDomain_not_in: [BigInt!]
+  toDomain: BigInt
+  toDomain_not: BigInt
+  toDomain_gt: BigInt
+  toDomain_lt: BigInt
+  toDomain_gte: BigInt
+  toDomain_lte: BigInt
+  toDomain_in: [BigInt!]
+  toDomain_not_in: [BigInt!]
+  sentToken: String
+  sentToken_not: String
+  sentToken_gt: String
+  sentToken_lt: String
+  sentToken_gte: String
+  sentToken_lte: String
+  sentToken_in: [String!]
+  sentToken_not_in: [String!]
+  sentToken_contains: String
+  sentToken_contains_nocase: String
+  sentToken_not_contains: String
+  sentToken_not_contains_nocase: String
+  sentToken_starts_with: String
+  sentToken_starts_with_nocase: String
+  sentToken_not_starts_with: String
+  sentToken_not_starts_with_nocase: String
+  sentToken_ends_with: String
+  sentToken_ends_with_nocase: String
+  sentToken_not_ends_with: String
+  sentToken_not_ends_with_nocase: String
+  sentToken_: ToucanToken_filter
+  receivedToken: String
+  receivedToken_not: String
+  receivedToken_gt: String
+  receivedToken_lt: String
+  receivedToken_gte: String
+  receivedToken_lte: String
+  receivedToken_in: [String!]
+  receivedToken_not_in: [String!]
+  receivedToken_contains: String
+  receivedToken_contains_nocase: String
+  receivedToken_not_contains: String
+  receivedToken_not_contains_nocase: String
+  receivedToken_starts_with: String
+  receivedToken_starts_with_nocase: String
+  receivedToken_not_starts_with: String
+  receivedToken_not_starts_with_nocase: String
+  receivedToken_ends_with: String
+  receivedToken_ends_with_nocase: String
+  receivedToken_not_ends_with: String
+  receivedToken_not_ends_with_nocase: String
+  receivedToken_: ToucanToken_filter
+  bridger: String
+  bridger_not: String
+  bridger_gt: String
+  bridger_lt: String
+  bridger_gte: String
+  bridger_lte: String
+  bridger_in: [String!]
+  bridger_not_in: [String!]
+  bridger_contains: String
+  bridger_contains_nocase: String
+  bridger_not_contains: String
+  bridger_not_contains_nocase: String
+  bridger_starts_with: String
+  bridger_starts_with_nocase: String
+  bridger_not_starts_with: String
+  bridger_not_starts_with_nocase: String
+  bridger_ends_with: String
+  bridger_ends_with_nocase: String
+  bridger_not_ends_with: String
+  bridger_not_ends_with_nocase: String
+  bridger_: User_filter
+  amount: BigInt
+  amount_not: BigInt
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+  amount_in: [BigInt!]
+  amount_not_in: [BigInt!]
+  requesthash: Bytes
+  requesthash_not: Bytes
+  requesthash_in: [Bytes!]
+  requesthash_not_in: [Bytes!]
+  requesthash_contains: Bytes
+  requesthash_not_contains: Bytes
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum BridgeTokenRequest_orderBy {
+  id
+  sentTx
+  sentTimestamp
+  receivedTx
+  receivedTimestamp
+  originDomain
+  toDomain
+  sentToken
+  receivedToken
+  bridger
+  amount
+  requesthash
+}
+
+scalar Bytes
+
+type Deposit {
+  id: ID!
+  amount: BigInt!
+  timestamp: BigInt!
+  token: TCO2Token!
+  pool: String!
+  creator: User!
+}
+
+input Deposit_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  amount: BigInt
+  amount_not: BigInt
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+  amount_in: [BigInt!]
+  amount_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  token: String
+  token_not: String
+  token_gt: String
+  token_lt: String
+  token_gte: String
+  token_lte: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_contains: String
+  token_contains_nocase: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_: TCO2Token_filter
+  pool: String
+  pool_not: String
+  pool_gt: String
+  pool_lt: String
+  pool_gte: String
+  pool_lte: String
+  pool_in: [String!]
+  pool_not_in: [String!]
+  pool_contains: String
+  pool_contains_nocase: String
+  pool_not_contains: String
+  pool_not_contains_nocase: String
+  pool_starts_with: String
+  pool_starts_with_nocase: String
+  pool_not_starts_with: String
+  pool_not_starts_with_nocase: String
+  pool_ends_with: String
+  pool_ends_with_nocase: String
+  pool_not_ends_with: String
+  pool_not_ends_with_nocase: String
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum Deposit_orderBy {
+  id
+  amount
+  timestamp
+  token
+  pool
+  creator
+}
+
+"""Defines the order direction, either ascending or descending"""
+enum OrderDirection {
+  asc
+  desc
+}
+
+type PooledTCO2Token {
+  id: ID!
+  token: TCO2Token!
+  poolAddress: String!
+  amount: BigInt!
+}
+
+input PooledTCO2Token_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  token: String
+  token_not: String
+  token_gt: String
+  token_lt: String
+  token_gte: String
+  token_lte: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_contains: String
+  token_contains_nocase: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_: TCO2Token_filter
+  poolAddress: String
+  poolAddress_not: String
+  poolAddress_gt: String
+  poolAddress_lt: String
+  poolAddress_gte: String
+  poolAddress_lte: String
+  poolAddress_in: [String!]
+  poolAddress_not_in: [String!]
+  poolAddress_contains: String
+  poolAddress_contains_nocase: String
+  poolAddress_not_contains: String
+  poolAddress_not_contains_nocase: String
+  poolAddress_starts_with: String
+  poolAddress_starts_with_nocase: String
+  poolAddress_not_starts_with: String
+  poolAddress_not_starts_with_nocase: String
+  poolAddress_ends_with: String
+  poolAddress_ends_with_nocase: String
+  poolAddress_not_ends_with: String
+  poolAddress_not_ends_with_nocase: String
+  amount: BigInt
+  amount_not: BigInt
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+  amount_in: [BigInt!]
+  amount_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum PooledTCO2Token_orderBy {
+  id
+  token
+  poolAddress
+  amount
+}
+
+type Project {
+  id: ID!
+  creator: User!
+  owner: User!
+  timestamp: BigInt!
+  tx: String!
+  projectId: String!
+  vintages(skip: Int = 0, first: Int = 100, orderBy: ProjectVintage_orderBy, orderDirection: OrderDirection, where: ProjectVintage_filter): [ProjectVintage!]!
+  standard: String!
+  methodology: String
+  region: String
+  storageMethod: String
+  method: String
+  emissionType: String
+  category: String
+  uri: String
+}
+
+type ProjectVintage {
+  id: ID!
+  creator: User!
+  owner: User!
+  timestamp: BigInt!
+  tx: String!
+  name: String!
+  startTime: BigInt!
+  endTime: BigInt!
+  project: Project
+  batches(skip: Int = 0, first: Int = 100, orderBy: BatchToken_orderBy, orderDirection: OrderDirection, where: BatchToken_filter): [BatchToken!]!
+  totalVintageQuantity: BigInt!
+  isCorsiaCompliant: Boolean!
+  isCCPcompliant: Boolean!
+  coBenefits: String!
+  correspAdjustment: String!
+  additionalCertification: String!
+  issuanceDate: BigInt!
+  tco2Token: TCO2Token
+}
+
+input ProjectVintage_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  tx: String
+  tx_not: String
+  tx_gt: String
+  tx_lt: String
+  tx_gte: String
+  tx_lte: String
+  tx_in: [String!]
+  tx_not_in: [String!]
+  tx_contains: String
+  tx_contains_nocase: String
+  tx_not_contains: String
+  tx_not_contains_nocase: String
+  tx_starts_with: String
+  tx_starts_with_nocase: String
+  tx_not_starts_with: String
+  tx_not_starts_with_nocase: String
+  tx_ends_with: String
+  tx_ends_with_nocase: String
+  tx_not_ends_with: String
+  tx_not_ends_with_nocase: String
+  name: String
+  name_not: String
+  name_gt: String
+  name_lt: String
+  name_gte: String
+  name_lte: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_contains: String
+  name_contains_nocase: String
+  name_not_contains: String
+  name_not_contains_nocase: String
+  name_starts_with: String
+  name_starts_with_nocase: String
+  name_not_starts_with: String
+  name_not_starts_with_nocase: String
+  name_ends_with: String
+  name_ends_with_nocase: String
+  name_not_ends_with: String
+  name_not_ends_with_nocase: String
+  startTime: BigInt
+  startTime_not: BigInt
+  startTime_gt: BigInt
+  startTime_lt: BigInt
+  startTime_gte: BigInt
+  startTime_lte: BigInt
+  startTime_in: [BigInt!]
+  startTime_not_in: [BigInt!]
+  endTime: BigInt
+  endTime_not: BigInt
+  endTime_gt: BigInt
+  endTime_lt: BigInt
+  endTime_gte: BigInt
+  endTime_lte: BigInt
+  endTime_in: [BigInt!]
+  endTime_not_in: [BigInt!]
+  project: String
+  project_not: String
+  project_gt: String
+  project_lt: String
+  project_gte: String
+  project_lte: String
+  project_in: [String!]
+  project_not_in: [String!]
+  project_contains: String
+  project_contains_nocase: String
+  project_not_contains: String
+  project_not_contains_nocase: String
+  project_starts_with: String
+  project_starts_with_nocase: String
+  project_not_starts_with: String
+  project_not_starts_with_nocase: String
+  project_ends_with: String
+  project_ends_with_nocase: String
+  project_not_ends_with: String
+  project_not_ends_with_nocase: String
+  project_: Project_filter
+  batches_: BatchToken_filter
+  totalVintageQuantity: BigInt
+  totalVintageQuantity_not: BigInt
+  totalVintageQuantity_gt: BigInt
+  totalVintageQuantity_lt: BigInt
+  totalVintageQuantity_gte: BigInt
+  totalVintageQuantity_lte: BigInt
+  totalVintageQuantity_in: [BigInt!]
+  totalVintageQuantity_not_in: [BigInt!]
+  isCorsiaCompliant: Boolean
+  isCorsiaCompliant_not: Boolean
+  isCorsiaCompliant_in: [Boolean!]
+  isCorsiaCompliant_not_in: [Boolean!]
+  isCCPcompliant: Boolean
+  isCCPcompliant_not: Boolean
+  isCCPcompliant_in: [Boolean!]
+  isCCPcompliant_not_in: [Boolean!]
+  coBenefits: String
+  coBenefits_not: String
+  coBenefits_gt: String
+  coBenefits_lt: String
+  coBenefits_gte: String
+  coBenefits_lte: String
+  coBenefits_in: [String!]
+  coBenefits_not_in: [String!]
+  coBenefits_contains: String
+  coBenefits_contains_nocase: String
+  coBenefits_not_contains: String
+  coBenefits_not_contains_nocase: String
+  coBenefits_starts_with: String
+  coBenefits_starts_with_nocase: String
+  coBenefits_not_starts_with: String
+  coBenefits_not_starts_with_nocase: String
+  coBenefits_ends_with: String
+  coBenefits_ends_with_nocase: String
+  coBenefits_not_ends_with: String
+  coBenefits_not_ends_with_nocase: String
+  correspAdjustment: String
+  correspAdjustment_not: String
+  correspAdjustment_gt: String
+  correspAdjustment_lt: String
+  correspAdjustment_gte: String
+  correspAdjustment_lte: String
+  correspAdjustment_in: [String!]
+  correspAdjustment_not_in: [String!]
+  correspAdjustment_contains: String
+  correspAdjustment_contains_nocase: String
+  correspAdjustment_not_contains: String
+  correspAdjustment_not_contains_nocase: String
+  correspAdjustment_starts_with: String
+  correspAdjustment_starts_with_nocase: String
+  correspAdjustment_not_starts_with: String
+  correspAdjustment_not_starts_with_nocase: String
+  correspAdjustment_ends_with: String
+  correspAdjustment_ends_with_nocase: String
+  correspAdjustment_not_ends_with: String
+  correspAdjustment_not_ends_with_nocase: String
+  additionalCertification: String
+  additionalCertification_not: String
+  additionalCertification_gt: String
+  additionalCertification_lt: String
+  additionalCertification_gte: String
+  additionalCertification_lte: String
+  additionalCertification_in: [String!]
+  additionalCertification_not_in: [String!]
+  additionalCertification_contains: String
+  additionalCertification_contains_nocase: String
+  additionalCertification_not_contains: String
+  additionalCertification_not_contains_nocase: String
+  additionalCertification_starts_with: String
+  additionalCertification_starts_with_nocase: String
+  additionalCertification_not_starts_with: String
+  additionalCertification_not_starts_with_nocase: String
+  additionalCertification_ends_with: String
+  additionalCertification_ends_with_nocase: String
+  additionalCertification_not_ends_with: String
+  additionalCertification_not_ends_with_nocase: String
+  issuanceDate: BigInt
+  issuanceDate_not: BigInt
+  issuanceDate_gt: BigInt
+  issuanceDate_lt: BigInt
+  issuanceDate_gte: BigInt
+  issuanceDate_lte: BigInt
+  issuanceDate_in: [BigInt!]
+  issuanceDate_not_in: [BigInt!]
+  tco2Token: String
+  tco2Token_not: String
+  tco2Token_gt: String
+  tco2Token_lt: String
+  tco2Token_gte: String
+  tco2Token_lte: String
+  tco2Token_in: [String!]
+  tco2Token_not_in: [String!]
+  tco2Token_contains: String
+  tco2Token_contains_nocase: String
+  tco2Token_not_contains: String
+  tco2Token_not_contains_nocase: String
+  tco2Token_starts_with: String
+  tco2Token_starts_with_nocase: String
+  tco2Token_not_starts_with: String
+  tco2Token_not_starts_with_nocase: String
+  tco2Token_ends_with: String
+  tco2Token_ends_with_nocase: String
+  tco2Token_not_ends_with: String
+  tco2Token_not_ends_with_nocase: String
+  tco2Token_: TCO2Token_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum ProjectVintage_orderBy {
+  id
+  creator
+  owner
+  timestamp
+  tx
+  name
+  startTime
+  endTime
+  project
+  batches
+  totalVintageQuantity
+  isCorsiaCompliant
+  isCCPcompliant
+  coBenefits
+  correspAdjustment
+  additionalCertification
+  issuanceDate
+  tco2Token
+}
+
+input Project_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_contains_nocase: String
+  owner_not_contains: String
+  owner_not_contains_nocase: String
+  owner_starts_with: String
+  owner_starts_with_nocase: String
+  owner_not_starts_with: String
+  owner_not_starts_with_nocase: String
+  owner_ends_with: String
+  owner_ends_with_nocase: String
+  owner_not_ends_with: String
+  owner_not_ends_with_nocase: String
+  owner_: User_filter
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  tx: String
+  tx_not: String
+  tx_gt: String
+  tx_lt: String
+  tx_gte: String
+  tx_lte: String
+  tx_in: [String!]
+  tx_not_in: [String!]
+  tx_contains: String
+  tx_contains_nocase: String
+  tx_not_contains: String
+  tx_not_contains_nocase: String
+  tx_starts_with: String
+  tx_starts_with_nocase: String
+  tx_not_starts_with: String
+  tx_not_starts_with_nocase: String
+  tx_ends_with: String
+  tx_ends_with_nocase: String
+  tx_not_ends_with: String
+  tx_not_ends_with_nocase: String
+  projectId: String
+  projectId_not: String
+  projectId_gt: String
+  projectId_lt: String
+  projectId_gte: String
+  projectId_lte: String
+  projectId_in: [String!]
+  projectId_not_in: [String!]
+  projectId_contains: String
+  projectId_contains_nocase: String
+  projectId_not_contains: String
+  projectId_not_contains_nocase: String
+  projectId_starts_with: String
+  projectId_starts_with_nocase: String
+  projectId_not_starts_with: String
+  projectId_not_starts_with_nocase: String
+  projectId_ends_with: String
+  projectId_ends_with_nocase: String
+  projectId_not_ends_with: String
+  projectId_not_ends_with_nocase: String
+  vintages_: ProjectVintage_filter
+  standard: String
+  standard_not: String
+  standard_gt: String
+  standard_lt: String
+  standard_gte: String
+  standard_lte: String
+  standard_in: [String!]
+  standard_not_in: [String!]
+  standard_contains: String
+  standard_contains_nocase: String
+  standard_not_contains: String
+  standard_not_contains_nocase: String
+  standard_starts_with: String
+  standard_starts_with_nocase: String
+  standard_not_starts_with: String
+  standard_not_starts_with_nocase: String
+  standard_ends_with: String
+  standard_ends_with_nocase: String
+  standard_not_ends_with: String
+  standard_not_ends_with_nocase: String
+  methodology: String
+  methodology_not: String
+  methodology_gt: String
+  methodology_lt: String
+  methodology_gte: String
+  methodology_lte: String
+  methodology_in: [String!]
+  methodology_not_in: [String!]
+  methodology_contains: String
+  methodology_contains_nocase: String
+  methodology_not_contains: String
+  methodology_not_contains_nocase: String
+  methodology_starts_with: String
+  methodology_starts_with_nocase: String
+  methodology_not_starts_with: String
+  methodology_not_starts_with_nocase: String
+  methodology_ends_with: String
+  methodology_ends_with_nocase: String
+  methodology_not_ends_with: String
+  methodology_not_ends_with_nocase: String
+  region: String
+  region_not: String
+  region_gt: String
+  region_lt: String
+  region_gte: String
+  region_lte: String
+  region_in: [String!]
+  region_not_in: [String!]
+  region_contains: String
+  region_contains_nocase: String
+  region_not_contains: String
+  region_not_contains_nocase: String
+  region_starts_with: String
+  region_starts_with_nocase: String
+  region_not_starts_with: String
+  region_not_starts_with_nocase: String
+  region_ends_with: String
+  region_ends_with_nocase: String
+  region_not_ends_with: String
+  region_not_ends_with_nocase: String
+  storageMethod: String
+  storageMethod_not: String
+  storageMethod_gt: String
+  storageMethod_lt: String
+  storageMethod_gte: String
+  storageMethod_lte: String
+  storageMethod_in: [String!]
+  storageMethod_not_in: [String!]
+  storageMethod_contains: String
+  storageMethod_contains_nocase: String
+  storageMethod_not_contains: String
+  storageMethod_not_contains_nocase: String
+  storageMethod_starts_with: String
+  storageMethod_starts_with_nocase: String
+  storageMethod_not_starts_with: String
+  storageMethod_not_starts_with_nocase: String
+  storageMethod_ends_with: String
+  storageMethod_ends_with_nocase: String
+  storageMethod_not_ends_with: String
+  storageMethod_not_ends_with_nocase: String
+  method: String
+  method_not: String
+  method_gt: String
+  method_lt: String
+  method_gte: String
+  method_lte: String
+  method_in: [String!]
+  method_not_in: [String!]
+  method_contains: String
+  method_contains_nocase: String
+  method_not_contains: String
+  method_not_contains_nocase: String
+  method_starts_with: String
+  method_starts_with_nocase: String
+  method_not_starts_with: String
+  method_not_starts_with_nocase: String
+  method_ends_with: String
+  method_ends_with_nocase: String
+  method_not_ends_with: String
+  method_not_ends_with_nocase: String
+  emissionType: String
+  emissionType_not: String
+  emissionType_gt: String
+  emissionType_lt: String
+  emissionType_gte: String
+  emissionType_lte: String
+  emissionType_in: [String!]
+  emissionType_not_in: [String!]
+  emissionType_contains: String
+  emissionType_contains_nocase: String
+  emissionType_not_contains: String
+  emissionType_not_contains_nocase: String
+  emissionType_starts_with: String
+  emissionType_starts_with_nocase: String
+  emissionType_not_starts_with: String
+  emissionType_not_starts_with_nocase: String
+  emissionType_ends_with: String
+  emissionType_ends_with_nocase: String
+  emissionType_not_ends_with: String
+  emissionType_not_ends_with_nocase: String
+  category: String
+  category_not: String
+  category_gt: String
+  category_lt: String
+  category_gte: String
+  category_lte: String
+  category_in: [String!]
+  category_not_in: [String!]
+  category_contains: String
+  category_contains_nocase: String
+  category_not_contains: String
+  category_not_contains_nocase: String
+  category_starts_with: String
+  category_starts_with_nocase: String
+  category_not_starts_with: String
+  category_not_starts_with_nocase: String
+  category_ends_with: String
+  category_ends_with_nocase: String
+  category_not_ends_with: String
+  category_not_ends_with_nocase: String
+  uri: String
+  uri_not: String
+  uri_gt: String
+  uri_lt: String
+  uri_gte: String
+  uri_lte: String
+  uri_in: [String!]
+  uri_not_in: [String!]
+  uri_contains: String
+  uri_contains_nocase: String
+  uri_not_contains: String
+  uri_not_contains_nocase: String
+  uri_starts_with: String
+  uri_starts_with_nocase: String
+  uri_not_starts_with: String
+  uri_not_starts_with_nocase: String
+  uri_ends_with: String
+  uri_ends_with_nocase: String
+  uri_not_ends_with: String
+  uri_not_ends_with_nocase: String
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum Project_orderBy {
+  id
+  creator
+  owner
+  timestamp
+  tx
+  projectId
+  vintages
+  standard
+  methodology
+  region
+  storageMethod
+  method
+  emissionType
+  category
+  uri
+}
+
+type Query {
+  batchToken(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): BatchToken
+  batchTokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: BatchToken_orderBy
+    orderDirection: OrderDirection
+    where: BatchToken_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [BatchToken!]!
+  batchComment(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): BatchComment
+  batchComments(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: BatchComment_orderBy
+    orderDirection: OrderDirection
+    where: BatchComment_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [BatchComment!]!
+  project(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Project
+  projects(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Project_orderBy
+    orderDirection: OrderDirection
+    where: Project_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Project!]!
+  projectVintage(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): ProjectVintage
+  projectVintages(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ProjectVintage_orderBy
+    orderDirection: OrderDirection
+    where: ProjectVintage_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [ProjectVintage!]!
+  tco2Token(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TCO2Token
+  tco2Tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: TCO2Token_orderBy
+    orderDirection: OrderDirection
+    where: TCO2Token_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [TCO2Token!]!
+  tco2Balance(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TCO2Balance
+  tco2Balances(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: TCO2Balance_orderBy
+    orderDirection: OrderDirection
+    where: TCO2Balance_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [TCO2Balance!]!
+  pooledTCO2Token(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PooledTCO2Token
+  pooledTCO2Tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: PooledTCO2Token_orderBy
+    orderDirection: OrderDirection
+    where: PooledTCO2Token_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [PooledTCO2Token!]!
+  retirement(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Retirement
+  retirements(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Retirement_orderBy
+    orderDirection: OrderDirection
+    where: Retirement_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Retirement!]!
+  retirementCertificate(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RetirementCertificate
+  retirementCertificates(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: RetirementCertificate_orderBy
+    orderDirection: OrderDirection
+    where: RetirementCertificate_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [RetirementCertificate!]!
+  redeem(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Redeem
+  redeems(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Redeem_orderBy
+    orderDirection: OrderDirection
+    where: Redeem_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Redeem!]!
+  deposit(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Deposit
+  deposits(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Deposit_orderBy
+    orderDirection: OrderDirection
+    where: Deposit_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Deposit!]!
+  accessRole(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): AccessRole
+  accessRoles(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: AccessRole_orderBy
+    orderDirection: OrderDirection
+    where: AccessRole_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [AccessRole!]!
+  bridgeTokenRequest(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): BridgeTokenRequest
+  bridgeTokenRequests(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: BridgeTokenRequest_orderBy
+    orderDirection: OrderDirection
+    where: BridgeTokenRequest_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [BridgeTokenRequest!]!
+  toucanToken(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): ToucanToken
+  toucanTokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ToucanToken_orderBy
+    orderDirection: OrderDirection
+    where: ToucanToken_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [ToucanToken!]!
+  user(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): User
+  users(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: User_orderBy
+    orderDirection: OrderDirection
+    where: User_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [User!]!
+  aggregation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Aggregation
+  aggregations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Aggregation_orderBy
+    orderDirection: OrderDirection
+    where: Aggregation_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Aggregation!]!
+
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
+type Redeem {
+  id: ID!
+  amount: BigInt!
+  timestamp: BigInt!
+  token: TCO2Token!
+  pool: String!
+  creator: User!
+}
+
+input Redeem_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  amount: BigInt
+  amount_not: BigInt
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+  amount_in: [BigInt!]
+  amount_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  token: String
+  token_not: String
+  token_gt: String
+  token_lt: String
+  token_gte: String
+  token_lte: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_contains: String
+  token_contains_nocase: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_: TCO2Token_filter
+  pool: String
+  pool_not: String
+  pool_gt: String
+  pool_lt: String
+  pool_gte: String
+  pool_lte: String
+  pool_in: [String!]
+  pool_not_in: [String!]
+  pool_contains: String
+  pool_contains_nocase: String
+  pool_not_contains: String
+  pool_not_contains_nocase: String
+  pool_starts_with: String
+  pool_starts_with_nocase: String
+  pool_not_starts_with: String
+  pool_not_starts_with_nocase: String
+  pool_ends_with: String
+  pool_ends_with_nocase: String
+  pool_not_ends_with: String
+  pool_not_ends_with_nocase: String
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum Redeem_orderBy {
+  id
+  amount
+  timestamp
+  token
+  pool
+  creator
+}
+
+type Retirement {
+  id: ID!
+  creationTx: String!
+  amount: BigInt!
+  timestamp: BigInt!
+  token: TCO2Token!
+  creator: User!
+  eventId: BigInt!
+  certificate: RetirementCertificate
+}
+
+type RetirementCertificate {
+  id: ID!
+  creationTx: String!
+  updateTxs: [String!]!
+  createdAt: BigInt!
+  retiringEntity: User!
+  beneficiary: User!
+  retiringEntityString: String!
+  beneficiaryString: String!
+  retirementMessage: String!
+  retirements(skip: Int = 0, first: Int = 100, orderBy: Retirement_orderBy, orderDirection: OrderDirection, where: Retirement_filter): [Retirement!]!
+}
+
+input RetirementCertificate_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  creationTx: String
+  creationTx_not: String
+  creationTx_gt: String
+  creationTx_lt: String
+  creationTx_gte: String
+  creationTx_lte: String
+  creationTx_in: [String!]
+  creationTx_not_in: [String!]
+  creationTx_contains: String
+  creationTx_contains_nocase: String
+  creationTx_not_contains: String
+  creationTx_not_contains_nocase: String
+  creationTx_starts_with: String
+  creationTx_starts_with_nocase: String
+  creationTx_not_starts_with: String
+  creationTx_not_starts_with_nocase: String
+  creationTx_ends_with: String
+  creationTx_ends_with_nocase: String
+  creationTx_not_ends_with: String
+  creationTx_not_ends_with_nocase: String
+  updateTxs: [String!]
+  updateTxs_not: [String!]
+  updateTxs_contains: [String!]
+  updateTxs_contains_nocase: [String!]
+  updateTxs_not_contains: [String!]
+  updateTxs_not_contains_nocase: [String!]
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  retiringEntity: String
+  retiringEntity_not: String
+  retiringEntity_gt: String
+  retiringEntity_lt: String
+  retiringEntity_gte: String
+  retiringEntity_lte: String
+  retiringEntity_in: [String!]
+  retiringEntity_not_in: [String!]
+  retiringEntity_contains: String
+  retiringEntity_contains_nocase: String
+  retiringEntity_not_contains: String
+  retiringEntity_not_contains_nocase: String
+  retiringEntity_starts_with: String
+  retiringEntity_starts_with_nocase: String
+  retiringEntity_not_starts_with: String
+  retiringEntity_not_starts_with_nocase: String
+  retiringEntity_ends_with: String
+  retiringEntity_ends_with_nocase: String
+  retiringEntity_not_ends_with: String
+  retiringEntity_not_ends_with_nocase: String
+  retiringEntity_: User_filter
+  beneficiary: String
+  beneficiary_not: String
+  beneficiary_gt: String
+  beneficiary_lt: String
+  beneficiary_gte: String
+  beneficiary_lte: String
+  beneficiary_in: [String!]
+  beneficiary_not_in: [String!]
+  beneficiary_contains: String
+  beneficiary_contains_nocase: String
+  beneficiary_not_contains: String
+  beneficiary_not_contains_nocase: String
+  beneficiary_starts_with: String
+  beneficiary_starts_with_nocase: String
+  beneficiary_not_starts_with: String
+  beneficiary_not_starts_with_nocase: String
+  beneficiary_ends_with: String
+  beneficiary_ends_with_nocase: String
+  beneficiary_not_ends_with: String
+  beneficiary_not_ends_with_nocase: String
+  beneficiary_: User_filter
+  retiringEntityString: String
+  retiringEntityString_not: String
+  retiringEntityString_gt: String
+  retiringEntityString_lt: String
+  retiringEntityString_gte: String
+  retiringEntityString_lte: String
+  retiringEntityString_in: [String!]
+  retiringEntityString_not_in: [String!]
+  retiringEntityString_contains: String
+  retiringEntityString_contains_nocase: String
+  retiringEntityString_not_contains: String
+  retiringEntityString_not_contains_nocase: String
+  retiringEntityString_starts_with: String
+  retiringEntityString_starts_with_nocase: String
+  retiringEntityString_not_starts_with: String
+  retiringEntityString_not_starts_with_nocase: String
+  retiringEntityString_ends_with: String
+  retiringEntityString_ends_with_nocase: String
+  retiringEntityString_not_ends_with: String
+  retiringEntityString_not_ends_with_nocase: String
+  beneficiaryString: String
+  beneficiaryString_not: String
+  beneficiaryString_gt: String
+  beneficiaryString_lt: String
+  beneficiaryString_gte: String
+  beneficiaryString_lte: String
+  beneficiaryString_in: [String!]
+  beneficiaryString_not_in: [String!]
+  beneficiaryString_contains: String
+  beneficiaryString_contains_nocase: String
+  beneficiaryString_not_contains: String
+  beneficiaryString_not_contains_nocase: String
+  beneficiaryString_starts_with: String
+  beneficiaryString_starts_with_nocase: String
+  beneficiaryString_not_starts_with: String
+  beneficiaryString_not_starts_with_nocase: String
+  beneficiaryString_ends_with: String
+  beneficiaryString_ends_with_nocase: String
+  beneficiaryString_not_ends_with: String
+  beneficiaryString_not_ends_with_nocase: String
+  retirementMessage: String
+  retirementMessage_not: String
+  retirementMessage_gt: String
+  retirementMessage_lt: String
+  retirementMessage_gte: String
+  retirementMessage_lte: String
+  retirementMessage_in: [String!]
+  retirementMessage_not_in: [String!]
+  retirementMessage_contains: String
+  retirementMessage_contains_nocase: String
+  retirementMessage_not_contains: String
+  retirementMessage_not_contains_nocase: String
+  retirementMessage_starts_with: String
+  retirementMessage_starts_with_nocase: String
+  retirementMessage_not_starts_with: String
+  retirementMessage_not_starts_with_nocase: String
+  retirementMessage_ends_with: String
+  retirementMessage_ends_with_nocase: String
+  retirementMessage_not_ends_with: String
+  retirementMessage_not_ends_with_nocase: String
+  retirements_: Retirement_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum RetirementCertificate_orderBy {
+  id
+  creationTx
+  updateTxs
+  createdAt
+  retiringEntity
+  beneficiary
+  retiringEntityString
+  beneficiaryString
+  retirementMessage
+  retirements
+}
+
+input Retirement_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  creationTx: String
+  creationTx_not: String
+  creationTx_gt: String
+  creationTx_lt: String
+  creationTx_gte: String
+  creationTx_lte: String
+  creationTx_in: [String!]
+  creationTx_not_in: [String!]
+  creationTx_contains: String
+  creationTx_contains_nocase: String
+  creationTx_not_contains: String
+  creationTx_not_contains_nocase: String
+  creationTx_starts_with: String
+  creationTx_starts_with_nocase: String
+  creationTx_not_starts_with: String
+  creationTx_not_starts_with_nocase: String
+  creationTx_ends_with: String
+  creationTx_ends_with_nocase: String
+  creationTx_not_ends_with: String
+  creationTx_not_ends_with_nocase: String
+  amount: BigInt
+  amount_not: BigInt
+  amount_gt: BigInt
+  amount_lt: BigInt
+  amount_gte: BigInt
+  amount_lte: BigInt
+  amount_in: [BigInt!]
+  amount_not_in: [BigInt!]
+  timestamp: BigInt
+  timestamp_not: BigInt
+  timestamp_gt: BigInt
+  timestamp_lt: BigInt
+  timestamp_gte: BigInt
+  timestamp_lte: BigInt
+  timestamp_in: [BigInt!]
+  timestamp_not_in: [BigInt!]
+  token: String
+  token_not: String
+  token_gt: String
+  token_lt: String
+  token_gte: String
+  token_lte: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_contains: String
+  token_contains_nocase: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_: TCO2Token_filter
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+  eventId: BigInt
+  eventId_not: BigInt
+  eventId_gt: BigInt
+  eventId_lt: BigInt
+  eventId_gte: BigInt
+  eventId_lte: BigInt
+  eventId_in: [BigInt!]
+  eventId_not_in: [BigInt!]
+  certificate: String
+  certificate_not: String
+  certificate_gt: String
+  certificate_lt: String
+  certificate_gte: String
+  certificate_lte: String
+  certificate_in: [String!]
+  certificate_not_in: [String!]
+  certificate_contains: String
+  certificate_contains_nocase: String
+  certificate_not_contains: String
+  certificate_not_contains_nocase: String
+  certificate_starts_with: String
+  certificate_starts_with_nocase: String
+  certificate_not_starts_with: String
+  certificate_not_starts_with_nocase: String
+  certificate_ends_with: String
+  certificate_ends_with_nocase: String
+  certificate_not_ends_with: String
+  certificate_not_ends_with_nocase: String
+  certificate_: RetirementCertificate_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum Retirement_orderBy {
+  id
+  creationTx
+  amount
+  timestamp
+  token
+  creator
+  eventId
+  certificate
+}
+
+type Subscription {
+  batchToken(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): BatchToken
+  batchTokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: BatchToken_orderBy
+    orderDirection: OrderDirection
+    where: BatchToken_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [BatchToken!]!
+  batchComment(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): BatchComment
+  batchComments(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: BatchComment_orderBy
+    orderDirection: OrderDirection
+    where: BatchComment_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [BatchComment!]!
+  project(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Project
+  projects(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Project_orderBy
+    orderDirection: OrderDirection
+    where: Project_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Project!]!
+  projectVintage(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): ProjectVintage
+  projectVintages(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ProjectVintage_orderBy
+    orderDirection: OrderDirection
+    where: ProjectVintage_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [ProjectVintage!]!
+  tco2Token(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TCO2Token
+  tco2Tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: TCO2Token_orderBy
+    orderDirection: OrderDirection
+    where: TCO2Token_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [TCO2Token!]!
+  tco2Balance(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): TCO2Balance
+  tco2Balances(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: TCO2Balance_orderBy
+    orderDirection: OrderDirection
+    where: TCO2Balance_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [TCO2Balance!]!
+  pooledTCO2Token(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): PooledTCO2Token
+  pooledTCO2Tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: PooledTCO2Token_orderBy
+    orderDirection: OrderDirection
+    where: PooledTCO2Token_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [PooledTCO2Token!]!
+  retirement(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Retirement
+  retirements(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Retirement_orderBy
+    orderDirection: OrderDirection
+    where: Retirement_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Retirement!]!
+  retirementCertificate(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): RetirementCertificate
+  retirementCertificates(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: RetirementCertificate_orderBy
+    orderDirection: OrderDirection
+    where: RetirementCertificate_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [RetirementCertificate!]!
+  redeem(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Redeem
+  redeems(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Redeem_orderBy
+    orderDirection: OrderDirection
+    where: Redeem_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Redeem!]!
+  deposit(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Deposit
+  deposits(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Deposit_orderBy
+    orderDirection: OrderDirection
+    where: Deposit_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Deposit!]!
+  accessRole(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): AccessRole
+  accessRoles(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: AccessRole_orderBy
+    orderDirection: OrderDirection
+    where: AccessRole_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [AccessRole!]!
+  bridgeTokenRequest(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): BridgeTokenRequest
+  bridgeTokenRequests(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: BridgeTokenRequest_orderBy
+    orderDirection: OrderDirection
+    where: BridgeTokenRequest_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [BridgeTokenRequest!]!
+  toucanToken(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): ToucanToken
+  toucanTokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ToucanToken_orderBy
+    orderDirection: OrderDirection
+    where: ToucanToken_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [ToucanToken!]!
+  user(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): User
+  users(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: User_orderBy
+    orderDirection: OrderDirection
+    where: User_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [User!]!
+  aggregation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): Aggregation
+  aggregations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Aggregation_orderBy
+    orderDirection: OrderDirection
+    where: Aggregation_filter
+
+    """
+    The block at which the query should be executed. Can either be a `{ hash: Bytes }` value containing a block hash, a `{ number: Int }` containing the block number, or a `{ number_gte: Int }` containing the minimum block number. In the case of `number_gte`, the query will be executed on the latest block only if the subgraph has progressed to or past the minimum block number. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+
+    """
+    Set to `allow` to receive data even if the subgraph has skipped over errors while syncing.
+    """
+    subgraphError: _SubgraphErrorPolicy_! = deny
+  ): [Aggregation!]!
+
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
+type TCO2Balance {
+  id: ID!
+  user: User!
+  token: TCO2Token!
+  balance: BigInt!
+}
+
+input TCO2Balance_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  user: String
+  user_not: String
+  user_gt: String
+  user_lt: String
+  user_gte: String
+  user_lte: String
+  user_in: [String!]
+  user_not_in: [String!]
+  user_contains: String
+  user_contains_nocase: String
+  user_not_contains: String
+  user_not_contains_nocase: String
+  user_starts_with: String
+  user_starts_with_nocase: String
+  user_not_starts_with: String
+  user_not_starts_with_nocase: String
+  user_ends_with: String
+  user_ends_with_nocase: String
+  user_not_ends_with: String
+  user_not_ends_with_nocase: String
+  user_: User_filter
+  token: String
+  token_not: String
+  token_gt: String
+  token_lt: String
+  token_gte: String
+  token_lte: String
+  token_in: [String!]
+  token_not_in: [String!]
+  token_contains: String
+  token_contains_nocase: String
+  token_not_contains: String
+  token_not_contains_nocase: String
+  token_starts_with: String
+  token_starts_with_nocase: String
+  token_not_starts_with: String
+  token_not_starts_with_nocase: String
+  token_ends_with: String
+  token_ends_with_nocase: String
+  token_not_ends_with: String
+  token_not_ends_with_nocase: String
+  token_: TCO2Token_filter
+  balance: BigInt
+  balance_not: BigInt
+  balance_gt: BigInt
+  balance_lt: BigInt
+  balance_gte: BigInt
+  balance_lte: BigInt
+  balance_in: [BigInt!]
+  balance_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum TCO2Balance_orderBy {
+  id
+  user
+  token
+  balance
+}
+
+type TCO2Token {
+  id: ID!
+  creator: User!
+  createdAt: BigInt!
+  creationTx: String!
+  projectVintage: ProjectVintage!
+  name: String!
+  symbol: String!
+  address: String!
+  score: BigInt!
+}
+
+input TCO2Token_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  creator: String
+  creator_not: String
+  creator_gt: String
+  creator_lt: String
+  creator_gte: String
+  creator_lte: String
+  creator_in: [String!]
+  creator_not_in: [String!]
+  creator_contains: String
+  creator_contains_nocase: String
+  creator_not_contains: String
+  creator_not_contains_nocase: String
+  creator_starts_with: String
+  creator_starts_with_nocase: String
+  creator_not_starts_with: String
+  creator_not_starts_with_nocase: String
+  creator_ends_with: String
+  creator_ends_with_nocase: String
+  creator_not_ends_with: String
+  creator_not_ends_with_nocase: String
+  creator_: User_filter
+  createdAt: BigInt
+  createdAt_not: BigInt
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  createdAt_gte: BigInt
+  createdAt_lte: BigInt
+  createdAt_in: [BigInt!]
+  createdAt_not_in: [BigInt!]
+  creationTx: String
+  creationTx_not: String
+  creationTx_gt: String
+  creationTx_lt: String
+  creationTx_gte: String
+  creationTx_lte: String
+  creationTx_in: [String!]
+  creationTx_not_in: [String!]
+  creationTx_contains: String
+  creationTx_contains_nocase: String
+  creationTx_not_contains: String
+  creationTx_not_contains_nocase: String
+  creationTx_starts_with: String
+  creationTx_starts_with_nocase: String
+  creationTx_not_starts_with: String
+  creationTx_not_starts_with_nocase: String
+  creationTx_ends_with: String
+  creationTx_ends_with_nocase: String
+  creationTx_not_ends_with: String
+  creationTx_not_ends_with_nocase: String
+  projectVintage: String
+  projectVintage_not: String
+  projectVintage_gt: String
+  projectVintage_lt: String
+  projectVintage_gte: String
+  projectVintage_lte: String
+  projectVintage_in: [String!]
+  projectVintage_not_in: [String!]
+  projectVintage_contains: String
+  projectVintage_contains_nocase: String
+  projectVintage_not_contains: String
+  projectVintage_not_contains_nocase: String
+  projectVintage_starts_with: String
+  projectVintage_starts_with_nocase: String
+  projectVintage_not_starts_with: String
+  projectVintage_not_starts_with_nocase: String
+  projectVintage_ends_with: String
+  projectVintage_ends_with_nocase: String
+  projectVintage_not_ends_with: String
+  projectVintage_not_ends_with_nocase: String
+  projectVintage_: ProjectVintage_filter
+  name: String
+  name_not: String
+  name_gt: String
+  name_lt: String
+  name_gte: String
+  name_lte: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_contains: String
+  name_contains_nocase: String
+  name_not_contains: String
+  name_not_contains_nocase: String
+  name_starts_with: String
+  name_starts_with_nocase: String
+  name_not_starts_with: String
+  name_not_starts_with_nocase: String
+  name_ends_with: String
+  name_ends_with_nocase: String
+  name_not_ends_with: String
+  name_not_ends_with_nocase: String
+  symbol: String
+  symbol_not: String
+  symbol_gt: String
+  symbol_lt: String
+  symbol_gte: String
+  symbol_lte: String
+  symbol_in: [String!]
+  symbol_not_in: [String!]
+  symbol_contains: String
+  symbol_contains_nocase: String
+  symbol_not_contains: String
+  symbol_not_contains_nocase: String
+  symbol_starts_with: String
+  symbol_starts_with_nocase: String
+  symbol_not_starts_with: String
+  symbol_not_starts_with_nocase: String
+  symbol_ends_with: String
+  symbol_ends_with_nocase: String
+  symbol_not_ends_with: String
+  symbol_not_ends_with_nocase: String
+  address: String
+  address_not: String
+  address_gt: String
+  address_lt: String
+  address_gte: String
+  address_lte: String
+  address_in: [String!]
+  address_not_in: [String!]
+  address_contains: String
+  address_contains_nocase: String
+  address_not_contains: String
+  address_not_contains_nocase: String
+  address_starts_with: String
+  address_starts_with_nocase: String
+  address_not_starts_with: String
+  address_not_starts_with_nocase: String
+  address_ends_with: String
+  address_ends_with_nocase: String
+  address_not_ends_with: String
+  address_not_ends_with_nocase: String
+  score: BigInt
+  score_not: BigInt
+  score_gt: BigInt
+  score_lt: BigInt
+  score_gte: BigInt
+  score_lte: BigInt
+  score_in: [BigInt!]
+  score_not_in: [BigInt!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum TCO2Token_orderBy {
+  id
+  creator
+  createdAt
+  creationTx
+  projectVintage
+  name
+  symbol
+  address
+  score
+}
+
+type ToucanToken {
+  id: ID!
+  name: String!
+  symbol: String!
+  address: String!
+  decimals: Int!
+}
+
+input ToucanToken_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  name: String
+  name_not: String
+  name_gt: String
+  name_lt: String
+  name_gte: String
+  name_lte: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_contains: String
+  name_contains_nocase: String
+  name_not_contains: String
+  name_not_contains_nocase: String
+  name_starts_with: String
+  name_starts_with_nocase: String
+  name_not_starts_with: String
+  name_not_starts_with_nocase: String
+  name_ends_with: String
+  name_ends_with_nocase: String
+  name_not_ends_with: String
+  name_not_ends_with_nocase: String
+  symbol: String
+  symbol_not: String
+  symbol_gt: String
+  symbol_lt: String
+  symbol_gte: String
+  symbol_lte: String
+  symbol_in: [String!]
+  symbol_not_in: [String!]
+  symbol_contains: String
+  symbol_contains_nocase: String
+  symbol_not_contains: String
+  symbol_not_contains_nocase: String
+  symbol_starts_with: String
+  symbol_starts_with_nocase: String
+  symbol_not_starts_with: String
+  symbol_not_starts_with_nocase: String
+  symbol_ends_with: String
+  symbol_ends_with_nocase: String
+  symbol_not_ends_with: String
+  symbol_not_ends_with_nocase: String
+  address: String
+  address_not: String
+  address_gt: String
+  address_lt: String
+  address_gte: String
+  address_lte: String
+  address_in: [String!]
+  address_not_in: [String!]
+  address_contains: String
+  address_contains_nocase: String
+  address_not_contains: String
+  address_not_contains_nocase: String
+  address_starts_with: String
+  address_starts_with_nocase: String
+  address_not_starts_with: String
+  address_not_starts_with_nocase: String
+  address_ends_with: String
+  address_ends_with_nocase: String
+  address_not_ends_with: String
+  address_not_ends_with_nocase: String
+  decimals: Int
+  decimals_not: Int
+  decimals_gt: Int
+  decimals_lt: Int
+  decimals_gte: Int
+  decimals_lte: Int
+  decimals_in: [Int!]
+  decimals_not_in: [Int!]
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum ToucanToken_orderBy {
+  id
+  name
+  symbol
+  address
+  decimals
+}
+
+type User {
+  id: ID!
+  batchesOwned(skip: Int = 0, first: Int = 100, orderBy: BatchToken_orderBy, orderDirection: OrderDirection, where: BatchToken_filter): [BatchToken!]!
+  batchesCreated(skip: Int = 0, first: Int = 100, orderBy: BatchToken_orderBy, orderDirection: OrderDirection, where: BatchToken_filter): [BatchToken!]!
+  batchComments(skip: Int = 0, first: Int = 100, orderBy: BatchComment_orderBy, orderDirection: OrderDirection, where: BatchComment_filter): [BatchComment!]!
+  projectsOwned(skip: Int = 0, first: Int = 100, orderBy: Project_orderBy, orderDirection: OrderDirection, where: Project_filter): [Project!]!
+  projectsCreated(skip: Int = 0, first: Int = 100, orderBy: Project_orderBy, orderDirection: OrderDirection, where: Project_filter): [Project!]!
+  vintagesOwned(skip: Int = 0, first: Int = 100, orderBy: ProjectVintage_orderBy, orderDirection: OrderDirection, where: ProjectVintage_filter): [ProjectVintage!]!
+  vintagesCreated(skip: Int = 0, first: Int = 100, orderBy: ProjectVintage_orderBy, orderDirection: OrderDirection, where: ProjectVintage_filter): [ProjectVintage!]!
+  retirementsCreated(skip: Int = 0, first: Int = 100, orderBy: Retirement_orderBy, orderDirection: OrderDirection, where: Retirement_filter): [Retirement!]!
+  redeemsCreated(skip: Int = 0, first: Int = 100, orderBy: Redeem_orderBy, orderDirection: OrderDirection, where: Redeem_filter): [Redeem!]!
+  tokensOwned(skip: Int = 0, first: Int = 100, orderBy: TCO2Balance_orderBy, orderDirection: OrderDirection, where: TCO2Balance_filter): [TCO2Balance!]
+  bridgeRequestOwned(skip: Int = 0, first: Int = 100, orderBy: BridgeTokenRequest_orderBy, orderDirection: OrderDirection, where: BridgeTokenRequest_filter): [BridgeTokenRequest!]!
+}
+
+input User_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  batchesOwned_: BatchToken_filter
+  batchesCreated_: BatchToken_filter
+  batchComments_: BatchComment_filter
+  projectsOwned_: Project_filter
+  projectsCreated_: Project_filter
+  vintagesOwned_: ProjectVintage_filter
+  vintagesCreated_: ProjectVintage_filter
+  retirementsCreated_: Retirement_filter
+  redeemsCreated_: Redeem_filter
+  tokensOwned_: TCO2Balance_filter
+  bridgeRequestOwned_: BridgeTokenRequest_filter
+
+  """Filter for the block changed event."""
+  _change_block: BlockChangedFilter
+}
+
+enum User_orderBy {
+  id
+  batchesOwned
+  batchesCreated
+  batchComments
+  projectsOwned
+  projectsCreated
+  vintagesOwned
+  vintagesCreated
+  retirementsCreated
+  redeemsCreated
+  tokensOwned
+  bridgeRequestOwned
+}
+
+type _Block_ {
+  """The hash of the block"""
+  hash: Bytes
+
+  """The block number"""
+  number: Int!
+
+  """Timestamp of the block if available, format depends on the chain"""
+  timestamp: String
+}
+
+"""The type for the top-level _meta field"""
+type _Meta_ {
+  """
+  Information about a specific subgraph block. The hash of the block
+  will be null if the _meta field has a block constraint that asks for
+  a block number. It will be filled if the _meta field has no block constraint
+  and therefore asks for the latest  block
+  """
+  block: _Block_!
+
+  """The deployment ID"""
+  deployment: String!
+
+  """If `true`, the subgraph encountered indexing errors at some past block"""
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """Data will be returned even if the subgraph has indexing errors"""
+  allow
+
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}

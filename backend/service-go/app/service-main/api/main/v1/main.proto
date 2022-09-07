@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package main.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+option go_package = "toucan-leaderboard/app/service-main/api/main/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.main.v1";
+option java_outer_classname = "MainProtoV1";
+
+service Main {
+  rpc Ping (PingReq) returns (PingResp) {
+    option (google.api.http) = {
+      get: "/service/main/v1/ping"
+    };
+  }
+}
+
+message PingReq {
+  string msg = 1;
+}
+
+message PingResp {
+  string res = 1;
+}

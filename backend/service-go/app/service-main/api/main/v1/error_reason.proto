@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package main.v1;
+
+import "errors/errors.proto";
+
+option go_package = "toucan-leaderboard/app/service-main/api/main/v1;v1";
+option java_multiple_files = true;
+option java_package = "main.v1.errors";
+option objc_class_prefix = "APIMainErrors";
+
+enum ErrorReason {
+    option (errors.default_code) = 500;
+
+    INTERNAL_SERVER_ERROR = 0 [(errors.code) = 500];
+
+    BAD_REQUEST = 1 [(errors.code) = 400];
+    UNAUTHORIZED = 2 [(errors.code) = 401];
+    PERMISSION_DENIED = 3 [(errors.code) = 403];
+    NOT_FOUND = 4 [(errors.code) = 404];
+}

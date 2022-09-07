@@ -1,0 +1,39 @@
+query GetNCTRedeemTokenList {
+  redeems(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {pool: "0xd838290e877e0188a4a44700463419ed96c16107"}
+  ) {
+    token {
+      id
+    }
+  }
+}
+
+query GetRetirementList($tokenList: [String!], $skip: Int, $pageSize: Int) {
+  retirements(
+    skip: $skip
+    first: $pageSize
+    orderBy: timestamp
+    orderDirection: asc
+    where: { token_: { address_in: $tokenList } }
+  ) {
+    creationTx
+    amount
+    timestamp
+    token {
+      name
+      address
+    }
+    creator {
+      id
+    }
+    certificate {
+      beneficiary {
+        id
+      }
+    }
+  }
+}
+

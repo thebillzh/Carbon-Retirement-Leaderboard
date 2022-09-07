@@ -1,0 +1,34 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/apps/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Main API
+    version: 0.0.1
+paths:
+    /service/main/v1/ping:
+        get:
+            tags:
+                - Main
+            operationId: Main_Ping
+            parameters:
+                - name: msg
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PingResp'
+components:
+    schemas:
+        PingResp:
+            type: object
+            properties:
+                res:
+                    type: string
+tags:
+    - name: Main

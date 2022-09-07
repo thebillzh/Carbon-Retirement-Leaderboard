@@ -1,0 +1,18 @@
+server:
+  http:
+    addr: 0.0.0.0:8000
+    timeout: 3s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 3s
+data:
+  database:
+    driver: mysql
+    source: root:root@tcp(127.0.0.1:3306)/toucan-leaderboard?timeout=2s&readTimeout=2s&writeTimeout=2s&parseTime=true&loc=Local&charset=utf8mb4,utf8
+  redis:
+    addr: 127.0.0.1:6379
+    read_timeout: 0.2s
+    write_timeout: 0.2s
+registry:
+  zookeeper:
+    addr: 127.0.0.1:2181
