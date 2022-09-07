@@ -27,7 +27,7 @@ type Data struct {
 func NewData(c *conf.Data) (d *Data, cleanup func(), err error) {
 	d = &Data{}
 
-	db, err := ent.Open(dialect.MySQL, os.Getenv("DATABASE_URL"), ent.Debug())
+	db, err := ent.Open(dialect.MySQL, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("[NewData] ent.Open error:%+v", err)
 	}

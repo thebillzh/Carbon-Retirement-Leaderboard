@@ -22,6 +22,7 @@ type MainService struct {
 
 	cronUtil *cron.CronUtil
 
+	ethereumClient    *ethclient.Client
 	polygonClient     *ethclient.Client
 	toucanGraphClient graphql.Client
 }
@@ -31,6 +32,11 @@ const (
 )
 
 func NewMainService(uc *biz.MainUseCase, data *data.Data) (s *MainService) {
+	// init ethereum client
+	ethereumClient, err := ethclient.Dial(os.Getenv("ETHEREUM_NETWORK"))
+	if err != nil {
+		log.Fatal("[] Ethereum client dial error: %+v", err)
+	}
 	// init polygon client
 	polygonClient, err := ethclient.Dial(os.Getenv("POLYGON_NETWORK"))
 	if err != nil {
@@ -41,6 +47,7 @@ func NewMainService(uc *biz.MainUseCase, data *data.Data) (s *MainService) {
 		uc:                uc,
 		data:              data,
 		cronUtil:          cron.NewCron(),
+		ethereumClient:    ethereumClient,
 		polygonClient:     polygonClient,
 		toucanGraphClient: graphql.NewClient(toucanSubgraphUrl, http.DefaultClient),
 	}

@@ -3,13 +3,16 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/shopspring/decimal"
+	"github.com/wealdtech/go-ens/v3"
 	"strconv"
 	"time"
 	"toucan-leaderboard/app/service-main/graph"
 	"toucan-leaderboard/common/library/cron"
 	"toucan-leaderboard/common/library/log"
 	"toucan-leaderboard/ent"
+	"toucan-leaderboard/ent/tgoretirement"
 )
 
 const (
@@ -23,9 +26,13 @@ var (
 
 func (s *MainService) initJobs() {
 	var err error
-	_, err = s.cronUtil.AddFunc("@every 1h", s.loadRetirementData, "loadRetirementData", cron.PreLoad())
+	_, err = s.cronUtil.AddFunc("@every 1h", s.loadRetirementData, "loadRetirementData")
 	if err != nil {
 		log.Fatal("[initJobs] init loadRetirementData error: %+v", err)
+	}
+	_, err = s.cronUtil.AddFunc("@every 1h", s.loadENS, "loadENS", cron.PreLoad())
+	if err != nil {
+		log.Fatal("[initJobs] init loadENS error: %+v", err)
 	}
 }
 
@@ -132,6 +139,47 @@ func (s *MainService) loadRetirementData(ctx context.Context) (err error) {
 			log.Errorc(ctx, "[loadRetirementData] GetRetirementList error: %+v", err)
 			err = nil
 			return err
+		}
+	}
+	return
+}
+
+func (s *MainService) loadENS(ctx context.Context) (err error) {
+	tGoRetirements, err := s.data.DB.TGoRetirement.Query().Select(tgoretirement.FieldBeneficiaryAddress).All(ctx)
+	if err != nil {
+		log.Errorc(ctx, "[loadENS] Query all retirements error: %+v", err)
+		return
+	}
+	addressMap := make(map[string]struct{})
+	for _, tGoRetirement := range tGoRetirements {
+		addressMap[tGoRetirement.BeneficiaryAddress] = struct{}{}
+	}
+	for addressStr := range addressMap {
+		if addressStr == "" || addressStr == "0x0000000000000000000000000000000000000000" {
+			continue
+		}
+		address := common.HexToAddress(addressStr)
+		byteCode, err := s.polygonClient.CodeAt(ctx, address, nil)
+		if err != nil {
+			log.Errorc(ctx, "[loadENS] CodeAt error: %+v, address: %s", err, addressStr)
+			err = nil
+			continue
+		}
+		isContract := len(byteCode) > 0
+		if !isContract {
+			domain, err := ens.ReverseResolve(s.ethereumClient, address)
+			if err != nil && err.Error() != "not a resolver" {
+				log.Errorc(ctx, "[loadENS] ReverseResolve error: %+v, address: %s", err, addressStr)
+				err = nil
+				continue
+			}
+			if domain != "" {
+				if err = s.data.DB.TGoEns.Create().SetWalletPub(addressStr).SetEns(domain).OnConflict().UpdateEns().Exec(ctx); err != nil {
+					log.Errorc(ctx, "[loadENS] Upsert Ens error: %+v, address: %s", err, addressStr)
+					err = nil
+					continue
+				}
+			}
 		}
 	}
 	return
