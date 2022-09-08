@@ -22,6 +22,10 @@ func (TUser) Edges() []ent.Edge {
 }
 func (TUser) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "t_users"},
+		entsql.Annotation{
+			Table:     "t_users",
+			Charset:   "utf8mb4",
+			Collation: "utf8mb4_0900_ai_ci",
+		},
 	}
 }

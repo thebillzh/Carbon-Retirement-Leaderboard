@@ -34,6 +34,14 @@ func (tec *TGoEnsCreate) SetEns(s string) *TGoEnsCreate {
 	return tec
 }
 
+// SetNillableEns sets the "ens" field if the given value is not nil.
+func (tec *TGoEnsCreate) SetNillableEns(s *string) *TGoEnsCreate {
+	if s != nil {
+		tec.SetEns(*s)
+	}
+	return tec
+}
+
 // SetMtime sets the "mtime" field.
 func (tec *TGoEnsCreate) SetMtime(t time.Time) *TGoEnsCreate {
 	tec.mutation.SetMtime(t)
@@ -145,6 +153,10 @@ func (tec *TGoEnsCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (tec *TGoEnsCreate) defaults() {
+	if _, ok := tec.mutation.Ens(); !ok {
+		v := tgoens.DefaultEns
+		tec.mutation.SetEns(v)
+	}
 	if _, ok := tec.mutation.Mtime(); !ok {
 		v := tgoens.DefaultMtime
 		tec.mutation.SetMtime(v)

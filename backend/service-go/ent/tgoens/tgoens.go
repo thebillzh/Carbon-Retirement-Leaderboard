@@ -43,6 +43,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultEns holds the default value on creation for the "ens" field.
+	DefaultEns string
 	// DefaultMtime holds the default value on creation for the "mtime" field.
 	DefaultMtime time.Time
 	// UpdateDefaultMtime holds the default value on update for the "mtime" field.

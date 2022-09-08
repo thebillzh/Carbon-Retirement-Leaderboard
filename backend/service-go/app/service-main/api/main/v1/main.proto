@@ -16,6 +16,11 @@ service Main {
       get: "/service/main/v1/ping"
     };
   }
+  rpc GetLeaderboard (GetLeaderboardReq) returns (GetLeaderboardResp) {
+    option (google.api.http) = {
+      get: "/service/main/v1/getLeaderboard"
+    };
+  }
 }
 
 message PingReq {
@@ -24,4 +29,23 @@ message PingReq {
 
 message PingResp {
   string res = 1;
+}
+
+message GetLeaderboardReq {
+  int64 first = 1 [(validate.rules).int64 = {gte: 0, lte: 1000}];
+  string type = 2 [(validate.rules).string = {ignore_empty: true, in: ["nct"]}];
+  string start_time = 3 [(validate.rules).string = {ignore_empty: true}];
+  string end_time = 4 [(validate.rules).string = {ignore_empty: true}];
+}
+
+message LeaderboardItem {
+  string wallet_pub = 1;
+  string uname = 2;
+  string retired_amount = 3;
+  string ens = 4;
+}
+
+message GetLeaderboardResp {
+  repeated LeaderboardItem list = 1;
+  string type = 2;
 }

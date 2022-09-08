@@ -18,12 +18,14 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type MainHTTPServer interface {
+	GetLeaderboard(context.Context, *GetLeaderboardReq) (*GetLeaderboardResp, error)
 	Ping(context.Context, *PingReq) (*PingResp, error)
 }
 
 func RegisterMainHTTPServer(s *http.Server, srv MainHTTPServer) {
 	r := s.Route("/")
 	r.GET("/service/main/v1/ping", _Main_Ping0_HTTP_Handler(srv))
+	r.GET("/service/main/v1/getLeaderboard", _Main_GetLeaderboard0_HTTP_Handler(srv))
 }
 
 func _Main_Ping0_HTTP_Handler(srv MainHTTPServer) func(ctx http.Context) error {
@@ -45,7 +47,27 @@ func _Main_Ping0_HTTP_Handler(srv MainHTTPServer) func(ctx http.Context) error {
 	}
 }
 
+func _Main_GetLeaderboard0_HTTP_Handler(srv MainHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetLeaderboardReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/main.v1.Main/GetLeaderboard")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetLeaderboard(ctx, req.(*GetLeaderboardReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetLeaderboardResp)
+		return ctx.Result(200, reply)
+	}
+}
+
 type MainHTTPClient interface {
+	GetLeaderboard(ctx context.Context, req *GetLeaderboardReq, opts ...http.CallOption) (rsp *GetLeaderboardResp, err error)
 	Ping(ctx context.Context, req *PingReq, opts ...http.CallOption) (rsp *PingResp, err error)
 }
 
@@ -55,6 +77,19 @@ type MainHTTPClientImpl struct {
 
 func NewMainHTTPClient(client *http.Client) MainHTTPClient {
 	return &MainHTTPClientImpl{client}
+}
+
+func (c *MainHTTPClientImpl) GetLeaderboard(ctx context.Context, in *GetLeaderboardReq, opts ...http.CallOption) (*GetLeaderboardResp, error) {
+	var out GetLeaderboardResp
+	pattern := "/service/main/v1/getLeaderboard"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/main.v1.Main/GetLeaderboard"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *MainHTTPClientImpl) Ping(ctx context.Context, in *PingReq, opts ...http.CallOption) (*PingResp, error) {

@@ -18,6 +18,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/shopspring/decimal v1.3.1 // indirect
+	github.com/wealdtech/go-ens/v3 v3.5.5 // indirect
 	go.opentelemetry.io/otel v1.8.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.8.0
 	go.opentelemetry.io/otel/sdk v1.8.0

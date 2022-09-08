@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MainClient interface {
 	Ping(ctx context.Context, in *PingReq, opts ...grpc.CallOption) (*PingResp, error)
+	GetLeaderboard(ctx context.Context, in *GetLeaderboardReq, opts ...grpc.CallOption) (*GetLeaderboardResp, error)
 }
 
 type mainClient struct {
@@ -42,11 +43,21 @@ func (c *mainClient) Ping(ctx context.Context, in *PingReq, opts ...grpc.CallOpt
 	return out, nil
 }
 
+func (c *mainClient) GetLeaderboard(ctx context.Context, in *GetLeaderboardReq, opts ...grpc.CallOption) (*GetLeaderboardResp, error) {
+	out := new(GetLeaderboardResp)
+	err := c.cc.Invoke(ctx, "/main.v1.Main/GetLeaderboard", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MainServer is the server API for Main service.
 // All implementations must embed UnimplementedMainServer
 // for forward compatibility
 type MainServer interface {
 	Ping(context.Context, *PingReq) (*PingResp, error)
+	GetLeaderboard(context.Context, *GetLeaderboardReq) (*GetLeaderboardResp, error)
 	mustEmbedUnimplementedMainServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedMainServer struct {
 
 func (UnimplementedMainServer) Ping(context.Context, *PingReq) (*PingResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
+func (UnimplementedMainServer) GetLeaderboard(context.Context, *GetLeaderboardReq) (*GetLeaderboardResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLeaderboard not implemented")
 }
 func (UnimplementedMainServer) mustEmbedUnimplementedMainServer() {}
 
@@ -88,6 +102,24 @@ func _Main_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Main_GetLeaderboard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLeaderboardReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MainServer).GetLeaderboard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.v1.Main/GetLeaderboard",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MainServer).GetLeaderboard(ctx, req.(*GetLeaderboardReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Main_ServiceDesc is the grpc.ServiceDesc for Main service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var Main_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Ping",
 			Handler:    _Main_Ping_Handler,
+		},
+		{
+			MethodName: "GetLeaderboard",
+			Handler:    _Main_GetLeaderboard_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

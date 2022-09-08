@@ -2,31 +2,49 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
+	cron3 "github.com/robfig/cron/v3"
 	"github.com/shopspring/decimal"
+	"github.com/wealdtech/go-ens/v3"
+	"sort"
 	"strconv"
+	"strings"
 	"time"
 	"toucan-leaderboard/app/service-main/graph"
+	"toucan-leaderboard/app/service-main/internal/model"
 	"toucan-leaderboard/common/library/cron"
 	"toucan-leaderboard/common/library/log"
+	"toucan-leaderboard/common/library/sync/errgroup"
 	"toucan-leaderboard/ent"
+	"toucan-leaderboard/ent/tgoretirement"
 )
 
 const (
-	_retirementSkipCacheKey = "retirement_nct_skip"
-	_retirementPageSize     = 1000
+	_retirementSkipCacheKey  = "retirement_nct_skip"
+	_retirementPageSize      = 1000
+	_nullAddress             = "0x0000000000000000000000000000000000000000"
+	_latestNCTLeaderboardKey = "nct-latest"
 )
 
 var (
 	d2 = decimal.NewFromInt(1000000000000000000)
 )
 
-func (s *MainService) initJobs() {
-	var err error
-	_, err = s.cronUtil.AddFunc("@every 1h", s.loadRetirementData, "loadRetirementData", cron.PreLoad())
+func checkCronErr(entryId cron3.EntryID, err error) {
 	if err != nil {
-		log.Fatal("[initJobs] init loadRetirementData error: %+v", err)
+		log.Fatal("[initJobs] init %s error: %+v", entryId, err)
 	}
+}
+
+func (s *MainService) initJobs() {
+	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadRetirementData, "loadRetirementData"))
+	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadENS, "loadENS"))
+	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadNCTRetirementList, "loadNCTRetirementList", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadAddressToTUserMap, "loadAddressToTUserMap", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadAddressToEnsMap, "loadAddressToEnsMap", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadRealtimeNCTLeaderboard, "loadRealtimeNCTLeaderboard", cron.PreLoad()))
 }
 
 func (s *MainService) getNCTRedeemTokenList(ctx context.Context) (tokenList []string, err error) {
@@ -42,6 +60,17 @@ func (s *MainService) getNCTRedeemTokenList(ctx context.Context) (tokenList []st
 	for k := range tokenMap {
 		tokenList = append(tokenList, k)
 	}
+	return
+}
+
+func (s *MainService) isContract(ctx context.Context, addressStr string) (isContract bool, err error) {
+	address := common.HexToAddress(addressStr)
+	byteCode, err := s.polygonClient.CodeAt(ctx, address, nil)
+	if err != nil {
+		log.Errorc(ctx, "[isContract] CodeAt error: %+v, address: %s", err, addressStr)
+		return
+	}
+	isContract = len(byteCode) > 0
 	return
 }
 
@@ -134,5 +163,211 @@ func (s *MainService) loadRetirementData(ctx context.Context) (err error) {
 			return err
 		}
 	}
+	return
+}
+
+func (s *MainService) loadENS(ctx context.Context) (err error) {
+	tGoRetirements, err := s.data.DB.TGoRetirement.Query().Select(tgoretirement.FieldBeneficiaryAddress).All(ctx)
+	if err != nil {
+		log.Errorc(ctx, "[loadENS] Query all retirements error: %+v", err)
+		return
+	}
+	addressMap := make(map[string]struct{})
+	for _, tGoRetirement := range tGoRetirements {
+		addressMap[tGoRetirement.BeneficiaryAddress] = struct{}{}
+	}
+	for addressStr := range addressMap {
+		if addressStr == "" || addressStr == _nullAddress {
+			continue
+		}
+		address := common.HexToAddress(addressStr)
+		byteCode, err := s.polygonClient.CodeAt(ctx, address, nil)
+		if err != nil {
+			log.Errorc(ctx, "[loadENS] CodeAt error: %+v, address: %s", err, addressStr)
+			err = nil
+			continue
+		}
+		isContract := len(byteCode) > 0
+		if !isContract {
+			domain, err := ens.ReverseResolve(s.ethereumClient, address)
+			if err != nil && err.Error() != "not a resolver" {
+				log.Errorc(ctx, "[loadENS] ReverseResolve error: %+v, address: %s", err, addressStr)
+				err = nil
+				continue
+			}
+			if domain != "" {
+				if err = s.data.DB.TGoEns.Create().SetWalletPub(addressStr).SetEns(domain).OnConflict().UpdateEns().Exec(ctx); err != nil {
+					log.Errorc(ctx, "[loadENS] Upsert Ens error: %+v, address: %s", err, addressStr)
+					err = nil
+					continue
+				}
+			}
+		}
+	}
+	return
+}
+
+func (s *MainService) loadNCTRetirementList(ctx context.Context) (err error) {
+	tGoRetirementList, err := s.data.DB.TGoRetirement.Query().All(ctx)
+	if err != nil {
+		log.Errorc(ctx, "[loadNCTRetirementList] Query all retirements error: %+v", err)
+		return
+	}
+	s.nctRetirementList.Store(tGoRetirementList)
+	log.Infoc(ctx, "[loadNCTRetirementList] tGoRetirementList stored, len(%d)", len(tGoRetirementList))
+	return
+}
+
+func (s *MainService) loadAddressToTUserMap(ctx context.Context) (err error) {
+	addressToTUserMap := make(map[string]*ent.TUser)
+	tUserList, err := s.data.DB.TUser.Query().All(ctx)
+	if err != nil {
+		log.Errorc(ctx, "[loadAddressToTUserMap] Query all ens error: %+v", err)
+		return
+	}
+	for _, tUser := range tUserList {
+		addressToTUserMap[strings.ToLower(tUser.WalletPub)] = tUser
+	}
+	s.addressToTUserMap.Store(addressToTUserMap)
+	log.Infoc(ctx, "[loadAddressToTUserMap] addressToTUserMap stored, len(%d)", len(addressToTUserMap))
+	return
+}
+
+func (s *MainService) loadAddressToEnsMap(ctx context.Context) (err error) {
+	addressToEnsMap := make(map[string]string)
+	tGoEnsList, err := s.data.DB.TGoEns.Query().All(ctx)
+	if err != nil {
+		log.Errorc(ctx, "[loadAddressToEnsMap] Query all ens error: %+v", err)
+		return
+	}
+	for _, tGoEns := range tGoEnsList {
+		addressToEnsMap[tGoEns.WalletPub] = tGoEns.Ens
+	}
+	s.addressToEnsMap.Store(addressToEnsMap)
+	log.Infoc(ctx, "[loadAddressToEnsMap] addressToEnsMap stored, len(%d)", len(addressToEnsMap))
+	return
+}
+
+func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time, endTime time.Time) (leaderboard []*model.User, err error) {
+	wg := errgroup.WithContext(ctx)
+
+	// load all retirements from db and sort addressList by amount
+	addressToRetiredAmountMap := make(map[string]float64)
+	var addressList []string
+	wg.Go(func(ctx context.Context) (err error) {
+		rawTGoRetirementList := s.nctRetirementList.Load()
+		if rawTGoRetirementList == nil {
+			err = errors.New("nctRetirementList not ready")
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+			return
+		}
+		var tGoRetirementList []*ent.TGoRetirement
+		var ok bool
+		if tGoRetirementList, ok = rawTGoRetirementList.([]*ent.TGoRetirement); !ok {
+			err = fmt.Errorf("rawTGoRetirementList type error: %+v", rawTGoRetirementList)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+			return
+		}
+		isContractMap := make(map[string]bool)
+		for _, tGoRetirement := range tGoRetirementList {
+			// filter with time
+			if startTime.After(tGoRetirement.RetirementTime) || endTime.Before(tGoRetirement.RetirementTime) {
+				continue
+			}
+			address := tGoRetirement.BeneficiaryAddress
+			if address == "" || address == _nullAddress {
+				address = tGoRetirement.CreatorAddress
+			}
+			if isContractMap[address] {
+				continue
+			}
+			isContract, err := s.isContract(ctx, address)
+			if err != nil {
+				err = fmt.Errorf("get isContract error: %+v", address)
+				log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+				continue
+			}
+			if !isContract {
+				newAmount := decimal.NewFromFloat(addressToRetiredAmountMap[address]).
+					Add(decimal.NewFromFloat(tGoRetirement.Amount)).
+					InexactFloat64()
+				addressToRetiredAmountMap[address] = newAmount
+			} else {
+				isContractMap[address] = true
+			}
+		}
+		for address := range addressToRetiredAmountMap {
+			addressList = append(addressList, address)
+		}
+		sort.SliceStable(addressList, func(i, j int) bool {
+			return addressToRetiredAmountMap[addressList[i]] > addressToRetiredAmountMap[addressList[j]]
+		})
+		return
+	})
+
+	// load all TUser from db
+	addressToTUserMap := make(map[string]*ent.TUser)
+	wg.Go(func(ctx context.Context) (err error) {
+		rawAddressToUserMap := s.addressToTUserMap.Load()
+		if rawAddressToUserMap == nil {
+			err = errors.New("nctRetirementList not ready")
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+			return
+		}
+		var ok bool
+		if addressToTUserMap, ok = rawAddressToUserMap.(map[string]*ent.TUser); !ok {
+			err = fmt.Errorf("rawAddressToUserMap type error: %+v", rawAddressToUserMap)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+			return
+		}
+		return
+	})
+
+	// load all ens from db
+	addressToEnsMap := make(map[string]string)
+	wg.Go(func(ctx context.Context) (err error) {
+		rawAddressToEnsMap := s.addressToEnsMap.Load()
+		if rawAddressToEnsMap == nil {
+			err = errors.New("nctRetirementList not ready")
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+			return
+		}
+		var ok bool
+		if addressToEnsMap, ok = rawAddressToEnsMap.(map[string]string); !ok {
+			err = fmt.Errorf("rawAddressToEnsMap type error: %+v", rawAddressToEnsMap)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+			return
+		}
+		return
+	})
+	if err = wg.Wait(); err != nil {
+		log.Errorc(ctx, "[buildLeaderboard] wg.Wait error: %+v", err)
+		return
+	}
+
+	for _, address := range addressList {
+		user := &model.User{
+			WalletPub:     address,
+			RetiredAmount: addressToRetiredAmountMap[address],
+		}
+		if tUser, ok := addressToTUserMap[strings.ToLower(address)]; ok {
+			user.Uname = tUser.Uname
+		}
+		if e, ok := addressToEnsMap[address]; ok {
+			user.ENS = e
+		}
+		leaderboard = append(leaderboard, user)
+	}
+	return
+}
+
+func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error) {
+	realtimeNCTLeaderboard, err := s.buildLeaderboard(ctx, time.Time{}, time.Unix(253402185600, 0))
+	if err != nil {
+		log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] buildLeaderboard error: %+v", err)
+		return
+	}
+	s.leaderboardMap.Store(_latestNCTLeaderboardKey, realtimeNCTLeaderboard)
+	log.Infoc(ctx, "[loadRealtimeNCTLeaderboard] realtimeNCTLeaderboard stored, len(%d)", len(realtimeNCTLeaderboard))
 	return
 }

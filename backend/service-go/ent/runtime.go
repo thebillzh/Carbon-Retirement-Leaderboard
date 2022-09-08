@@ -33,6 +33,10 @@ func init() {
 	tgocache.DefaultCtime = tgocacheDescCtime.Default.(time.Time)
 	tgoensFields := schema.TGoEns{}.Fields()
 	_ = tgoensFields
+	// tgoensDescEns is the schema descriptor for ens field.
+	tgoensDescEns := tgoensFields[2].Descriptor()
+	// tgoens.DefaultEns holds the default value on creation for the ens field.
+	tgoens.DefaultEns = tgoensDescEns.Default.(string)
 	// tgoensDescMtime is the schema descriptor for mtime field.
 	tgoensDescMtime := tgoensFields[3].Descriptor()
 	// tgoens.DefaultMtime holds the default value on creation for the mtime field.

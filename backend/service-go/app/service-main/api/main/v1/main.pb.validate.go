@@ -235,3 +235,389 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = PingRespValidationError{}
+
+// Validate checks the field values on GetLeaderboardReq with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetLeaderboardReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetLeaderboardReq with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetLeaderboardReqMultiError, or nil if none found.
+func (m *GetLeaderboardReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetLeaderboardReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if val := m.GetFirst(); val < 0 || val > 1000 {
+		err := GetLeaderboardReqValidationError{
+			field:  "First",
+			reason: "value must be inside range [0, 1000]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetType() != "" {
+
+		if _, ok := _GetLeaderboardReq_Type_InLookup[m.GetType()]; !ok {
+			err := GetLeaderboardReqValidationError{
+				field:  "Type",
+				reason: "value must be in list [nct]",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if m.GetStartTime() != "" {
+
+	}
+
+	if m.GetEndTime() != "" {
+
+	}
+
+	if len(errors) > 0 {
+		return GetLeaderboardReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetLeaderboardReqMultiError is an error wrapping multiple validation errors
+// returned by GetLeaderboardReq.ValidateAll() if the designated constraints
+// aren't met.
+type GetLeaderboardReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetLeaderboardReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetLeaderboardReqMultiError) AllErrors() []error { return m }
+
+// GetLeaderboardReqValidationError is the validation error returned by
+// GetLeaderboardReq.Validate if the designated constraints aren't met.
+type GetLeaderboardReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetLeaderboardReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetLeaderboardReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetLeaderboardReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetLeaderboardReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetLeaderboardReqValidationError) ErrorName() string {
+	return "GetLeaderboardReqValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetLeaderboardReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetLeaderboardReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetLeaderboardReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetLeaderboardReqValidationError{}
+
+var _GetLeaderboardReq_Type_InLookup = map[string]struct{}{
+	"nct": {},
+}
+
+// Validate checks the field values on LeaderboardItem with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *LeaderboardItem) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on LeaderboardItem with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// LeaderboardItemMultiError, or nil if none found.
+func (m *LeaderboardItem) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *LeaderboardItem) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for WalletPub
+
+	// no validation rules for Uname
+
+	// no validation rules for RetiredAmount
+
+	// no validation rules for Ens
+
+	if len(errors) > 0 {
+		return LeaderboardItemMultiError(errors)
+	}
+
+	return nil
+}
+
+// LeaderboardItemMultiError is an error wrapping multiple validation errors
+// returned by LeaderboardItem.ValidateAll() if the designated constraints
+// aren't met.
+type LeaderboardItemMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m LeaderboardItemMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m LeaderboardItemMultiError) AllErrors() []error { return m }
+
+// LeaderboardItemValidationError is the validation error returned by
+// LeaderboardItem.Validate if the designated constraints aren't met.
+type LeaderboardItemValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e LeaderboardItemValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e LeaderboardItemValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e LeaderboardItemValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e LeaderboardItemValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e LeaderboardItemValidationError) ErrorName() string { return "LeaderboardItemValidationError" }
+
+// Error satisfies the builtin error interface
+func (e LeaderboardItemValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sLeaderboardItem.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = LeaderboardItemValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = LeaderboardItemValidationError{}
+
+// Validate checks the field values on GetLeaderboardResp with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetLeaderboardResp) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetLeaderboardResp with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetLeaderboardRespMultiError, or nil if none found.
+func (m *GetLeaderboardResp) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetLeaderboardResp) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetList() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetLeaderboardRespValidationError{
+						field:  fmt.Sprintf("List[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetLeaderboardRespValidationError{
+						field:  fmt.Sprintf("List[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetLeaderboardRespValidationError{
+					field:  fmt.Sprintf("List[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Type
+
+	if len(errors) > 0 {
+		return GetLeaderboardRespMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetLeaderboardRespMultiError is an error wrapping multiple validation errors
+// returned by GetLeaderboardResp.ValidateAll() if the designated constraints
+// aren't met.
+type GetLeaderboardRespMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetLeaderboardRespMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetLeaderboardRespMultiError) AllErrors() []error { return m }
+
+// GetLeaderboardRespValidationError is the validation error returned by
+// GetLeaderboardResp.Validate if the designated constraints aren't met.
+type GetLeaderboardRespValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetLeaderboardRespValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetLeaderboardRespValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetLeaderboardRespValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetLeaderboardRespValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetLeaderboardRespValidationError) ErrorName() string {
+	return "GetLeaderboardRespValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetLeaderboardRespValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetLeaderboardResp.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetLeaderboardRespValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetLeaderboardRespValidationError{}

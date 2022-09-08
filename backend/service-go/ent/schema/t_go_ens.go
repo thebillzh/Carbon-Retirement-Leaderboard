@@ -17,8 +17,8 @@ type TGoEns struct {
 func (TGoEns) Fields() []ent.Field {
 	return []ent.Field{
 		field.Uint64("id").Comment("auto increment primary key"),
-		field.String("wallet_pub").Comment("wallet public key"),
-		field.String("ens").Comment("creator of the certificate"),
+		field.String("wallet_pub").Unique().Comment("wallet public key"),
+		field.String("ens").Default("").Comment("creator of the certificate"),
 		field.Time("mtime").Comment("modify time").Default(time.Now()).UpdateDefault(time.Now),
 		field.Time("ctime").Comment("create time").Default(time.Now())}
 }
