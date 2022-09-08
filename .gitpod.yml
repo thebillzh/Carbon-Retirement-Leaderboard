@@ -1,0 +1,34 @@
+# List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
+tasks:
+  - name: frontend
+    before: cd front-end
+    init: yarn
+    command: yarn dev
+  - name: Restore env file
+    before: cd front-end
+    command: |
+      if [ -f .env.local ]; then
+        # If this workspace already has a .env, don't override it
+        # Local changes survive a workspace being opened and closed
+        # but they will not persist between separate workspaces for the same repo
+        echo "Found .env.local in workspace"
+      else
+        if [ -z "${DOTENV}" ]; then
+          # There is no $DOTENV from a previous workspace
+          # Default to the example .env
+          echo "Error: No $DOTENV or .env file"
+          # cp .env.example .env
+        else
+          # After making changes to .env.local, run this line to persist it to $DOTENV
+          #   gp env DOTENV="$(base64 .env.local | tr -d '\n')"
+          #
+          # Environment variables set this way are shared between all your workspaces for this repo
+          # The lines below will read $DOTENV and print a .env.local file
+          echo "Restoring .env.local from Gitpod"
+          echo "${DOTENV}" | base64 -d > .env.local
+        fi
+      fi
+# List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
+ports:
+  - port: 3000
+    onOpen: open-browser
