@@ -26,8 +26,8 @@ var (
 	// TGoEnsColumns holds the columns for the "t_go_ens" table.
 	TGoEnsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "wallet_pub", Type: field.TypeString},
-		{Name: "ens", Type: field.TypeString},
+		{Name: "wallet_pub", Type: field.TypeString, Unique: true},
+		{Name: "ens", Type: field.TypeString, Default: ""},
 		{Name: "mtime", Type: field.TypeTime},
 		{Name: "ctime", Type: field.TypeTime},
 	}
@@ -98,6 +98,8 @@ func init() {
 		Table: "t_go_retirements",
 	}
 	TUsersTable.Annotation = &entsql.Annotation{
-		Table: "t_users",
+		Table:     "t_users",
+		Charset:   "utf8mb4",
+		Collation: "utf8mb4_0900_ai_ci",
 	}
 }

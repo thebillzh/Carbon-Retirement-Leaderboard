@@ -40,6 +40,14 @@ func (teu *TGoEnsUpdate) SetEns(s string) *TGoEnsUpdate {
 	return teu
 }
 
+// SetNillableEns sets the "ens" field if the given value is not nil.
+func (teu *TGoEnsUpdate) SetNillableEns(s *string) *TGoEnsUpdate {
+	if s != nil {
+		teu.SetEns(*s)
+	}
+	return teu
+}
+
 // SetMtime sets the "mtime" field.
 func (teu *TGoEnsUpdate) SetMtime(t time.Time) *TGoEnsUpdate {
 	teu.mutation.SetMtime(t)
@@ -202,6 +210,14 @@ func (teuo *TGoEnsUpdateOne) SetWalletPub(s string) *TGoEnsUpdateOne {
 // SetEns sets the "ens" field.
 func (teuo *TGoEnsUpdateOne) SetEns(s string) *TGoEnsUpdateOne {
 	teuo.mutation.SetEns(s)
+	return teuo
+}
+
+// SetNillableEns sets the "ens" field if the given value is not nil.
+func (teuo *TGoEnsUpdateOne) SetNillableEns(s *string) *TGoEnsUpdateOne {
+	if s != nil {
+		teuo.SetEns(*s)
+	}
 	return teuo
 }
 

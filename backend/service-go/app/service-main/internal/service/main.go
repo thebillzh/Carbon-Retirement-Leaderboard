@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"net/http"
 	"os"
+	"sync/atomic"
 	v1 "toucan-leaderboard/app/service-main/api/main/v1"
 	"toucan-leaderboard/app/service-main/internal/biz"
 	"toucan-leaderboard/app/service-main/internal/data"
@@ -25,6 +26,12 @@ type MainService struct {
 	ethereumClient    *ethclient.Client
 	polygonClient     *ethclient.Client
 	toucanGraphClient graphql.Client
+
+	nctRetirementList atomic.Value
+	addressToTUserMap atomic.Value
+	addressToEnsMap   atomic.Value
+
+	realtimeNCTLeaderboard atomic.Value
 }
 
 const (
