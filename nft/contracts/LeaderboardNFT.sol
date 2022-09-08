@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.12;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -13,15 +13,21 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    enum Type {
-        SEASONAL,
-        ALL_TIME
+    enum TimeType {
+        MONTHLY,
+        QUARTERLY,
+        BIANNUALLY,
+        YEARLY
     }
 
-    mapping(uint256 => Type) tokenIdtoType;
-    mapping(uint256 => uint256) tokenIdtoSeasonYear;
-    mapping(uint256 => uint256) tokenIdtoSeasonQuarter;
-    mapping(uint256 => uint256) tokenIdtoRank;
+    struct tokenMetaData {
+        TimeType ttype;
+        uint256 year;
+        uint256 timeUnit; //half (1,2), quarter (1-4), month (1-12) depends on TimeType
+        bool isAllTime;
+        uint256 rank;
+    }
+    mapping(uint256 => tokenMetaData) tokenIdtoMetaData;
     mapping(address => uint256) addresstoTokenId;
 
     constructor() ERC721("Toucan NCT Retirement Leaderboard", "TNCTRL") {}
@@ -96,18 +102,67 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
             );
     }
 
+    function getTimeName(TimeType _t, uint256 _timeUnit)
+        private
+        view
+        returns (string memory)
+    {
+        string[12] memory timeUnittoName;
+        if (_t == TimeType.MONTHLY) {
+            //Monthly
+            require((_timeUnit > 0 && _timeUnit < 13), "Invalid time unit");
+            timeUnittoName[0] = "Jan";
+            timeUnittoName[1] = "Feb";
+            timeUnittoName[2] = "Mar";
+            timeUnittoName[3] = "Apr";
+            timeUnittoName[4] = "May";
+            timeUnittoName[5] = "Jun";
+            timeUnittoName[6] = "Jul";
+            timeUnittoName[7] = "Aug";
+            timeUnittoName[8] = "Sep";
+            timeUnittoName[9] = "Oct";
+            timeUnittoName[10] = "Nov";
+            timeUnittoName[11] = "Dec";
+        } else if (_t == TimeType.QUARTERLY) {
+            //Quarterly
+            require((_timeUnit > 0 && _timeUnit < 5), "Invalid time unit");
+            timeUnittoName[0] = "Q1";
+            timeUnittoName[1] = "Q2";
+            timeUnittoName[2] = "Q3";
+            timeUnittoName[3] = "Q4";
+        } else if (_t == TimeType.BIANNUALLY) {
+            //Semi-annual
+            require((_timeUnit > 0 && _timeUnit < 3), "Invalid time unit");
+            timeUnittoName[0] = "H1";
+            timeUnittoName[1] = "H2";
+        } else {
+            //yearly
+            return "";
+        }
+        return timeUnittoName[_timeUnit - 1];
+    }
+
     function generateSVG(uint256 tokenId) private view returns (string memory) {
         string[7] memory parts;
 
+        TimeType t = tokenIdtoMetaData[tokenId].ttype;
+        uint256 timeUnit = tokenIdtoMetaData[tokenId].timeUnit;
+        string memory season = getTimeName(t, timeUnit);
+
         parts[
             0
-        ] = "<text x='60' y='416' font-family='Sans,Arial' font-weight='bold' style='fill: black; font-size: 36px;'>Toucan NCT Retirement"
-        "<tspan x='175' y='450'>Q";
-        parts[1] = tokenIdtoSeasonQuarter[tokenId].toString();
+        ] = "<text x='50%' y='420' text-anchor='middle' font-family='Sans,Arial' font-weight='bold' style='fill: #152239; font-size: 36px;'>Toucan NCT Retirement"
+        "<tspan x='50%' y='455'>";
+
+        if (tokenIdtoMetaData[tokenId].isAllTime) {
+            parts[1] = string.concat("ALL-TIME - ", season);
+        } else {
+            parts[1] = season;
+        }
         parts[2] = " ";
-        parts[3] = tokenIdtoSeasonYear[tokenId].toString();
-        parts[4] = "</tspan><tspan x='175' y='480'>Rank #";
-        parts[5] = tokenIdtoRank[tokenId].toString();
+        parts[3] = tokenIdtoMetaData[tokenId].year.toString();
+        parts[4] = "</tspan><tspan x='50%' y='490'>Rank #";
+        parts[5] = tokenIdtoMetaData[tokenId].rank.toString();
         parts[6] = "</tspan></text></svg>";
 
         return
@@ -125,17 +180,24 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
     }
 
     function getTokenURI(uint256 tokenId) public returns (string memory) {
+        uint256 timeUnit = tokenIdtoMetaData[tokenId].timeUnit;
+        TimeType t = tokenIdtoMetaData[tokenId].ttype;
+        string memory season = getTimeName(t, timeUnit);
+        if (tokenIdtoMetaData[tokenId].isAllTime) {
+            season = string.concat("ALL-TIME - ", season);
+        }
+
         bytes memory dataURI = abi.encodePacked(
             "{",
-            '"name": "Toucan NCT Retirement Leaderboard NFT# ',
+            '"name": "Toucan NCT Retirement Leaderboard NFT Serial #',
             tokenId.toString(),
             '",',
             '"description": "NCT Retirement Leader #',
-            tokenIdtoRank[tokenId].toString(),
-            " for Season Q",
-            tokenIdtoSeasonQuarter[tokenId].toString(),
+            tokenIdtoMetaData[tokenId].rank.toString(),
+            " for ",
+            season,
             " ",
-            tokenIdtoSeasonYear[tokenId].toString(),
+            tokenIdtoMetaData[tokenId].year.toString(),
             '",',
             '"image_data": "',
             generateBaseSVG(),
@@ -153,18 +215,23 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
     }
 
     function mint(
-        uint256 _seasonQuarter,
+        TimeType _ttype,
         uint256 _seasonYear,
-        Type _type,
+        uint256 _seasonUnit,
+        bool _isAllTime,
         uint256 _rank,
         address _toAddress
     ) public onlyOwner {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(_toAddress, newItemId);
-        tokenIdtoSeasonQuarter[newItemId] = _seasonQuarter;
-        tokenIdtoSeasonYear[newItemId] = _seasonYear;
-        tokenIdtoRank[newItemId] = _rank;
+        tokenIdtoMetaData[newItemId] = tokenMetaData(
+            _ttype,
+            _seasonYear,
+            _seasonUnit,
+            _isAllTime,
+            _rank
+        );
         _setTokenURI(newItemId, getTokenURI(newItemId));
     }
 }
