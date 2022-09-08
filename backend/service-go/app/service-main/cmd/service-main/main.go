@@ -10,6 +10,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 	"toucan-leaderboard/common/library/log"
 
@@ -86,8 +87,10 @@ func main() {
 	rand.Seed(time.Now().Unix())
 
 	// init local env file
-	if err = godotenv.Load(".env.local"); err != nil {
-		panic(err)
+	if strings.ToLower(os.Getenv("ENV")) != "production" {
+		if err = godotenv.Load(".env.local"); err != nil {
+			panic(err)
+		}
 	}
 
 	// init log
