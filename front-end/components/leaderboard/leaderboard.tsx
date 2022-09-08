@@ -5,10 +5,10 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
     <div className="py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold leading-tight text-gray-900">
-          Leaderboard
+          NCT Retirement Leaderboard
         </h1>
         <p className="mt-2 text-sm text-gray-700">
-          Ranking of Carbon Retirement on Toucan
+          Ranking of Nature Carbon Tonne (NCT) Retirement on Toucan
         </p>
       </div>
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -46,13 +46,13 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          ENS / Address
+                          Username / ENS / Address
                         </th>
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Retirement amount
+                          Retirement
                         </th>
                         {/* <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Role
@@ -98,7 +98,7 @@ export default function Leaderboard({ rankData }: { rankData: User[] }) {
                             {user.address}
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {user.retired_nct.toFixed(0)}
+                            {user.retired_nct.toLocaleString('en-US', {maximumFractionDigits:2})}
                           </td>
                           {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{.role}</td> */}
                         </tr>
