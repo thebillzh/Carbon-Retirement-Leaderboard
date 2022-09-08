@@ -6,6 +6,36 @@ info:
     title: Main API
     version: 0.0.1
 paths:
+    /service/main/v1/getLeaderboard:
+        get:
+            tags:
+                - Main
+            operationId: Main_GetLeaderboard
+            parameters:
+                - name: first
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: type
+                  in: query
+                  schema:
+                    type: string
+                - name: startTime
+                  in: query
+                  schema:
+                    type: string
+                - name: endTime
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetLeaderboardResp'
     /service/main/v1/ping:
         get:
             tags:
@@ -25,6 +55,26 @@ paths:
                                 $ref: '#/components/schemas/PingResp'
 components:
     schemas:
+        GetLeaderboardResp:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/LeaderboardItem'
+                type:
+                    type: string
+        LeaderboardItem:
+            type: object
+            properties:
+                walletPub:
+                    type: string
+                uname:
+                    type: string
+                retiredAmount:
+                    type: string
+                ens:
+                    type: string
         PingResp:
             type: object
             properties:

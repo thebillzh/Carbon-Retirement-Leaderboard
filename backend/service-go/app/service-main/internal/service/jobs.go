@@ -22,9 +22,10 @@ import (
 )
 
 const (
-	_retirementSkipCacheKey = "retirement_nct_skip"
-	_retirementPageSize     = 1000
-	_nullAddress            = "0x0000000000000000000000000000000000000000"
+	_retirementSkipCacheKey  = "retirement_nct_skip"
+	_retirementPageSize      = 1000
+	_nullAddress             = "0x0000000000000000000000000000000000000000"
+	_latestNCTLeaderboardKey = "nct-latest"
 )
 
 var (
@@ -66,7 +67,7 @@ func (s *MainService) isContract(ctx context.Context, addressStr string) (isCont
 	address := common.HexToAddress(addressStr)
 	byteCode, err := s.polygonClient.CodeAt(ctx, address, nil)
 	if err != nil {
-		log.Errorc(ctx, "[loadENS] CodeAt error: %+v, address: %s", err, addressStr)
+		log.Errorc(ctx, "[isContract] CodeAt error: %+v, address: %s", err, addressStr)
 		return
 	}
 	isContract = len(byteCode) > 0
@@ -213,7 +214,7 @@ func (s *MainService) loadNCTRetirementList(ctx context.Context) (err error) {
 		return
 	}
 	s.nctRetirementList.Store(tGoRetirementList)
-	log.Infoc(ctx, "[loadNCTRetirementList] tGoRetirementList stored, len($d)", len(tGoRetirementList))
+	log.Infoc(ctx, "[loadNCTRetirementList] tGoRetirementList stored, len(%d)", len(tGoRetirementList))
 	return
 }
 
@@ -228,7 +229,7 @@ func (s *MainService) loadAddressToTUserMap(ctx context.Context) (err error) {
 		addressToTUserMap[strings.ToLower(tUser.WalletPub)] = tUser
 	}
 	s.addressToTUserMap.Store(addressToTUserMap)
-	log.Infoc(ctx, "[loadAddressToTUserMap] addressToTUserMap stored, len($d)", len(addressToTUserMap))
+	log.Infoc(ctx, "[loadAddressToTUserMap] addressToTUserMap stored, len(%d)", len(addressToTUserMap))
 	return
 }
 
@@ -243,11 +244,11 @@ func (s *MainService) loadAddressToEnsMap(ctx context.Context) (err error) {
 		addressToEnsMap[tGoEns.WalletPub] = tGoEns.Ens
 	}
 	s.addressToEnsMap.Store(addressToEnsMap)
-	log.Infoc(ctx, "[loadAddressToEnsMap] addressToEnsMap stored, len($d)", len(addressToEnsMap))
+	log.Infoc(ctx, "[loadAddressToEnsMap] addressToEnsMap stored, len(%d)", len(addressToEnsMap))
 	return
 }
 
-func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error) {
+func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time, endTime time.Time) (leaderboard []*model.User, err error) {
 	wg := errgroup.WithContext(ctx)
 
 	// load all retirements from db and sort addressList by amount
@@ -257,18 +258,22 @@ func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error
 		rawTGoRetirementList := s.nctRetirementList.Load()
 		if rawTGoRetirementList == nil {
 			err = errors.New("nctRetirementList not ready")
-			log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
 		var tGoRetirementList []*ent.TGoRetirement
 		var ok bool
 		if tGoRetirementList, ok = rawTGoRetirementList.([]*ent.TGoRetirement); !ok {
 			err = fmt.Errorf("rawTGoRetirementList type error: %+v", rawTGoRetirementList)
-			log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
 		isContractMap := make(map[string]bool)
 		for _, tGoRetirement := range tGoRetirementList {
+			// filter with time
+			if startTime.After(tGoRetirement.RetirementTime) || endTime.Before(tGoRetirement.RetirementTime) {
+				continue
+			}
 			address := tGoRetirement.BeneficiaryAddress
 			if address == "" || address == _nullAddress {
 				address = tGoRetirement.CreatorAddress
@@ -279,7 +284,7 @@ func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error
 			isContract, err := s.isContract(ctx, address)
 			if err != nil {
 				err = fmt.Errorf("get isContract error: %+v", address)
-				log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+				log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 				continue
 			}
 			if !isContract {
@@ -306,13 +311,13 @@ func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error
 		rawAddressToUserMap := s.addressToTUserMap.Load()
 		if rawAddressToUserMap == nil {
 			err = errors.New("nctRetirementList not ready")
-			log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
 		var ok bool
 		if addressToTUserMap, ok = rawAddressToUserMap.(map[string]*ent.TUser); !ok {
 			err = fmt.Errorf("rawAddressToUserMap type error: %+v", rawAddressToUserMap)
-			log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
 		return
@@ -324,23 +329,22 @@ func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error
 		rawAddressToEnsMap := s.addressToEnsMap.Load()
 		if rawAddressToEnsMap == nil {
 			err = errors.New("nctRetirementList not ready")
-			log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
 		var ok bool
 		if addressToEnsMap, ok = rawAddressToEnsMap.(map[string]string); !ok {
 			err = fmt.Errorf("rawAddressToEnsMap type error: %+v", rawAddressToEnsMap)
-			log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] %+v", err)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
 		return
 	})
 	if err = wg.Wait(); err != nil {
-		log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] wg.Wait error: %+v", err)
+		log.Errorc(ctx, "[buildLeaderboard] wg.Wait error: %+v", err)
 		return
 	}
 
-	var realtimeNCTLeaderboard []*model.User
 	for _, address := range addressList {
 		user := &model.User{
 			WalletPub:     address,
@@ -352,11 +356,18 @@ func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error
 		if e, ok := addressToEnsMap[address]; ok {
 			user.ENS = e
 		}
-		realtimeNCTLeaderboard = append(realtimeNCTLeaderboard, user)
+		leaderboard = append(leaderboard, user)
 	}
-	s.realtimeNCTLeaderboard.Store(realtimeNCTLeaderboard)
-	for _, u := range realtimeNCTLeaderboard {
-		fmt.Println(u)
+	return
+}
+
+func (s *MainService) loadRealtimeNCTLeaderboard(ctx context.Context) (err error) {
+	realtimeNCTLeaderboard, err := s.buildLeaderboard(ctx, time.Time{}, time.Unix(253402185600, 0))
+	if err != nil {
+		log.Errorc(ctx, "[loadRealtimeNCTLeaderboard] buildLeaderboard error: %+v", err)
+		return
 	}
+	s.leaderboardMap.Store(_latestNCTLeaderboardKey, realtimeNCTLeaderboard)
+	log.Infoc(ctx, "[loadRealtimeNCTLeaderboard] realtimeNCTLeaderboard stored, len(%d)", len(realtimeNCTLeaderboard))
 	return
 }
