@@ -10,7 +10,7 @@ RUN make build
 FROM debian:stable-slim
 
 ARG app_name
-ENV TZ=Asia/Shanghai \
+ENV TZ=UTC \
     DEBIAN_FRONTEND=noninteractive
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone \
