@@ -93,7 +93,7 @@ const handler = async (
       throw new Error("invalid signature");
     }
 
-    const walletPub = req.data.wallet_pub.toLowerCase()
+    const walletPub = req.data.wallet_pub.toLowerCase();
     const user = await prisma.$transaction(
       async (tx: Prisma.TransactionClient) => {
         const user = await tx.t_users.findUnique({
@@ -105,7 +105,7 @@ const handler = async (
             data: {
               wallet_pub: walletPub,
               wallet_type: "MetaMask", // Only support MetaMask by now
-              uname: "Racer",
+              uname: "",
               last_login_time: DateTime.local().toJSDate(),
             },
           });
