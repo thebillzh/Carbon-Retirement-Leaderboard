@@ -84,7 +84,7 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                     <dl className="grid grid-cols-1 gap-x-4 gap-y-8 ">
                       <div className="sm:col-span-2">
                         <dt className="text-sm font-medium text-gray-500">
-                          On Toucan since
+                          Retiring NCT on Toucan since
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
                           {(profile as any)?.on_toucan_since
@@ -94,7 +94,7 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                       </div>
                       <div className="sm:col-span-2">
                         <dt className="text-sm font-medium text-gray-500">
-                          Total retirement
+                          Total NCT retirement
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
                           {(profile as any)?.total_retirement
