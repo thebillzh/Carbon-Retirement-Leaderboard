@@ -64,6 +64,11 @@ func (s *MainService) getNCTRedeemTokenList(ctx context.Context) (tokenList []st
 }
 
 func (s *MainService) isContract(ctx context.Context, addressStr string) (isContract bool, err error) {
+	if v, ok := s.addressToIsContractMap.Load(addressStr); ok {
+		if isContract, ok = v.(bool); ok {
+			return
+		}
+	}
 	address := common.HexToAddress(addressStr)
 	byteCode, err := s.polygonClient.CodeAt(ctx, address, nil)
 	if err != nil {
@@ -71,6 +76,7 @@ func (s *MainService) isContract(ctx context.Context, addressStr string) (isCont
 		return
 	}
 	isContract = len(byteCode) > 0
+	s.addressToIsContractMap.Store(addressStr, isContract)
 	return
 }
 

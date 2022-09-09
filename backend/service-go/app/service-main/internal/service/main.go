@@ -32,9 +32,10 @@ type MainService struct {
 	polygonClient     *ethclient.Client
 	toucanGraphClient graphql.Client
 
-	nctRetirementList atomic.Value
-	addressToTUserMap atomic.Value
-	addressToEnsMap   atomic.Value
+	nctRetirementList      atomic.Value
+	addressToTUserMap      atomic.Value
+	addressToEnsMap        atomic.Value
+	addressToIsContractMap sync.Map
 
 	realtimeNCTLeaderboard atomic.Value
 	leaderboardMap         sync.Map
@@ -86,17 +87,10 @@ func (s *MainService) GetLeaderboard(ctx context.Context, req *v1.GetLeaderboard
 
 	var leaderboard []*model.User
 	var leaderboardKey string
+	startTime, endTime := time.Time{}, time.Now()
 	if req.GetStartTime() == "" && req.GetEndTime() == "" {
 		leaderboardKey = _latestNCTLeaderboardKey
 	} else {
-		leaderboardKey = fmt.Sprintf("nct:%s:%s", req.GetStartTime(), req.GetEndTime())
-	}
-	rawRealtimeNCTLeaderboard, ok := s.leaderboardMap.Load(leaderboardKey)
-	if ok {
-		leaderboard = rawRealtimeNCTLeaderboard.([]*model.User)
-	}
-	if leaderboard == nil {
-		startTime, endTime := time.Time{}, time.Unix(253402185600, 0)
 		if req.GetStartTime() != "" {
 			startTime, err = time.Parse("2006-01-02 15:04:05", req.GetStartTime())
 			if err != nil {
@@ -111,6 +105,13 @@ func (s *MainService) GetLeaderboard(ctx context.Context, req *v1.GetLeaderboard
 				return
 			}
 		}
+		leaderboardKey = fmt.Sprintf("nct:%s:%s", startTime.Format("2006-01-02 15:04:05"), endTime.Format("2006-01-02 15:04:05"))
+	}
+	rawRealtimeNCTLeaderboard, ok := s.leaderboardMap.Load(leaderboardKey)
+	if ok {
+		leaderboard = rawRealtimeNCTLeaderboard.([]*model.User)
+	}
+	if leaderboard == nil {
 		leaderboard, err = s.buildLeaderboard(ctx, startTime, endTime)
 		if err != nil {
 			log.Errorc(ctx, "[GetLeaderboard] buildLeaderboard error: %+v", err)
