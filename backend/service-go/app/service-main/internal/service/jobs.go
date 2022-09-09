@@ -18,7 +18,6 @@ import (
 	"toucan-leaderboard/common/library/log"
 	"toucan-leaderboard/common/library/sync/errgroup"
 	"toucan-leaderboard/ent"
-	"toucan-leaderboard/ent/tgoretirement"
 )
 
 const (
@@ -173,28 +172,43 @@ func (s *MainService) loadRetirementData(ctx context.Context) (err error) {
 }
 
 func (s *MainService) loadENS(ctx context.Context) (err error) {
-	tGoRetirements, err := s.data.DB.TGoRetirement.Query().Select(tgoretirement.FieldBeneficiaryAddress).All(ctx)
+	rawTGoRetirementList := s.nctRetirementList.Load()
+	if rawTGoRetirementList == nil {
+		err = errors.New("nctRetirementList not ready")
+		log.Errorc(ctx, "[loadENS] %+v", err)
+		return
+	}
+	var tGoRetirementList []*ent.TGoRetirement
+	var ok bool
+	if tGoRetirementList, ok = rawTGoRetirementList.([]*ent.TGoRetirement); !ok {
+		err = fmt.Errorf("rawTGoRetirementList type error: %+v", rawTGoRetirementList)
+		log.Errorc(ctx, "[loadENS] %+v", err)
+		return
+	}
 	if err != nil {
 		log.Errorc(ctx, "[loadENS] Query all retirements error: %+v", err)
 		return
 	}
 	addressMap := make(map[string]struct{})
-	for _, tGoRetirement := range tGoRetirements {
-		addressMap[tGoRetirement.BeneficiaryAddress] = struct{}{}
+	for _, tGoRetirement := range tGoRetirementList {
+		address := tGoRetirement.BeneficiaryAddress
+		if address == "" || address == _nullAddress {
+			address = tGoRetirement.CreatorAddress
+		}
+		addressMap[address] = struct{}{}
 	}
 	for addressStr := range addressMap {
 		if addressStr == "" || addressStr == _nullAddress {
 			continue
 		}
-		address := common.HexToAddress(addressStr)
-		byteCode, err := s.polygonClient.CodeAt(ctx, address, nil)
+		isContract, err := s.isContract(ctx, addressStr)
 		if err != nil {
-			log.Errorc(ctx, "[loadENS] CodeAt error: %+v, address: %s", err, addressStr)
-			err = nil
+			err = fmt.Errorf("get isContract error: %+v", addressStr)
+			log.Errorc(ctx, "[loadENS] %+v", err)
 			continue
 		}
-		isContract := len(byteCode) > 0
 		if !isContract {
+			address := common.HexToAddress(addressStr)
 			domain, err := ens.ReverseResolve(s.ethereumClient, address)
 			if err != nil && err.Error() != "not a resolver" {
 				log.Errorc(ctx, "[loadENS] ReverseResolve error: %+v, address: %s", err, addressStr)
@@ -274,7 +288,6 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
 			return
 		}
-		isContractMap := make(map[string]bool)
 		for _, tGoRetirement := range tGoRetirementList {
 			// filter with time
 			if startTime.After(tGoRetirement.RetirementTime) || endTime.Before(tGoRetirement.RetirementTime) {
@@ -283,9 +296,6 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 			address := tGoRetirement.BeneficiaryAddress
 			if address == "" || address == _nullAddress {
 				address = tGoRetirement.CreatorAddress
-			}
-			if isContractMap[address] {
-				continue
 			}
 			isContract, err := s.isContract(ctx, address)
 			if err != nil {
@@ -298,8 +308,6 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 					Add(decimal.NewFromFloat(tGoRetirement.Amount)).
 					InexactFloat64()
 				addressToRetiredAmountMap[address] = newAmount
-			} else {
-				isContractMap[address] = true
 			}
 		}
 		for address := range addressToRetiredAmountMap {
