@@ -67,11 +67,11 @@ components:
         LeaderboardItem:
             type: object
             properties:
-                walletPub:
+                wallet_pub:
                     type: string
                 uname:
                     type: string
-                retiredAmount:
+                retired_amount:
                     type: string
                 ens:
                     type: string

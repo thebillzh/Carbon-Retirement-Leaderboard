@@ -39,9 +39,9 @@ message GetLeaderboardReq {
 }
 
 message LeaderboardItem {
-  string wallet_pub = 1;
+  string wallet_pub = 1 [json_name="wallet_pub"];
   string uname = 2;
-  string retired_amount = 3;
+  string retired_amount = 3 [json_name="retired_amount"];
   string ens = 4;
 }
 
