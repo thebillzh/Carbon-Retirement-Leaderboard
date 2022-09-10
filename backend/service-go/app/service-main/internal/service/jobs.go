@@ -38,12 +38,12 @@ func checkCronErr(entryId cron3.EntryID, err error) {
 }
 
 func (s *MainService) initJobs() {
-	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadRetirementData, "loadRetirementData"))
+	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadRetirementData, "loadRetirementData"))
 	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadENS, "loadENS"))
-	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadNCTRetirementList, "loadNCTRetirementList", cron.PreLoad()))
-	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadAddressToTUserMap, "loadAddressToTUserMap", cron.PreLoad()))
-	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadAddressToEnsMap, "loadAddressToEnsMap", cron.PreLoad()))
-	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadRealtimeNCTLeaderboard, "loadRealtimeNCTLeaderboard", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 15s", s.loadNCTRetirementList, "loadNCTRetirementList", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadAddressToTUserMap, "loadAddressToTUserMap", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 15s", s.loadAddressToEnsMap, "loadAddressToEnsMap", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 30s", s.loadRealtimeNCTLeaderboard, "loadRealtimeNCTLeaderboard", cron.PreLoad()))
 }
 
 func (s *MainService) getNCTRedeemTokenList(ctx context.Context) (tokenList []string, err error) {
@@ -115,10 +115,19 @@ func (s *MainService) loadRetirementData(ctx context.Context) (err error) {
 		return err
 	}
 
+	addressMap := make(map[string]struct{}) // save all unique address for ens and profile check
 	for len(retirementList.GetRetirements()) > 0 {
 		err = s.data.WithTx(ctx, func(tx *ent.Tx) (err error) {
 			var tGoRetirementCreates []*ent.TGoRetirementCreate
 			for _, retirement := range retirementList.GetRetirements() {
+				// save to address map
+				address := retirement.Certificate.Beneficiary.GetId()
+				if address == "" || address == _nullAddress {
+					address = retirement.Creator.GetId()
+				}
+				addressMap[address] = struct{}{}
+
+				// save raw data to db
 				amount, err := decimal.NewFromString(retirement.GetAmount())
 				if err != nil {
 					log.Errorc(ctx, "[loadRetirementData] NewFromString error: %+v, raw amount: %+v", err, retirement.GetAmount())
@@ -168,6 +177,39 @@ func (s *MainService) loadRetirementData(ctx context.Context) (err error) {
 			return err
 		}
 	}
+
+	// incrementally update ens
+	for address := range addressMap {
+		if err = s.checkAndSaveENS(ctx, address); err != nil {
+			log.Errorc(ctx, "[loadRetirementData] checkAndSaveENS error: %+v", err)
+		}
+	}
+	return
+}
+
+func (s *MainService) checkAndSaveENS(ctx context.Context, addressStr string) (err error) {
+	if addressStr == "" || addressStr == _nullAddress {
+		return
+	}
+	isContract, err := s.isContract(ctx, addressStr)
+	if err != nil {
+		err = fmt.Errorf("get isContract error: %+v", addressStr)
+		return
+	}
+	if !isContract {
+		address := common.HexToAddress(addressStr)
+		domain, err := ens.ReverseResolve(s.ethereumClient, address)
+		if err != nil && err.Error() != "not a resolver" {
+			err = fmt.Errorf("ReverseResolve error: %+v, address: %s", err, addressStr)
+			return
+		}
+		if domain != "" {
+			if err = s.data.DB.TGoEns.Create().SetWalletPub(addressStr).SetEns(domain).OnConflict().UpdateEns().Exec(ctx); err != nil {
+				err = fmt.Errorf("upsert Ens error: %+v, address: %s", err, addressStr)
+				return
+			}
+		}
+	}
 	return
 }
 
@@ -198,30 +240,8 @@ func (s *MainService) loadENS(ctx context.Context) (err error) {
 		addressMap[address] = struct{}{}
 	}
 	for addressStr := range addressMap {
-		if addressStr == "" || addressStr == _nullAddress {
-			continue
-		}
-		isContract, err := s.isContract(ctx, addressStr)
-		if err != nil {
-			err = fmt.Errorf("get isContract error: %+v", addressStr)
-			log.Errorc(ctx, "[loadENS] %+v", err)
-			continue
-		}
-		if !isContract {
-			address := common.HexToAddress(addressStr)
-			domain, err := ens.ReverseResolve(s.ethereumClient, address)
-			if err != nil && err.Error() != "not a resolver" {
-				log.Errorc(ctx, "[loadENS] ReverseResolve error: %+v, address: %s", err, addressStr)
-				err = nil
-				continue
-			}
-			if domain != "" {
-				if err = s.data.DB.TGoEns.Create().SetWalletPub(addressStr).SetEns(domain).OnConflict().UpdateEns().Exec(ctx); err != nil {
-					log.Errorc(ctx, "[loadENS] Upsert Ens error: %+v, address: %s", err, addressStr)
-					err = nil
-					continue
-				}
-			}
+		if err = s.checkAndSaveENS(ctx, addressStr); err != nil {
+			log.Errorc(ctx, "[loadENS] checkAndSaveENS error: %+v", err)
 		}
 	}
 	return
