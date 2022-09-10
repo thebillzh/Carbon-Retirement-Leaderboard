@@ -198,7 +198,8 @@ func (s *MainService) checkAndSaveENS(ctx context.Context, addressStr string) (e
 	}
 	if !isContract {
 		address := common.HexToAddress(addressStr)
-		domain, err := ens.ReverseResolve(s.ethereumClient, address)
+		var domain string
+		domain, err = ens.ReverseResolve(s.ethereumClient, address)
 		if err != nil && err.Error() != "not a resolver" {
 			err = fmt.Errorf("ReverseResolve error: %+v, address: %s", err, addressStr)
 			return
