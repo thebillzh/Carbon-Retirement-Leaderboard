@@ -1,20 +1,27 @@
+import { RANKING_API_BASE_URL, RANKING_API_BASE_URL_PROXY } from "@constants/constants";
 import { useLoading } from "@contexts/loadingProvider";
+import { LeaderboardReturnItem } from "@model/model";
 import _ from "lodash";
-import { initScriptLoader } from "next/script";
-import { useEffect, useReducer, useRef, useState } from "react";
-import { User } from "../../pages";
-
+import moment, { Moment } from "moment";
+import { HomeProps } from "pages";
+import {
+  MutableRefObject,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const tabs = [
   {
-    name: "Month",
+    name: "All Time",
     href: "#",
-    showYear: true,
+    showYear: false,
     showQuarter: false,
-    showMonth: true,
+    showMonth: false,
     api: "",
   },
   {
@@ -25,21 +32,37 @@ const tabs = [
     showMonth: false,
     api: "",
   },
-  // {
-  //   name: "All Time",
-  //   href: "#",
-  //   showYear: false,
-  //   showQuarter: false,
-  //   showMonth: false,
-  //   api: "",
-  // },
+  {
+    name: "Month",
+    href: "#",
+    showYear: true,
+    showQuarter: false,
+    showMonth: true,
+    api: "",
+  },
 ];
 
-const baseURL = "https://toucan-leaderboard.herokuapp.com/";
+export const JSONToLeaderboardData = (data) => {
+  const r = new Array<LeaderboardReturnItem>();
+  const dataList = data.list;
+  for (const key in dataList) {
+    r.push({
+      address: dataList[key].wallet_pub,
+      uname: dataList[key].uname,
+      ens: dataList[key].ens,
+      total_retirement: dataList[key].retired_amount,
+    });
+  }
+  r.sort((a, b) => b.total_retirement - a.total_retirement);
+  return r;
+};
 
-const useFetch = (url: string) => {
-  const cache = useRef({});
-
+const useFetch = (
+  url: string,
+  cache: MutableRefObject<{
+    string: LeaderboardReturnItem[];
+  }>
+) => {
   const initialState = {
     status: "idle",
     error: null,
@@ -70,15 +93,9 @@ const useFetch = (url: string) => {
       } else {
         try {
           const resp = await fetch(url);
-          const data = await resp.json();
-          const r = new Array<User>();
-          let index = 0;
-          for (const key in data) {
-            r.push({
-              address: data[key].beneficiary,
-              retired_nct: data[key].retired_nct,
-            });
-          }
+          const JSONdata = await resp.json();
+
+          const r = JSONToLeaderboardData(JSONdata);
           cache.current[url] = r;
 
           if (cancelRequest) return;
@@ -100,7 +117,32 @@ const useFetch = (url: string) => {
   return state;
 };
 
-export default function Leaderboard() {
+const paramsToURL = (
+  first: number,
+  type: string,
+  start_time: moment.Moment,
+  end_time: moment.Moment,
+  proxy: boolean = true
+) => {
+  const params = new URLSearchParams({
+    first: Math.floor(first).toString(),
+    type: type,
+    start_time: start_time.format("yyyy-MM-DD HH:mm:ss"),
+    end_time: end_time.format("yyyy-MM-DD HH:mm:ss"),
+  });
+
+  if (proxy) {
+    return RANKING_API_BASE_URL_PROXY + "?" + params.toString();
+  } else {
+    return RANKING_API_BASE_URL + "?" + params.toString();
+
+  }
+};
+
+export default function Leaderboard({
+  firstAllTimeRankData,
+  firstAllTimeAPIURL,
+}: HomeProps) {
   const today = new Date();
   const currentMonth = today.getMonth() + 1; // getMonth is 0-based
   const currentQuarter = Math.floor(today.getMonth() / 3 + 1);
@@ -110,7 +152,7 @@ export default function Leaderboard() {
   const quarterRange = _.range(1, 4 + 1);
   const yearRange = _.range(2022, currentYear + 1);
 
-  const [tabSelected, setTabSelected] = useState(0); // 0=Month, 1=Quarter, 2=All time
+  const [tabSelected, setTabSelected] = useState(0); // 2=Month, 1=Quarter, 0=All time
 
   const [monthSelected, setMonthSelected] = useState(currentMonth);
   const [quarterSelected, setQuarterSelected] = useState(currentQuarter);
@@ -118,24 +160,59 @@ export default function Leaderboard() {
 
   const { setLoading } = useLoading();
 
+  const cache = useRef<{ string: LeaderboardReturnItem[] }>(
+    {} as { string: LeaderboardReturnItem[] }
+  );
+  useEffect(() => {
+    cache.current[firstAllTimeAPIURL] = firstAllTimeRankData;
+  }, []);
+
   const apiURL = useRef("");
-  if (tabSelected == 2) {
-    apiURL.current = baseURL + "leaderboard";
-  } else if (tabSelected == 1) {
-    apiURL.current = baseURL + `quarterly/${yearSelected}/${quarterSelected}`;
-  } else if (tabSelected == 0) {
-    apiURL.current = baseURL + `monthly/${yearSelected}/${monthSelected}`;
+  const start_time = useRef<moment.Moment>();
+  const end_time = useRef<moment.Moment>();
+  if (tabSelected === 0) {
+    // all time ranking
+    const params = new URLSearchParams({
+      first: "1000",
+      type: "nct",
+    });
+    apiURL.current = RANKING_API_BASE_URL + "?" + params.toString();
+  } else if (tabSelected === 1) {
+    // quarterly ranking
+    start_time.current = moment.utc(
+      quarterSelected + "-" + yearSelected,
+      "Q-YYYY"
+    );
+    end_time.current = moment(start_time.current).endOf("quarter");
+
+    apiURL.current = paramsToURL(
+      1000,
+      "nct",
+      start_time.current,
+      end_time.current
+    );
+  } else if (tabSelected === 2) {
+    // monthly ranking
+    start_time.current = moment.utc(
+      monthSelected + "-" + yearSelected,
+      "M-YYYY"
+    );
+    end_time.current = moment(start_time.current).endOf("month");
+
+    apiURL.current = paramsToURL(
+      1000,
+      "nct",
+      start_time.current,
+      end_time.current
+    );
   } else {
     console.error("Invalid selection");
   }
-  const { status, data: rankingData, error } = useFetch(apiURL.current);
+  const { status, data: rankingData, error } = useFetch(apiURL.current, cache);
 
   useEffect(() => {
     setLoading({ visible: status === "fetching", isNeedBackground: true });
-  }, [status])
-  
-
-  // setLoading({ visible: status === "fetching", isNeedBackground: true });
+  }, [status]);
 
   return (
     <div className="py-10">
@@ -165,7 +242,7 @@ export default function Leaderboard() {
                         index == tabSelected
                           ? "border-teal-500 text-teal-600 bg-white"
                           : "border-transparent text-gray-400 opacity-50 hover:text-gray-700 hover:border-gray-300",
-                        `w-1/${tabs.length}`,
+                        `w-1/3`,
                         "py-4 px-1 text-center border-b-2 font-medium text-sm"
                       )}
                       aria-current={index == tabSelected ? "page" : undefined}
@@ -263,48 +340,53 @@ export default function Leaderboard() {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {status === "fetched" && rankingData?.map((user, index) => (
-                        <tr
-                          key={user.address}
-                          className={index % 2 === 0 ? undefined : "bg-gray-50"}
-                        >
-                          {index === 0 && (
-                            <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              <div className="w-8 h-8 rounded-full bg-[#F3C23C] text-white flex justify-center items-center">
-                                {index + 1}
-                              </div>
-                            </td>
-                          )}
-                          {index === 1 && (
-                            <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              <div className="w-8 h-8 rounded-full bg-[#BDCBD8] text-white flex justify-center items-center">
-                                {index + 1}
-                              </div>
-                            </td>
-                          )}
-                          {index === 2 && (
-                            <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                              <div className="w-8 h-8 rounded-full bg-[#D7A778] text-white flex justify-center items-center">
-                                {index + 1}
-                              </div>
-                            </td>
-                          )}
-                          {index > 2 && (
-                            <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-center text-gray-900 sm:pl-6">
-                              {index + 1}
-                            </td>
-                          )}
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {user.address}
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            {user.retired_nct.toLocaleString("en-US", {
-                              maximumFractionDigits: 2,
-                            })}
-                          </td>
-                          {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{.role}</td> */}
-                        </tr>
-                      ))}
+                      {status === "fetched" &&
+                        rankingData?.map(
+                          (user: LeaderboardReturnItem, index) => (
+                            <tr
+                              key={user.address}
+                              className={
+                                index % 2 === 0 ? undefined : "bg-gray-50"
+                              }
+                            >
+                              {index === 0 && (
+                                <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                  <div className="w-8 h-8 rounded-full bg-[#F3C23C] text-white flex justify-center items-center">
+                                    {index + 1}
+                                  </div>
+                                </td>
+                              )}
+                              {index === 1 && (
+                                <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                  <div className="w-8 h-8 rounded-full bg-[#BDCBD8] text-white flex justify-center items-center">
+                                    {index + 1}
+                                  </div>
+                                </td>
+                              )}
+                              {index === 2 && (
+                                <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                  <div className="w-8 h-8 rounded-full bg-[#D7A778] text-white flex justify-center items-center">
+                                    {index + 1}
+                                  </div>
+                                </td>
+                              )}
+                              {index > 2 && (
+                                <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-center text-gray-900 sm:pl-6">
+                                  {index + 1}
+                                </td>
+                              )}
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {user?.uname || user?.ens || user?.address}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {(
+                                  Math.round(user?.total_retirement * 100) / 100
+                                ).toFixed(2)}
+                              </td>
+                              {/* <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{.role}</td> */}
+                            </tr>
+                          )
+                        )}
                       {status === "error" && <div>{error}</div>}
                     </tbody>
                   </table>

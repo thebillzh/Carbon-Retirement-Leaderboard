@@ -19,3 +19,8 @@ export const LOGIN_MESSAGE_PREFIX =
 export const POLYGON_MUMBAI_RPC_URL =
   "https://polygon-mumbai.g.alchemy.com/v2/9augb8rZZ1c9rR_0voZWbn_ntnJk13_S";
 export const POLYGON_MUMBAI_CHAIN_ID = 80001;
+
+export const RANKING_API_BASE_URL =
+  "https://api-go.toucanleader.xyz/service/main/v1/getLeaderboard";
+export const RANKING_API_BASE_URL_PROXY =
+  "/proxy/service/main/v1/getLeaderboard"; // use proxy (set in nextjs config) to resolve cors issues

@@ -1,4 +1,5 @@
 import { NextApiRequest } from "next";
+import internal from "stream";
 
 /**
  * Api request
@@ -32,4 +33,14 @@ export interface CronTokenPayload {
   source?: string; // source
   type?: string; // job type
   name?: string; // job name
+}
+
+/**
+ * Return type for Go Leaderboard API
+ */
+export interface LeaderboardReturnItem {
+  address: string;
+  uname: string;
+  ens: string;
+  total_retirement: number;
 }
