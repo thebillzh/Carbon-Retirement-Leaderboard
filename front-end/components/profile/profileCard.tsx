@@ -56,7 +56,13 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                     <p className="text-sm font-medium break-all text-gray-500">
                       {profile?.wallet_pub}
                     </p>
-                    <a href={"https://polygonscan.com/address/" + profile?.wallet_pub}  target="_blank"  rel="noopener noreferrer">
+                    <a
+                      href={
+                        "https://polygonscan.com/address/" + profile?.wallet_pub
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4"
@@ -91,12 +97,13 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                   Edit profile
                 </button>
               ) : (
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
-                >
-                  Contact
-                </button>
+                // <button
+                //   type="button"
+                //   className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+                // >
+                //   Contact
+                // </button>
+                ""
               )}
             </div>
           </div>
