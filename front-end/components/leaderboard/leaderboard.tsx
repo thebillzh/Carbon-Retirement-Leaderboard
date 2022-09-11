@@ -6,6 +6,8 @@ import { useLoading } from "@contexts/loadingProvider";
 import { LeaderboardReturnItem } from "@model/model";
 import _ from "lodash";
 import moment, { Moment } from "moment";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { HomeProps } from "pages";
 import {
   MutableRefObject,
@@ -170,6 +172,8 @@ export default function Leaderboard({
   const [yearSelected, setyearSelected] = useState(currentYear);
 
   const { setLoading } = useLoading();
+
+  const router = useRouter();
 
   const cacheRankingdata = useRef<{ string: LeaderboardReturnItem[] }>(
     {} as { string: LeaderboardReturnItem[] }
@@ -404,7 +408,26 @@ export default function Leaderboard({
                                 </td>
                               )}
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                {user?.uname || user?.ens || user?.address}
+                                {/* Link to profile page. If no profile, link to polygonscan */}
+                                {user?.uname ? (
+                                  <Link href={`/profile/${user?.address}`}>
+                                    <a
+                                    >
+                                      {user?.uname}
+                                    </a>
+                                  </Link>
+                                ) : (
+                                  <a
+                                    href={
+                                      "https://polygonscan.com/address/" +
+                                      user?.address
+                                    }
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {user?.ens || user?.address}
+                                  </a>
+                                )}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 {(
