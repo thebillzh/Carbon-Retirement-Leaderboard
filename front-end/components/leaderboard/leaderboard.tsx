@@ -1,4 +1,7 @@
-import { RANKING_API_BASE_URL, RANKING_API_BASE_URL_PROXY } from "@constants/constants";
+import {
+  RANKING_API_BASE_URL,
+  RANKING_API_BASE_URL_PROXY,
+} from "@constants/constants";
 import { useLoading } from "@contexts/loadingProvider";
 import { LeaderboardReturnItem } from "@model/model";
 import _ from "lodash";
@@ -57,6 +60,20 @@ export const JSONToLeaderboardData = (data) => {
   return r;
 };
 
+const fetchAndCache = async (
+  url: string,
+  cache: MutableRefObject<{
+    string: LeaderboardReturnItem[];
+  }>
+) => {
+  const resp = await fetch(url);
+  const JSONdata = await resp.json();
+
+  const r = JSONToLeaderboardData(JSONdata);
+  cache.current[url] = r;
+  return r;
+};
+
 const useFetch = (
   url: string,
   cache: MutableRefObject<{
@@ -92,12 +109,7 @@ const useFetch = (
         dispatch({ type: "FETCHED", payload: cache.current[url] });
       } else {
         try {
-          const resp = await fetch(url);
-          const JSONdata = await resp.json();
-
-          const r = JSONToLeaderboardData(JSONdata);
-          cache.current[url] = r;
-
+          const r = await fetchAndCache(url, cache);
           if (cancelRequest) return;
           dispatch({ type: "FETCHED", payload: r });
         } catch (e) {
@@ -135,7 +147,6 @@ const paramsToURL = (
     return RANKING_API_BASE_URL_PROXY + "?" + params.toString();
   } else {
     return RANKING_API_BASE_URL + "?" + params.toString();
-
   }
 };
 
@@ -160,11 +171,24 @@ export default function Leaderboard({
 
   const { setLoading } = useLoading();
 
-  const cache = useRef<{ string: LeaderboardReturnItem[] }>(
+  const cacheRankingdata = useRef<{ string: LeaderboardReturnItem[] }>(
     {} as { string: LeaderboardReturnItem[] }
   );
   useEffect(() => {
-    cache.current[firstAllTimeAPIURL] = firstAllTimeRankData;
+    cacheRankingdata.current[firstAllTimeAPIURL] = firstAllTimeRankData;
+
+    // current quarter
+    let start_time = moment.utc(currentQuarter + "-" + currentYear, "Q-YYYY");
+    let end_time = moment(start_time).endOf("quarter");
+    paramsToURL(1000, "nct", start_time, end_time);
+    const quarterURL = paramsToURL(1000, "nct", start_time, end_time);
+    fetchAndCache(quarterURL, cacheRankingdata);
+
+    // current month
+    start_time = moment.utc(monthSelected + "-" + yearSelected, "M-YYYY");
+    end_time = moment(start_time).endOf("month");
+    const monthURL = paramsToURL(1000, "nct", start_time, end_time);
+    fetchAndCache(monthURL, cacheRankingdata);
   }, []);
 
   const apiURL = useRef("");
@@ -208,7 +232,11 @@ export default function Leaderboard({
   } else {
     console.error("Invalid selection");
   }
-  const { status, data: rankingData, error } = useFetch(apiURL.current, cache);
+  const {
+    status,
+    data: rankingData,
+    error,
+  } = useFetch(apiURL.current, cacheRankingdata);
 
   useEffect(() => {
     setLoading({ visible: status === "fetching", isNeedBackground: true });
