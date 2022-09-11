@@ -2,9 +2,11 @@ import Input from "@components/common/input";
 import { useCommonContext } from "@contexts/commonContextProvider";
 import useABC from "@lib/common/abc";
 import { t_users } from "@prisma/client";
+import moment from "moment";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { UpdateUserReq, UpdateUserResp } from "pages/api/common/update_user";
+import { Dispatch, SetStateAction } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 interface FromProps {
@@ -15,7 +17,13 @@ interface FromProps {
   about: string;
 }
 
-export default function ProfileEditCard({ profile }: { profile: t_users }) {
+export default function ProfileEditCard({
+  profile,
+  setIsEditing,
+}: {
+  profile: t_users;
+  setIsEditing: Dispatch<SetStateAction<boolean>>;
+}) {
   const router = useRouter();
   const { user } = useCommonContext();
   const { call } = useABC();
@@ -47,7 +55,7 @@ export default function ProfileEditCard({ profile }: { profile: t_users }) {
   };
   return (
     <form className="min-h-full py-10" onSubmit={handleSubmit(onSubmit)}>
-      {/* Page header */}
+      {/* Profile header */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
         <div className="flex items-center space-x-5">
           <div className="flex-shrink-0">
@@ -78,35 +86,52 @@ export default function ProfileEditCard({ profile }: { profile: t_users }) {
           </div>
           <div>
             <Input id="uname" placeholder="Your Name" register={register} />
-            <p className="text-sm font-medium text-gray-500">
+            <p className="text-sm font-medium break-all text-gray-500">
               {profile?.wallet_pub}
             </p>
           </div>
         </div>
         <div className="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
           {profile?.wallet_pub === user?.wallet_pub && (
-            <button
-              type="submit"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-            >
-              Save
-            </button>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                onClick={() => {
+                  setIsEditing(false);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+              >
+                Save
+              </button>
+            </div>
           )}
         </div>
       </div>
 
-      <div className="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense">
+      <div className="mt-4 sm:mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense">
         <div className="space-y-6">
           {/* Description list*/}
           <section aria-labelledby="applicant-information-title">
-            <div className="bg-white shadow sm:rounded-lg">
+            <div className=" shadow sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-8 ">
                   <div className="sm:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">
                       Retiring NCT on Toucan since
                     </dt>
-                    <dd className="mt-1 text-sm text-gray-900">-</dd>
+                    <dd className="mt-1 text-sm text-gray-900">
+                      {(profile as any)?.on_toucan_since
+                        ? moment
+                            .utc((profile as any)?.on_toucan_since)
+                            .toString()
+                        : "-"}
+                    </dd>
                   </div>
                   <div className="sm:col-span-2">
                     <dt className="text-sm font-medium text-gray-500">

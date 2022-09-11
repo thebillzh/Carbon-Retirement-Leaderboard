@@ -1,6 +1,7 @@
 import { useCommonContext } from "@contexts/commonContextProvider";
 import { TokenPayload } from "@model/model";
 import { t_users } from "@prisma/client";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -12,10 +13,10 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
   return (
     <>
       {isEditing ? (
-        <ProfileEditCard profile={profile} />
+        <ProfileEditCard profile={profile} setIsEditing={setIsEditing} />
       ) : (
         <div className="min-h-full py-10">
-          {/* Page header */}
+          {/* Profile header */}
           <div className="max-w-3xl mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
             <div className="flex items-center space-x-5">
               <div className="flex-shrink-0">
@@ -44,25 +45,50 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                   />
                 </div>
               </div>
+
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  {profile?.uname}
+                  {profile?.uname ? profile.uname : "Toucan"}
                 </h1>
-                <p className="text-sm font-medium text-gray-500">
-                  {profile?.wallet_pub}
-                </p>
+
+                {profile?.wallet_pub ? (
+                  <div className="flex flex-row space-x-1 items-center text-gray-500">
+                    <p className="text-sm font-medium break-all text-gray-500">
+                      {profile?.wallet_pub}
+                    </p>
+                    <a href={"https://polygonscan.com/address/" + profile?.wallet_pub}  target="_blank"  rel="noopener noreferrer">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
+                      </svg>
+                    </a>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
+
             <div className="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
               {profile?.wallet_pub === user?.wallet_pub ? (
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                  className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
                   onClick={() => {
                     setIsEditing(true);
                   }}
                 >
-                  Edit
+                  Edit profile
                 </button>
               ) : (
                 <button
@@ -75,7 +101,7 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
             </div>
           </div>
 
-          <div className="mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense">
+          <div className="mt-4 sm:mt-8 max-w-3xl mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense">
             <div className="space-y-6">
               {/* Description list*/}
               <section aria-labelledby="applicant-information-title">
@@ -88,7 +114,9 @@ export default function ProfileCard({ profile }: { profile: t_users }) {
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
                           {(profile as any)?.on_toucan_since
-                            ? (profile as any)?.on_toucan_since
+                            ? moment
+                                .utc((profile as any)?.on_toucan_since)
+                                .toString()
                             : "-"}
                         </dd>
                       </div>
