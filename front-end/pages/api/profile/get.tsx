@@ -94,4 +94,4 @@ const handler = async (
   }
 };
 
-export default auth(verify(handler, { method: "get", paramsSchema }));
+export default verify(handler, { method: "get", paramsSchema });
