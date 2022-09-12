@@ -1,3 +1,4 @@
+import { ToucanAddressMapping } from "@constants/addressMapping";
 import {
   RANKING_API_BASE_URL,
   RANKING_API_BASE_URL_PROXY,
@@ -425,7 +426,7 @@ export default function Leaderboard({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                   >
-                                    {user?.ens || user?.address}
+                                    {user?.ens || ToucanAddressMapping[user?.address] || user?.address}
                                   </a>
                                 )}
                               </td>
