@@ -57,6 +57,7 @@ export const JSONToLeaderboardData = (data) => {
       uname: dataList[key].uname,
       ens: dataList[key].ens,
       total_retirement: dataList[key].retired_amount,
+      is_contract: dataList[key].is_contract,
     });
   }
   r.sort((a, b) => b.total_retirement - a.total_retirement);
@@ -195,7 +196,13 @@ export default function Leaderboard({
     end_time = moment(start_time).endOf("month");
     const monthURL = paramsToURL(1000, "nct", start_time, end_time);
     fetchAndCache(monthURL, cacheRankingdata);
-  }, [currentMonth, currentQuarter, currentYear, firstAllTimeAPIURL, firstAllTimeRankData]);
+  }, [
+    currentMonth,
+    currentQuarter,
+    currentYear,
+    firstAllTimeAPIURL,
+    firstAllTimeRankData,
+  ]);
 
   const apiURL = useRef("");
   const start_time = useRef<moment.Moment>();
@@ -363,6 +370,12 @@ export default function Leaderboard({
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
+                          Account type
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
                           Retirement
                         </th>
                         {/* <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -413,10 +426,7 @@ export default function Leaderboard({
                                 {/* Link to profile page. If no profile, link to polygonscan */}
                                 {user?.uname ? (
                                   <Link href={`/profile/${user?.address}`}>
-                                    <a
-                                    >
-                                      {user?.uname}
-                                    </a>
+                                    <a>{user?.uname}</a>
                                   </Link>
                                 ) : (
                                   <a
@@ -427,9 +437,14 @@ export default function Leaderboard({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                   >
-                                    {user?.ens || ToucanAddressMapping[user?.address] || user?.address}
+                                    {user?.ens ||
+                                      ToucanAddressMapping[user?.address] ||
+                                      user?.address}
                                   </a>
                                 )}
+                              </td>
+                              <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {user.is_contract ? "Contract" : "Address"}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 {(

@@ -43,4 +43,5 @@ export interface LeaderboardReturnItem {
   uname: string;
   ens: string;
   total_retirement: number;
+  is_contract: boolean;
 }
