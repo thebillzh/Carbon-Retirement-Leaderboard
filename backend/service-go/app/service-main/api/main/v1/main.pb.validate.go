@@ -406,6 +406,8 @@ func (m *LeaderboardItem) validate(all bool) error {
 
 	// no validation rules for Ens
 
+	// no validation rules for IsContract
+
 	if len(errors) > 0 {
 		return LeaderboardItemMultiError(errors)
 	}

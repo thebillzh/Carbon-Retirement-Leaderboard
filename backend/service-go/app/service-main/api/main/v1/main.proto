@@ -39,10 +39,11 @@ message GetLeaderboardReq {
 }
 
 message LeaderboardItem {
-  string wallet_pub = 1 [json_name="wallet_pub"];
+  string wallet_pub = 1 [json_name = "wallet_pub"];
   string uname = 2;
-  string retired_amount = 3 [json_name="retired_amount"];
+  string retired_amount = 3 [json_name = "retired_amount"];
   string ens = 4;
+  bool is_contract = 5 [json_name = "is_contract"];
 }
 
 message GetLeaderboardResp {

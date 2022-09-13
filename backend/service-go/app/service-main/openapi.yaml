@@ -75,6 +75,8 @@ components:
                     type: string
                 ens:
                     type: string
+                is_contract:
+                    type: boolean
         PingResp:
             type: object
             properties:

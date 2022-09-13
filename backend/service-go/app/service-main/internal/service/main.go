@@ -128,6 +128,7 @@ func (s *MainService) GetLeaderboard(ctx context.Context, req *v1.GetLeaderboard
 			Uname:         user.Uname,
 			RetiredAmount: decimal.NewFromFloat(user.RetiredAmount).String(),
 			Ens:           user.ENS,
+			IsContract:    user.IsContract,
 		})
 	}
 	first := int64(100)

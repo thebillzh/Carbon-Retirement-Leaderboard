@@ -191,24 +191,17 @@ func (s *MainService) checkAndSaveENS(ctx context.Context, addressStr string) (e
 	if addressStr == "" || addressStr == _nullAddress {
 		return
 	}
-	isContract, err := s.isContract(ctx, addressStr)
-	if err != nil {
-		err = fmt.Errorf("get isContract error: %+v", addressStr)
+	address := common.HexToAddress(addressStr)
+	var domain string
+	domain, err = ens.ReverseResolve(s.ethereumClient, address)
+	if err != nil && err.Error() != "not a resolver" {
+		err = fmt.Errorf("ReverseResolve error: %+v, address: %s", err, addressStr)
 		return
 	}
-	if !isContract {
-		address := common.HexToAddress(addressStr)
-		var domain string
-		domain, err = ens.ReverseResolve(s.ethereumClient, address)
-		if err != nil && err.Error() != "not a resolver" {
-			err = fmt.Errorf("ReverseResolve error: %+v, address: %s", err, addressStr)
+	if domain != "" {
+		if err = s.data.DB.TGoEns.Create().SetWalletPub(addressStr).SetEns(domain).OnConflict().UpdateEns().Exec(ctx); err != nil {
+			err = fmt.Errorf("upsert Ens error: %+v, address: %s", err, addressStr)
 			return
-		}
-		if domain != "" {
-			if err = s.data.DB.TGoEns.Create().SetWalletPub(addressStr).SetEns(domain).OnConflict().UpdateEns().Exec(ctx); err != nil {
-				err = fmt.Errorf("upsert Ens error: %+v, address: %s", err, addressStr)
-				return
-			}
 		}
 	}
 	return
@@ -318,18 +311,10 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 			if address == "" || address == _nullAddress {
 				address = tGoRetirement.CreatorAddress
 			}
-			isContract, err := s.isContract(ctx, address)
-			if err != nil {
-				err = fmt.Errorf("get isContract error: %+v", address)
-				log.Errorc(ctx, "[buildLeaderboard] %+v", err)
-				continue
-			}
-			if !isContract {
-				newAmount := decimal.NewFromFloat(addressToRetiredAmountMap[address]).
-					Add(decimal.NewFromFloat(tGoRetirement.Amount)).
-					InexactFloat64()
-				addressToRetiredAmountMap[address] = newAmount
-			}
+			newAmount := decimal.NewFromFloat(addressToRetiredAmountMap[address]).
+				Add(decimal.NewFromFloat(tGoRetirement.Amount)).
+				InexactFloat64()
+			addressToRetiredAmountMap[address] = newAmount
 		}
 		for address := range addressToRetiredAmountMap {
 			addressList = append(addressList, address)
@@ -391,6 +376,12 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 		if e, ok := addressToEnsMap[address]; ok {
 			user.ENS = e
 		}
+		isContract, err := s.isContract(ctx, address)
+		if err != nil {
+			err = fmt.Errorf("get isContract error: %+v", address)
+			log.Errorc(ctx, "[buildLeaderboard] %+v", err)
+		}
+		user.IsContract = isContract
 		leaderboard = append(leaderboard, user)
 	}
 	return
