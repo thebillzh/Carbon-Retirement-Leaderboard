@@ -127,7 +127,7 @@ const useFetch = (
     return () => {
       cancelRequest = true;
     };
-  }, [url]);
+  }, [url, cache]);
 
   return state;
 };
@@ -179,6 +179,7 @@ export default function Leaderboard({
   const cacheRankingdata = useRef<{ string: LeaderboardReturnItem[] }>(
     {} as { string: LeaderboardReturnItem[] }
   );
+
   useEffect(() => {
     cacheRankingdata.current[firstAllTimeAPIURL] = firstAllTimeRankData;
 
@@ -190,11 +191,11 @@ export default function Leaderboard({
     fetchAndCache(quarterURL, cacheRankingdata);
 
     // current month
-    start_time = moment.utc(monthSelected + "-" + yearSelected, "M-YYYY");
+    start_time = moment.utc(currentMonth + "-" + currentYear, "M-YYYY");
     end_time = moment(start_time).endOf("month");
     const monthURL = paramsToURL(1000, "nct", start_time, end_time);
     fetchAndCache(monthURL, cacheRankingdata);
-  }, []);
+  }, [currentMonth, currentQuarter, currentYear, firstAllTimeAPIURL, firstAllTimeRankData]);
 
   const apiURL = useRef("");
   const start_time = useRef<moment.Moment>();
@@ -245,7 +246,7 @@ export default function Leaderboard({
 
   useEffect(() => {
     setLoading({ visible: status === "fetching", isNeedBackground: true });
-  }, [status]);
+  }, [setLoading, status]);
 
   return (
     <div className="py-10">
