@@ -5,3 +5,4 @@ __pycache__
 build/
 reports/
 .DS_Store
+node_modules
