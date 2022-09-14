@@ -7,6 +7,7 @@ import (
 	"toucan-leaderboard/ent/schema"
 	"toucan-leaderboard/ent/tgocache"
 	"toucan-leaderboard/ent/tgoens"
+	"toucan-leaderboard/ent/tgonft"
 	"toucan-leaderboard/ent/tgoretirement"
 	"toucan-leaderboard/ent/tuser"
 )
@@ -47,6 +48,42 @@ func init() {
 	tgoensDescCtime := tgoensFields[4].Descriptor()
 	// tgoens.DefaultCtime holds the default value on creation for the ctime field.
 	tgoens.DefaultCtime = tgoensDescCtime.Default.(time.Time)
+	tgonftFields := schema.TGoNFT{}.Fields()
+	_ = tgonftFields
+	// tgonftDescWalletPub is the schema descriptor for wallet_pub field.
+	tgonftDescWalletPub := tgonftFields[1].Descriptor()
+	// tgonft.DefaultWalletPub holds the default value on creation for the wallet_pub field.
+	tgonft.DefaultWalletPub = tgonftDescWalletPub.Default.(string)
+	// tgonftDescRankType is the schema descriptor for rank_type field.
+	tgonftDescRankType := tgonftFields[2].Descriptor()
+	// tgonft.DefaultRankType holds the default value on creation for the rank_type field.
+	tgonft.DefaultRankType = tgonftDescRankType.Default.(int)
+	// tgonftDescRankYear is the schema descriptor for rank_year field.
+	tgonftDescRankYear := tgonftFields[3].Descriptor()
+	// tgonft.DefaultRankYear holds the default value on creation for the rank_year field.
+	tgonft.DefaultRankYear = tgonftDescRankYear.Default.(int)
+	// tgonftDescRankSeason is the schema descriptor for rank_season field.
+	tgonftDescRankSeason := tgonftFields[4].Descriptor()
+	// tgonft.DefaultRankSeason holds the default value on creation for the rank_season field.
+	tgonft.DefaultRankSeason = tgonftDescRankSeason.Default.(int)
+	// tgonftDescRank is the schema descriptor for rank field.
+	tgonftDescRank := tgonftFields[5].Descriptor()
+	// tgonft.DefaultRank holds the default value on creation for the rank field.
+	tgonft.DefaultRank = tgonftDescRank.Default.(int)
+	// tgonftDescMintTx is the schema descriptor for mint_tx field.
+	tgonftDescMintTx := tgonftFields[6].Descriptor()
+	// tgonft.DefaultMintTx holds the default value on creation for the mint_tx field.
+	tgonft.DefaultMintTx = tgonftDescMintTx.Default.(string)
+	// tgonftDescMtime is the schema descriptor for mtime field.
+	tgonftDescMtime := tgonftFields[7].Descriptor()
+	// tgonft.DefaultMtime holds the default value on creation for the mtime field.
+	tgonft.DefaultMtime = tgonftDescMtime.Default.(time.Time)
+	// tgonft.UpdateDefaultMtime holds the default value on update for the mtime field.
+	tgonft.UpdateDefaultMtime = tgonftDescMtime.UpdateDefault.(func() time.Time)
+	// tgonftDescCtime is the schema descriptor for ctime field.
+	tgonftDescCtime := tgonftFields[8].Descriptor()
+	// tgonft.DefaultCtime holds the default value on creation for the ctime field.
+	tgonft.DefaultCtime = tgonftDescCtime.Default.(time.Time)
 	tgoretirementFields := schema.TGoRetirement{}.Fields()
 	_ = tgoretirementFields
 	// tgoretirementDescCreationTx is the schema descriptor for creation_tx field.

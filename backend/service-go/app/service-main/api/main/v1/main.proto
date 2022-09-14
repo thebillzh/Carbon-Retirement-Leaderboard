@@ -21,6 +21,11 @@ service Main {
       get: "/service/main/v1/getLeaderboard"
     };
   }
+  rpc GetAvailableNFTList (GetAvailableNFTListReq) returns (GetAvailableNFTListResp) {
+    option (google.api.http) = {
+      get: "/service/main/v1/getAvailableNFTList"
+    };
+  }
 }
 
 message PingReq {
@@ -50,4 +55,19 @@ message LeaderboardItem {
 message GetLeaderboardResp {
   repeated LeaderboardItem list = 1;
   string type = 2;
+}
+
+message GetAvailableNFTListReq {
+  string wallet_pub = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+message AvailableNFT {
+  int64 rank_type = 1 [json_name = "rank_type"];
+  int64 rank_year = 2 [json_name = "rank_year"];
+  int64 rank_season = 3 [json_name = "rank_season"];
+  int64 rank = 4;
+}
+
+message GetAvailableNFTListResp {
+  repeated AvailableNFT list = 1;
 }

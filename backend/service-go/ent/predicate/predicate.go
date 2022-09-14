@@ -12,6 +12,9 @@ type TGoCache func(*sql.Selector)
 // TGoEns is the predicate function for tgoens builders.
 type TGoEns func(*sql.Selector)
 
+// TGoNFT is the predicate function for tgonft builders.
+type TGoNFT func(*sql.Selector)
+
 // TGoRetirement is the predicate function for tgoretirement builders.
 type TGoRetirement func(*sql.Selector)
 

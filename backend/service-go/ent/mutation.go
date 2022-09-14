@@ -11,6 +11,7 @@ import (
 	"toucan-leaderboard/ent/predicate"
 	"toucan-leaderboard/ent/tgocache"
 	"toucan-leaderboard/ent/tgoens"
+	"toucan-leaderboard/ent/tgonft"
 	"toucan-leaderboard/ent/tgoretirement"
 	"toucan-leaderboard/ent/tuser"
 
@@ -28,6 +29,7 @@ const (
 	// Node types.
 	TypeTGoCache      = "TGoCache"
 	TypeTGoEns        = "TGoEns"
+	TypeTGoNFT        = "TGoNFT"
 	TypeTGoRetirement = "TGoRetirement"
 	TypeTUser         = "TUser"
 )
@@ -988,6 +990,836 @@ func (m *TGoEnsMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *TGoEnsMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown TGoEns edge %s", name)
+}
+
+// TGoNFTMutation represents an operation that mutates the TGoNFT nodes in the graph.
+type TGoNFTMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *uint64
+	wallet_pub     *string
+	rank_type      *int
+	addrank_type   *int
+	rank_year      *int
+	addrank_year   *int
+	rank_season    *int
+	addrank_season *int
+	rank           *int
+	addrank        *int
+	mint_tx        *string
+	mtime          *time.Time
+	ctime          *time.Time
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*TGoNFT, error)
+	predicates     []predicate.TGoNFT
+}
+
+var _ ent.Mutation = (*TGoNFTMutation)(nil)
+
+// tgonftOption allows management of the mutation configuration using functional options.
+type tgonftOption func(*TGoNFTMutation)
+
+// newTGoNFTMutation creates new mutation for the TGoNFT entity.
+func newTGoNFTMutation(c config, op Op, opts ...tgonftOption) *TGoNFTMutation {
+	m := &TGoNFTMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTGoNFT,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTGoNFTID sets the ID field of the mutation.
+func withTGoNFTID(id uint64) tgonftOption {
+	return func(m *TGoNFTMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *TGoNFT
+		)
+		m.oldValue = func(ctx context.Context) (*TGoNFT, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().TGoNFT.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTGoNFT sets the old TGoNFT of the mutation.
+func withTGoNFT(node *TGoNFT) tgonftOption {
+	return func(m *TGoNFTMutation) {
+		m.oldValue = func(context.Context) (*TGoNFT, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TGoNFTMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TGoNFTMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TGoNFT entities.
+func (m *TGoNFTMutation) SetID(id uint64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TGoNFTMutation) ID() (id uint64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TGoNFTMutation) IDs(ctx context.Context) ([]uint64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().TGoNFT.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetWalletPub sets the "wallet_pub" field.
+func (m *TGoNFTMutation) SetWalletPub(s string) {
+	m.wallet_pub = &s
+}
+
+// WalletPub returns the value of the "wallet_pub" field in the mutation.
+func (m *TGoNFTMutation) WalletPub() (r string, exists bool) {
+	v := m.wallet_pub
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWalletPub returns the old "wallet_pub" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldWalletPub(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWalletPub is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWalletPub requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWalletPub: %w", err)
+	}
+	return oldValue.WalletPub, nil
+}
+
+// ResetWalletPub resets all changes to the "wallet_pub" field.
+func (m *TGoNFTMutation) ResetWalletPub() {
+	m.wallet_pub = nil
+}
+
+// SetRankType sets the "rank_type" field.
+func (m *TGoNFTMutation) SetRankType(i int) {
+	m.rank_type = &i
+	m.addrank_type = nil
+}
+
+// RankType returns the value of the "rank_type" field in the mutation.
+func (m *TGoNFTMutation) RankType() (r int, exists bool) {
+	v := m.rank_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRankType returns the old "rank_type" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldRankType(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRankType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRankType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRankType: %w", err)
+	}
+	return oldValue.RankType, nil
+}
+
+// AddRankType adds i to the "rank_type" field.
+func (m *TGoNFTMutation) AddRankType(i int) {
+	if m.addrank_type != nil {
+		*m.addrank_type += i
+	} else {
+		m.addrank_type = &i
+	}
+}
+
+// AddedRankType returns the value that was added to the "rank_type" field in this mutation.
+func (m *TGoNFTMutation) AddedRankType() (r int, exists bool) {
+	v := m.addrank_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRankType resets all changes to the "rank_type" field.
+func (m *TGoNFTMutation) ResetRankType() {
+	m.rank_type = nil
+	m.addrank_type = nil
+}
+
+// SetRankYear sets the "rank_year" field.
+func (m *TGoNFTMutation) SetRankYear(i int) {
+	m.rank_year = &i
+	m.addrank_year = nil
+}
+
+// RankYear returns the value of the "rank_year" field in the mutation.
+func (m *TGoNFTMutation) RankYear() (r int, exists bool) {
+	v := m.rank_year
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRankYear returns the old "rank_year" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldRankYear(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRankYear is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRankYear requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRankYear: %w", err)
+	}
+	return oldValue.RankYear, nil
+}
+
+// AddRankYear adds i to the "rank_year" field.
+func (m *TGoNFTMutation) AddRankYear(i int) {
+	if m.addrank_year != nil {
+		*m.addrank_year += i
+	} else {
+		m.addrank_year = &i
+	}
+}
+
+// AddedRankYear returns the value that was added to the "rank_year" field in this mutation.
+func (m *TGoNFTMutation) AddedRankYear() (r int, exists bool) {
+	v := m.addrank_year
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRankYear resets all changes to the "rank_year" field.
+func (m *TGoNFTMutation) ResetRankYear() {
+	m.rank_year = nil
+	m.addrank_year = nil
+}
+
+// SetRankSeason sets the "rank_season" field.
+func (m *TGoNFTMutation) SetRankSeason(i int) {
+	m.rank_season = &i
+	m.addrank_season = nil
+}
+
+// RankSeason returns the value of the "rank_season" field in the mutation.
+func (m *TGoNFTMutation) RankSeason() (r int, exists bool) {
+	v := m.rank_season
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRankSeason returns the old "rank_season" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldRankSeason(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRankSeason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRankSeason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRankSeason: %w", err)
+	}
+	return oldValue.RankSeason, nil
+}
+
+// AddRankSeason adds i to the "rank_season" field.
+func (m *TGoNFTMutation) AddRankSeason(i int) {
+	if m.addrank_season != nil {
+		*m.addrank_season += i
+	} else {
+		m.addrank_season = &i
+	}
+}
+
+// AddedRankSeason returns the value that was added to the "rank_season" field in this mutation.
+func (m *TGoNFTMutation) AddedRankSeason() (r int, exists bool) {
+	v := m.addrank_season
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRankSeason resets all changes to the "rank_season" field.
+func (m *TGoNFTMutation) ResetRankSeason() {
+	m.rank_season = nil
+	m.addrank_season = nil
+}
+
+// SetRank sets the "rank" field.
+func (m *TGoNFTMutation) SetRank(i int) {
+	m.rank = &i
+	m.addrank = nil
+}
+
+// Rank returns the value of the "rank" field in the mutation.
+func (m *TGoNFTMutation) Rank() (r int, exists bool) {
+	v := m.rank
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRank returns the old "rank" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldRank(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRank is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRank requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRank: %w", err)
+	}
+	return oldValue.Rank, nil
+}
+
+// AddRank adds i to the "rank" field.
+func (m *TGoNFTMutation) AddRank(i int) {
+	if m.addrank != nil {
+		*m.addrank += i
+	} else {
+		m.addrank = &i
+	}
+}
+
+// AddedRank returns the value that was added to the "rank" field in this mutation.
+func (m *TGoNFTMutation) AddedRank() (r int, exists bool) {
+	v := m.addrank
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRank resets all changes to the "rank" field.
+func (m *TGoNFTMutation) ResetRank() {
+	m.rank = nil
+	m.addrank = nil
+}
+
+// SetMintTx sets the "mint_tx" field.
+func (m *TGoNFTMutation) SetMintTx(s string) {
+	m.mint_tx = &s
+}
+
+// MintTx returns the value of the "mint_tx" field in the mutation.
+func (m *TGoNFTMutation) MintTx() (r string, exists bool) {
+	v := m.mint_tx
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMintTx returns the old "mint_tx" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldMintTx(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMintTx is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMintTx requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMintTx: %w", err)
+	}
+	return oldValue.MintTx, nil
+}
+
+// ResetMintTx resets all changes to the "mint_tx" field.
+func (m *TGoNFTMutation) ResetMintTx() {
+	m.mint_tx = nil
+}
+
+// SetMtime sets the "mtime" field.
+func (m *TGoNFTMutation) SetMtime(t time.Time) {
+	m.mtime = &t
+}
+
+// Mtime returns the value of the "mtime" field in the mutation.
+func (m *TGoNFTMutation) Mtime() (r time.Time, exists bool) {
+	v := m.mtime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMtime returns the old "mtime" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldMtime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMtime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMtime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMtime: %w", err)
+	}
+	return oldValue.Mtime, nil
+}
+
+// ResetMtime resets all changes to the "mtime" field.
+func (m *TGoNFTMutation) ResetMtime() {
+	m.mtime = nil
+}
+
+// SetCtime sets the "ctime" field.
+func (m *TGoNFTMutation) SetCtime(t time.Time) {
+	m.ctime = &t
+}
+
+// Ctime returns the value of the "ctime" field in the mutation.
+func (m *TGoNFTMutation) Ctime() (r time.Time, exists bool) {
+	v := m.ctime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCtime returns the old "ctime" field's value of the TGoNFT entity.
+// If the TGoNFT object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoNFTMutation) OldCtime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCtime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCtime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCtime: %w", err)
+	}
+	return oldValue.Ctime, nil
+}
+
+// ResetCtime resets all changes to the "ctime" field.
+func (m *TGoNFTMutation) ResetCtime() {
+	m.ctime = nil
+}
+
+// Where appends a list predicates to the TGoNFTMutation builder.
+func (m *TGoNFTMutation) Where(ps ...predicate.TGoNFT) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *TGoNFTMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (TGoNFT).
+func (m *TGoNFTMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TGoNFTMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.wallet_pub != nil {
+		fields = append(fields, tgonft.FieldWalletPub)
+	}
+	if m.rank_type != nil {
+		fields = append(fields, tgonft.FieldRankType)
+	}
+	if m.rank_year != nil {
+		fields = append(fields, tgonft.FieldRankYear)
+	}
+	if m.rank_season != nil {
+		fields = append(fields, tgonft.FieldRankSeason)
+	}
+	if m.rank != nil {
+		fields = append(fields, tgonft.FieldRank)
+	}
+	if m.mint_tx != nil {
+		fields = append(fields, tgonft.FieldMintTx)
+	}
+	if m.mtime != nil {
+		fields = append(fields, tgonft.FieldMtime)
+	}
+	if m.ctime != nil {
+		fields = append(fields, tgonft.FieldCtime)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TGoNFTMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case tgonft.FieldWalletPub:
+		return m.WalletPub()
+	case tgonft.FieldRankType:
+		return m.RankType()
+	case tgonft.FieldRankYear:
+		return m.RankYear()
+	case tgonft.FieldRankSeason:
+		return m.RankSeason()
+	case tgonft.FieldRank:
+		return m.Rank()
+	case tgonft.FieldMintTx:
+		return m.MintTx()
+	case tgonft.FieldMtime:
+		return m.Mtime()
+	case tgonft.FieldCtime:
+		return m.Ctime()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TGoNFTMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case tgonft.FieldWalletPub:
+		return m.OldWalletPub(ctx)
+	case tgonft.FieldRankType:
+		return m.OldRankType(ctx)
+	case tgonft.FieldRankYear:
+		return m.OldRankYear(ctx)
+	case tgonft.FieldRankSeason:
+		return m.OldRankSeason(ctx)
+	case tgonft.FieldRank:
+		return m.OldRank(ctx)
+	case tgonft.FieldMintTx:
+		return m.OldMintTx(ctx)
+	case tgonft.FieldMtime:
+		return m.OldMtime(ctx)
+	case tgonft.FieldCtime:
+		return m.OldCtime(ctx)
+	}
+	return nil, fmt.Errorf("unknown TGoNFT field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TGoNFTMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case tgonft.FieldWalletPub:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWalletPub(v)
+		return nil
+	case tgonft.FieldRankType:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRankType(v)
+		return nil
+	case tgonft.FieldRankYear:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRankYear(v)
+		return nil
+	case tgonft.FieldRankSeason:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRankSeason(v)
+		return nil
+	case tgonft.FieldRank:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRank(v)
+		return nil
+	case tgonft.FieldMintTx:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMintTx(v)
+		return nil
+	case tgonft.FieldMtime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMtime(v)
+		return nil
+	case tgonft.FieldCtime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCtime(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TGoNFT field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TGoNFTMutation) AddedFields() []string {
+	var fields []string
+	if m.addrank_type != nil {
+		fields = append(fields, tgonft.FieldRankType)
+	}
+	if m.addrank_year != nil {
+		fields = append(fields, tgonft.FieldRankYear)
+	}
+	if m.addrank_season != nil {
+		fields = append(fields, tgonft.FieldRankSeason)
+	}
+	if m.addrank != nil {
+		fields = append(fields, tgonft.FieldRank)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TGoNFTMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case tgonft.FieldRankType:
+		return m.AddedRankType()
+	case tgonft.FieldRankYear:
+		return m.AddedRankYear()
+	case tgonft.FieldRankSeason:
+		return m.AddedRankSeason()
+	case tgonft.FieldRank:
+		return m.AddedRank()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TGoNFTMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case tgonft.FieldRankType:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRankType(v)
+		return nil
+	case tgonft.FieldRankYear:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRankYear(v)
+		return nil
+	case tgonft.FieldRankSeason:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRankSeason(v)
+		return nil
+	case tgonft.FieldRank:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRank(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TGoNFT numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TGoNFTMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TGoNFTMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TGoNFTMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown TGoNFT nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TGoNFTMutation) ResetField(name string) error {
+	switch name {
+	case tgonft.FieldWalletPub:
+		m.ResetWalletPub()
+		return nil
+	case tgonft.FieldRankType:
+		m.ResetRankType()
+		return nil
+	case tgonft.FieldRankYear:
+		m.ResetRankYear()
+		return nil
+	case tgonft.FieldRankSeason:
+		m.ResetRankSeason()
+		return nil
+	case tgonft.FieldRank:
+		m.ResetRank()
+		return nil
+	case tgonft.FieldMintTx:
+		m.ResetMintTx()
+		return nil
+	case tgonft.FieldMtime:
+		m.ResetMtime()
+		return nil
+	case tgonft.FieldCtime:
+		m.ResetCtime()
+		return nil
+	}
+	return fmt.Errorf("unknown TGoNFT field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TGoNFTMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TGoNFTMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TGoNFTMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TGoNFTMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TGoNFTMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TGoNFTMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TGoNFTMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown TGoNFT unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TGoNFTMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown TGoNFT edge %s", name)
 }
 
 // TGoRetirementMutation represents an operation that mutates the TGoRetirement nodes in the graph.

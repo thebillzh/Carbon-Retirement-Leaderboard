@@ -26,6 +26,7 @@ type config struct {
 type hooks struct {
 	TGoCache      []ent.Hook
 	TGoEns        []ent.Hook
+	TGoNFT        []ent.Hook
 	TGoRetirement []ent.Hook
 	TUser         []ent.Hook
 }

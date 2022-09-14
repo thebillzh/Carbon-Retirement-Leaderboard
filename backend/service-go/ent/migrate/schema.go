@@ -37,6 +37,24 @@ var (
 		Columns:    TGoEnsColumns,
 		PrimaryKey: []*schema.Column{TGoEnsColumns[0]},
 	}
+	// TGoNftsColumns holds the columns for the "t_go_nfts" table.
+	TGoNftsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "wallet_pub", Type: field.TypeString, Default: ""},
+		{Name: "rank_type", Type: field.TypeInt, Default: 0},
+		{Name: "rank_year", Type: field.TypeInt, Default: 0},
+		{Name: "rank_season", Type: field.TypeInt, Default: 0},
+		{Name: "rank", Type: field.TypeInt, Default: 0},
+		{Name: "mint_tx", Type: field.TypeString, Default: ""},
+		{Name: "mtime", Type: field.TypeTime},
+		{Name: "ctime", Type: field.TypeTime},
+	}
+	// TGoNftsTable holds the schema information for the "t_go_nfts" table.
+	TGoNftsTable = &schema.Table{
+		Name:       "t_go_nfts",
+		Columns:    TGoNftsColumns,
+		PrimaryKey: []*schema.Column{TGoNftsColumns[0]},
+	}
 	// TGoRetirementsColumns holds the columns for the "t_go_retirements" table.
 	TGoRetirementsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -83,6 +101,7 @@ var (
 	Tables = []*schema.Table{
 		TGoCachesTable,
 		TGoEnsTable,
+		TGoNftsTable,
 		TGoRetirementsTable,
 		TUsersTable,
 	}
@@ -94,6 +113,9 @@ func init() {
 	}
 	TGoEnsTable.Annotation = &entsql.Annotation{
 		Table: "t_go_ens",
+	}
+	TGoNftsTable.Annotation = &entsql.Annotation{
+		Table: "t_go_nfts",
 	}
 	TGoRetirementsTable.Annotation = &entsql.Annotation{
 		Table: "t_go_retirements",

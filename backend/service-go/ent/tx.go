@@ -16,6 +16,8 @@ type Tx struct {
 	TGoCache *TGoCacheClient
 	// TGoEns is the client for interacting with the TGoEns builders.
 	TGoEns *TGoEnsClient
+	// TGoNFT is the client for interacting with the TGoNFT builders.
+	TGoNFT *TGoNFTClient
 	// TGoRetirement is the client for interacting with the TGoRetirement builders.
 	TGoRetirement *TGoRetirementClient
 	// TUser is the client for interacting with the TUser builders.
@@ -157,6 +159,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.TGoCache = NewTGoCacheClient(tx.config)
 	tx.TGoEns = NewTGoEnsClient(tx.config)
+	tx.TGoNFT = NewTGoNFTClient(tx.config)
 	tx.TGoRetirement = NewTGoRetirementClient(tx.config)
 	tx.TUser = NewTUserClient(tx.config)
 }

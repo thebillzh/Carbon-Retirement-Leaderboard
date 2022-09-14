@@ -625,3 +625,359 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetLeaderboardRespValidationError{}
+
+// Validate checks the field values on GetAvailableNFTListReq with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetAvailableNFTListReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetAvailableNFTListReq with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetAvailableNFTListReqMultiError, or nil if none found.
+func (m *GetAvailableNFTListReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetAvailableNFTListReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetWalletPub()) < 1 {
+		err := GetAvailableNFTListReqValidationError{
+			field:  "WalletPub",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return GetAvailableNFTListReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetAvailableNFTListReqMultiError is an error wrapping multiple validation
+// errors returned by GetAvailableNFTListReq.ValidateAll() if the designated
+// constraints aren't met.
+type GetAvailableNFTListReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetAvailableNFTListReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetAvailableNFTListReqMultiError) AllErrors() []error { return m }
+
+// GetAvailableNFTListReqValidationError is the validation error returned by
+// GetAvailableNFTListReq.Validate if the designated constraints aren't met.
+type GetAvailableNFTListReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetAvailableNFTListReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetAvailableNFTListReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetAvailableNFTListReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetAvailableNFTListReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetAvailableNFTListReqValidationError) ErrorName() string {
+	return "GetAvailableNFTListReqValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetAvailableNFTListReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetAvailableNFTListReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetAvailableNFTListReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetAvailableNFTListReqValidationError{}
+
+// Validate checks the field values on AvailableNFT with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *AvailableNFT) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AvailableNFT with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in AvailableNFTMultiError, or
+// nil if none found.
+func (m *AvailableNFT) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AvailableNFT) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for RankType
+
+	// no validation rules for RankYear
+
+	// no validation rules for RankSeason
+
+	// no validation rules for Rank
+
+	if len(errors) > 0 {
+		return AvailableNFTMultiError(errors)
+	}
+
+	return nil
+}
+
+// AvailableNFTMultiError is an error wrapping multiple validation errors
+// returned by AvailableNFT.ValidateAll() if the designated constraints aren't met.
+type AvailableNFTMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AvailableNFTMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AvailableNFTMultiError) AllErrors() []error { return m }
+
+// AvailableNFTValidationError is the validation error returned by
+// AvailableNFT.Validate if the designated constraints aren't met.
+type AvailableNFTValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AvailableNFTValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AvailableNFTValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AvailableNFTValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AvailableNFTValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AvailableNFTValidationError) ErrorName() string { return "AvailableNFTValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AvailableNFTValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAvailableNFT.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AvailableNFTValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AvailableNFTValidationError{}
+
+// Validate checks the field values on GetAvailableNFTListResp with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetAvailableNFTListResp) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetAvailableNFTListResp with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetAvailableNFTListRespMultiError, or nil if none found.
+func (m *GetAvailableNFTListResp) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetAvailableNFTListResp) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetList() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetAvailableNFTListRespValidationError{
+						field:  fmt.Sprintf("List[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetAvailableNFTListRespValidationError{
+						field:  fmt.Sprintf("List[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetAvailableNFTListRespValidationError{
+					field:  fmt.Sprintf("List[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return GetAvailableNFTListRespMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetAvailableNFTListRespMultiError is an error wrapping multiple validation
+// errors returned by GetAvailableNFTListResp.ValidateAll() if the designated
+// constraints aren't met.
+type GetAvailableNFTListRespMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetAvailableNFTListRespMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetAvailableNFTListRespMultiError) AllErrors() []error { return m }
+
+// GetAvailableNFTListRespValidationError is the validation error returned by
+// GetAvailableNFTListResp.Validate if the designated constraints aren't met.
+type GetAvailableNFTListRespValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetAvailableNFTListRespValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetAvailableNFTListRespValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetAvailableNFTListRespValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetAvailableNFTListRespValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetAvailableNFTListRespValidationError) ErrorName() string {
+	return "GetAvailableNFTListRespValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetAvailableNFTListRespValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetAvailableNFTListResp.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetAvailableNFTListRespValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetAvailableNFTListRespValidationError{}

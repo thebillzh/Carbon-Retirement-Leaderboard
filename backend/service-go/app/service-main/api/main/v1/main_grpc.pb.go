@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type MainClient interface {
 	Ping(ctx context.Context, in *PingReq, opts ...grpc.CallOption) (*PingResp, error)
 	GetLeaderboard(ctx context.Context, in *GetLeaderboardReq, opts ...grpc.CallOption) (*GetLeaderboardResp, error)
+	GetAvailableNFTList(ctx context.Context, in *GetAvailableNFTListReq, opts ...grpc.CallOption) (*GetAvailableNFTListResp, error)
 }
 
 type mainClient struct {
@@ -52,12 +53,22 @@ func (c *mainClient) GetLeaderboard(ctx context.Context, in *GetLeaderboardReq, 
 	return out, nil
 }
 
+func (c *mainClient) GetAvailableNFTList(ctx context.Context, in *GetAvailableNFTListReq, opts ...grpc.CallOption) (*GetAvailableNFTListResp, error) {
+	out := new(GetAvailableNFTListResp)
+	err := c.cc.Invoke(ctx, "/main.v1.Main/GetAvailableNFTList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MainServer is the server API for Main service.
 // All implementations must embed UnimplementedMainServer
 // for forward compatibility
 type MainServer interface {
 	Ping(context.Context, *PingReq) (*PingResp, error)
 	GetLeaderboard(context.Context, *GetLeaderboardReq) (*GetLeaderboardResp, error)
+	GetAvailableNFTList(context.Context, *GetAvailableNFTListReq) (*GetAvailableNFTListResp, error)
 	mustEmbedUnimplementedMainServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedMainServer) Ping(context.Context, *PingReq) (*PingResp, error
 }
 func (UnimplementedMainServer) GetLeaderboard(context.Context, *GetLeaderboardReq) (*GetLeaderboardResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLeaderboard not implemented")
+}
+func (UnimplementedMainServer) GetAvailableNFTList(context.Context, *GetAvailableNFTListReq) (*GetAvailableNFTListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAvailableNFTList not implemented")
 }
 func (UnimplementedMainServer) mustEmbedUnimplementedMainServer() {}
 
@@ -120,6 +134,24 @@ func _Main_GetLeaderboard_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Main_GetAvailableNFTList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAvailableNFTListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MainServer).GetAvailableNFTList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.v1.Main/GetAvailableNFTList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MainServer).GetAvailableNFTList(ctx, req.(*GetAvailableNFTListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Main_ServiceDesc is the grpc.ServiceDesc for Main service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var Main_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLeaderboard",
 			Handler:    _Main_GetLeaderboard_Handler,
+		},
+		{
+			MethodName: "GetAvailableNFTList",
+			Handler:    _Main_GetAvailableNFTList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

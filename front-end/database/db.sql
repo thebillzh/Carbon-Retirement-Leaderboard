@@ -27,6 +27,7 @@ CREATE TABLE `t_go_retirements` (
   `token_address` varchar (255) NOT NULL DEFAULT '' COMMENT 'token address',
   `token_name` varchar (255) NOT NULL DEFAULT '' COMMENT 'token name',
   `token_type` varchar (255) NOT NULL DEFAULT '' COMMENT 'type of token such as nct, bct...',
+  `retirement_message` text NOT NULL DEFAULT '' COMMENT 'message of retirement',
   `retirement_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT 'time of retirement',
   `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time',
   `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
@@ -58,3 +59,20 @@ CREATE TABLE `t_go_caches` (
   key `ix_mtime` USING btree (`mtime`),
   unique key `uk_cache_key` USING btree (`cache_key`)
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" COMMENT = 'Cache Table(Go service)';
+
+-- NFT Table(Go service)
+CREATE TABLE `t_go_nfts` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'auto increment primary key',
+  `wallet_pub` varchar (127) NOT NULL DEFAULT '' COMMENT 'wallet public key',
+  `rank_type` int NOT NULL DEFAULT 0 COMMENT 'type of rank, 0 monthly 1 quarterly 2 yearly',
+  `rank_year` int NOT NULL DEFAULT 0 COMMENT 'year of rank',
+  `rank_season` int NOT NULL DEFAULT 0 COMMENT 'season of rank, 1-12 for monthly, 1-4 for quarterly, 0 for yearly',
+  `rank` int NOT NULL DEFAULT 0 COMMENT 'rank in the leaderboard',
+  `mint_tx` varchar (255) NOT NULL DEFAULT '' COMMENT 'hash of mint tx',
+  `mtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modify time',
+  `ctime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+  PRIMARY KEY (`id`),
+  key `ix_mtime` USING btree (`mtime`),
+  key `ix_wallet_pub` USING btree (`wallet_pub`),
+  key `ix_mint_tx` USING btree (`mint_tx`)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" COMMENT = 'NFT Table(Go service)';

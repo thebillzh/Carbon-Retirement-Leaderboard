@@ -18,6 +18,7 @@ import (
 	"toucan-leaderboard/app/service-main/internal/model"
 	"toucan-leaderboard/common/library/cron"
 	"toucan-leaderboard/common/library/log"
+	"toucan-leaderboard/ent"
 )
 
 type MainService struct {
@@ -37,8 +38,9 @@ type MainService struct {
 	addressToEnsMap        atomic.Value
 	addressToIsContractMap sync.Map
 
-	realtimeNCTLeaderboard atomic.Value
-	leaderboardMap         sync.Map
+	realtimeNCTLeaderboard       atomic.Value
+	leaderboardMap               sync.Map
+	addressToAvailableNFTListMap atomic.Value
 }
 
 const (
@@ -141,5 +143,26 @@ func (s *MainService) GetLeaderboard(ctx context.Context, req *v1.GetLeaderboard
 		total = first
 	}
 	resp.List = resp.List[:total]
+	return
+}
+
+func (s *MainService) GetAvailableNFTList(ctx context.Context, req *v1.GetAvailableNFTListReq) (resp *v1.GetAvailableNFTListResp, err error) {
+	resp = &v1.GetAvailableNFTListResp{List: []*v1.AvailableNFT{}}
+	addressToAvailableNFTListMap, ok := s.addressToAvailableNFTListMap.Load().(map[string][]*ent.TGoNFT)
+	if !ok {
+		log.Errorc(ctx, "[GetAvailableNFTList] addressToAvailableNFTListMap type error")
+		err = v1.ErrorInternalServerError("unexpected error")
+		return
+	}
+	if availableNFTList, ok := addressToAvailableNFTListMap[req.GetWalletPub()]; ok {
+		for _, availableNFT := range availableNFTList {
+			resp.List = append(resp.List, &v1.AvailableNFT{
+				RankType:   int64(availableNFT.RankType),
+				RankYear:   int64(availableNFT.RankYear),
+				RankSeason: int64(availableNFT.RankSeason),
+				Rank:       int64(availableNFT.Rank),
+			})
+		}
+	}
 	return
 }

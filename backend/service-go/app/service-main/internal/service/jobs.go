@@ -38,12 +38,15 @@ func checkCronErr(entryId cron3.EntryID, err error) {
 }
 
 func (s *MainService) initJobs() {
-	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadRetirementData, "loadRetirementData",cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadRetirementData, "loadRetirementData"))
 	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadENS, "loadENS"))
 	checkCronErr(s.cronUtil.AddFunc("@every 15s", s.loadNCTRetirementList, "loadNCTRetirementList", cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadAddressToTUserMap, "loadAddressToTUserMap", cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 15s", s.loadAddressToEnsMap, "loadAddressToEnsMap", cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 30s", s.loadRealtimeNCTLeaderboard, "loadRealtimeNCTLeaderboard", cron.PreLoad()))
+	checkCronErr(s.cronUtil.AddFunc("@every 30s", s.loadAddressToAvailableNFTListMap, "loadAddressToAvailableNFTListMap", cron.PreLoad()))
+	//checkCronErr(s.cronUtil.AddFunc("@every 30m", s.loadMonthlyNFTs, "loadMonthlyNFTs"))
+	//checkCronErr(s.cronUtil.AddFunc("@every 30m", s.loadQuarterlyNFTs, "loadQuarterlyNFTs"))
 }
 
 func (s *MainService) getNCTRedeemTokenList(ctx context.Context) (tokenList []string, err error) {

@@ -34,6 +34,19 @@ func (f TGoEnsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return f(ctx, mv)
 }
 
+// The TGoNFTFunc type is an adapter to allow the use of ordinary
+// function as TGoNFT mutator.
+type TGoNFTFunc func(context.Context, *ent.TGoNFTMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TGoNFTFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.TGoNFTMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TGoNFTMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The TGoRetirementFunc type is an adapter to allow the use of ordinary
 // function as TGoRetirement mutator.
 type TGoRetirementFunc func(context.Context, *ent.TGoRetirementMutation) (ent.Value, error)

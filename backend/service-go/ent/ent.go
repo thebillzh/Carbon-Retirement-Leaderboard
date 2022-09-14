@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"toucan-leaderboard/ent/tgocache"
 	"toucan-leaderboard/ent/tgoens"
+	"toucan-leaderboard/ent/tgonft"
 	"toucan-leaderboard/ent/tgoretirement"
 	"toucan-leaderboard/ent/tuser"
 
@@ -36,6 +37,7 @@ func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		tgocache.Table:      tgocache.ValidColumn,
 		tgoens.Table:        tgoens.ValidColumn,
+		tgonft.Table:        tgonft.ValidColumn,
 		tgoretirement.Table: tgoretirement.ValidColumn,
 		tuser.Table:         tuser.ValidColumn,
 	}

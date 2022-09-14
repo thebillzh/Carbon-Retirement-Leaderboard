@@ -6,6 +6,23 @@ info:
     title: Main API
     version: 0.0.1
 paths:
+    /service/main/v1/getAvailableNFTList:
+        get:
+            tags:
+                - Main
+            operationId: Main_GetAvailableNFTList
+            parameters:
+                - name: walletPub
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAvailableNFTListResp'
     /service/main/v1/getLeaderboard:
         get:
             tags:
@@ -55,6 +72,28 @@ paths:
                                 $ref: '#/components/schemas/PingResp'
 components:
     schemas:
+        AvailableNFT:
+            type: object
+            properties:
+                rank_type:
+                    type: integer
+                    format: int64
+                rank_year:
+                    type: integer
+                    format: int64
+                rank_season:
+                    type: integer
+                    format: int64
+                rank:
+                    type: integer
+                    format: int64
+        GetAvailableNFTListResp:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AvailableNFT'
         GetLeaderboardResp:
             type: object
             properties:

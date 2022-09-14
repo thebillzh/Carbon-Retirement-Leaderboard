@@ -12,6 +12,7 @@ import (
 
 	"toucan-leaderboard/ent/tgocache"
 	"toucan-leaderboard/ent/tgoens"
+	"toucan-leaderboard/ent/tgonft"
 	"toucan-leaderboard/ent/tgoretirement"
 	"toucan-leaderboard/ent/tuser"
 
@@ -28,6 +29,8 @@ type Client struct {
 	TGoCache *TGoCacheClient
 	// TGoEns is the client for interacting with the TGoEns builders.
 	TGoEns *TGoEnsClient
+	// TGoNFT is the client for interacting with the TGoNFT builders.
+	TGoNFT *TGoNFTClient
 	// TGoRetirement is the client for interacting with the TGoRetirement builders.
 	TGoRetirement *TGoRetirementClient
 	// TUser is the client for interacting with the TUser builders.
@@ -47,6 +50,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.TGoCache = NewTGoCacheClient(c.config)
 	c.TGoEns = NewTGoEnsClient(c.config)
+	c.TGoNFT = NewTGoNFTClient(c.config)
 	c.TGoRetirement = NewTGoRetirementClient(c.config)
 	c.TUser = NewTUserClient(c.config)
 }
@@ -84,6 +88,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:        cfg,
 		TGoCache:      NewTGoCacheClient(cfg),
 		TGoEns:        NewTGoEnsClient(cfg),
+		TGoNFT:        NewTGoNFTClient(cfg),
 		TGoRetirement: NewTGoRetirementClient(cfg),
 		TUser:         NewTUserClient(cfg),
 	}, nil
@@ -107,6 +112,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:        cfg,
 		TGoCache:      NewTGoCacheClient(cfg),
 		TGoEns:        NewTGoEnsClient(cfg),
+		TGoNFT:        NewTGoNFTClient(cfg),
 		TGoRetirement: NewTGoRetirementClient(cfg),
 		TUser:         NewTUserClient(cfg),
 	}, nil
@@ -140,6 +146,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.TGoCache.Use(hooks...)
 	c.TGoEns.Use(hooks...)
+	c.TGoNFT.Use(hooks...)
 	c.TGoRetirement.Use(hooks...)
 	c.TUser.Use(hooks...)
 }
@@ -322,6 +329,96 @@ func (c *TGoEnsClient) GetX(ctx context.Context, id uint64) *TGoEns {
 // Hooks returns the client hooks.
 func (c *TGoEnsClient) Hooks() []Hook {
 	return c.hooks.TGoEns
+}
+
+// TGoNFTClient is a client for the TGoNFT schema.
+type TGoNFTClient struct {
+	config
+}
+
+// NewTGoNFTClient returns a client for the TGoNFT from the given config.
+func NewTGoNFTClient(c config) *TGoNFTClient {
+	return &TGoNFTClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tgonft.Hooks(f(g(h())))`.
+func (c *TGoNFTClient) Use(hooks ...Hook) {
+	c.hooks.TGoNFT = append(c.hooks.TGoNFT, hooks...)
+}
+
+// Create returns a builder for creating a TGoNFT entity.
+func (c *TGoNFTClient) Create() *TGoNFTCreate {
+	mutation := newTGoNFTMutation(c.config, OpCreate)
+	return &TGoNFTCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TGoNFT entities.
+func (c *TGoNFTClient) CreateBulk(builders ...*TGoNFTCreate) *TGoNFTCreateBulk {
+	return &TGoNFTCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TGoNFT.
+func (c *TGoNFTClient) Update() *TGoNFTUpdate {
+	mutation := newTGoNFTMutation(c.config, OpUpdate)
+	return &TGoNFTUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TGoNFTClient) UpdateOne(tn *TGoNFT) *TGoNFTUpdateOne {
+	mutation := newTGoNFTMutation(c.config, OpUpdateOne, withTGoNFT(tn))
+	return &TGoNFTUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TGoNFTClient) UpdateOneID(id uint64) *TGoNFTUpdateOne {
+	mutation := newTGoNFTMutation(c.config, OpUpdateOne, withTGoNFTID(id))
+	return &TGoNFTUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TGoNFT.
+func (c *TGoNFTClient) Delete() *TGoNFTDelete {
+	mutation := newTGoNFTMutation(c.config, OpDelete)
+	return &TGoNFTDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TGoNFTClient) DeleteOne(tn *TGoNFT) *TGoNFTDeleteOne {
+	return c.DeleteOneID(tn.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *TGoNFTClient) DeleteOneID(id uint64) *TGoNFTDeleteOne {
+	builder := c.Delete().Where(tgonft.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TGoNFTDeleteOne{builder}
+}
+
+// Query returns a query builder for TGoNFT.
+func (c *TGoNFTClient) Query() *TGoNFTQuery {
+	return &TGoNFTQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a TGoNFT entity by its id.
+func (c *TGoNFTClient) Get(ctx context.Context, id uint64) (*TGoNFT, error) {
+	return c.Query().Where(tgonft.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TGoNFTClient) GetX(ctx context.Context, id uint64) *TGoNFT {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TGoNFTClient) Hooks() []Hook {
+	return c.hooks.TGoNFT
 }
 
 // TGoRetirementClient is a client for the TGoRetirement schema.
