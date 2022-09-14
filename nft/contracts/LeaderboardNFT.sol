@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract LeaderboardNFT is ERC721URIStorage, Ownable {
     using Strings for uint256;
@@ -214,14 +215,37 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
             );
     }
 
+    // Signature tracker
+    mapping(bytes => bool) public signatureUsed;
+
+    // Allowlist addresses
+    function recoverSigner(bytes32 hash, bytes memory signature)
+        public
+        pure
+        returns (address)
+    {
+        bytes32 messageDigest = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
+        );
+        return ECDSA.recover(messageDigest, signature);
+    }
+
     function mint(
         TimeType _ttype,
         uint256 _seasonYear,
         uint256 _seasonUnit,
         bool _isAllTime,
         uint256 _rank,
-        address _toAddress
+        address _toAddress,
+        bytes32 hash,
+        bytes memory signature
     ) public onlyOwner {
+        require(
+            recoverSigner(hash, signature) == owner(),
+            "Address is not allowlisted"
+        );
+        require(!signatureUsed[signature], "Signature has already been used.");
+
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(_toAddress, newItemId);
@@ -233,5 +257,48 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
             _rank
         );
         _setTokenURI(newItemId, getTokenURI(newItemId));
+
+        signatureUsed[signature] = true;
+    }
+
+    struct mintMetadata {
+        TimeType ttype;
+        uint256 year;
+        uint256 timeUnit; //half (1,2), quarter (1-4), month (1-12) depends on TimeType
+        bool isAllTime;
+        uint256 rank;
+        bytes32 hash;
+        bytes signature;
+    }
+
+    function mintMulti(
+        address _toAddress,
+        mintMetadata[] memory mintMetadataList
+    ) public onlyOwner {
+        for (uint256 i = 0; i < mintMetadataList.length; i++) {
+            require(
+                recoverSigner(
+                    mintMetadataList[i].hash,
+                    mintMetadataList[i].signature
+                ) == owner(),
+                "Address is not allowlisted"
+            );
+            require(
+                !signatureUsed[mintMetadataList[i].signature],
+                "Signature has already been used."
+            );
+            _tokenIds.increment();
+            uint256 newItemId = _tokenIds.current();
+            _safeMint(_toAddress, newItemId);
+            tokenIdtoMetaData[newItemId] = tokenMetaData(
+                mintMetadataList[i].ttype,
+                mintMetadataList[i].year,
+                mintMetadataList[i].timeUnit,
+                mintMetadataList[i].isAllTime,
+                mintMetadataList[i].rank
+            );
+            _setTokenURI(newItemId, getTokenURI(newItemId));
+            signatureUsed[mintMetadataList[i].signature] = true;
+        }
     }
 }
