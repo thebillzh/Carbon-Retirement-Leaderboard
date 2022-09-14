@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 
 contract LeaderboardNFT is ERC721URIStorage, Ownable {
     using Strings for uint256;
@@ -20,15 +21,17 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
         YEARLY
     }
 
-    struct tokenMetaData {
+    struct TokenMetaData {
         TimeType ttype;
         uint256 year;
         uint256 timeUnit; //half (1,2), quarter (1-4), month (1-12) depends on TimeType
         bool isAllTime;
         uint256 rank;
     }
-    mapping(uint256 => tokenMetaData) tokenIdtoMetaData;
+    mapping(uint256 => TokenMetaData) tokenIdtoMetaData;
     mapping(address => uint256) addresstoTokenId;
+    mapping(address => TokenMetaData[]) allowListAddresstoMetaData;
+    mapping(address => bool) allowList;
 
     constructor() ERC721("Toucan NCT Retirement Leaderboard", "TNCTRL") {}
 
@@ -214,7 +217,46 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
             );
     }
 
-    function mint(
+    function addToAllowList(
+        TimeType _ttype,
+        uint256 _seasonYear,
+        uint256 _seasonUnit,
+        bool _isAllTime,
+        uint256 _rank,
+        address _toAddress
+    ) public onlyOwner {
+        TokenMetaData memory metaData = TokenMetaData(
+            _ttype,
+            _seasonYear,
+            _seasonUnit,
+            _isAllTime,
+            _rank
+        );
+        allowListAddresstoMetaData[_toAddress].push(metaData);
+        allowList[_toAddress] = true;
+    }
+
+    function mint() public {
+        require(
+            allowList[msg.sender] == true,
+            "Sorry, you're not allowed to mint."
+        );
+        TokenMetaData[] memory metaDataArr = allowListAddresstoMetaData[
+            msg.sender
+        ];
+        //mint all NFTs that the address is eligible for
+        for (uint256 i = 0; i < metaDataArr.length; i++) {
+            _tokenIds.increment();
+            uint256 newItemId = _tokenIds.current();
+            _safeMint(msg.sender, newItemId);
+            tokenIdtoMetaData[newItemId] = metaDataArr[i];
+            _setTokenURI(newItemId, getTokenURI(newItemId));
+        }
+
+        allowList[msg.sender] = false;
+    }
+
+    function adminMint(
         TimeType _ttype,
         uint256 _seasonYear,
         uint256 _seasonUnit,
@@ -225,7 +267,7 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _safeMint(_toAddress, newItemId);
-        tokenIdtoMetaData[newItemId] = tokenMetaData(
+        tokenIdtoMetaData[newItemId] = TokenMetaData(
             _ttype,
             _seasonYear,
             _seasonUnit,
@@ -233,5 +275,24 @@ contract LeaderboardNFT is ERC721URIStorage, Ownable {
             _rank
         );
         _setTokenURI(newItemId, getTokenURI(newItemId));
+    }
+
+    /**
+     * Override isApprovedForAll to auto-approve OS's proxy contract
+     */
+    function isApprovedForAll(address _owner, address _operator)
+        public
+        view
+        override
+        returns (bool isOperator)
+    {
+        // if OpenSea's ERC721 Proxy Address is detected, auto-return true
+        // for Polygon's Mumbai testnet, use 0xff7Ca10aF37178BdD056628eF42fD7F799fAc77c
+        if (_operator == address(0x58807baD0B376efc12F5AD86aAc70E78ed67deaE)) {
+            return true;
+        }
+
+        // otherwise, use the default ERC721.isApprovedForAll()
+        return ERC721.isApprovedForAll(_owner, _operator);
     }
 }
