@@ -24,6 +24,7 @@ func (TGoRetirement) Fields() []ent.Field {
 		field.String("token_address").Default("").Comment("token address"),
 		field.String("token_name").Default("").Comment("token name"),
 		field.String("token_type").Default("").Comment("type of token such as nct, bct..."),
+		field.String("retirement_message").Default("").Comment("message  of retirement"),
 		field.Time("retirement_time").Comment("time of retirement"),
 		field.Time("mtime").Comment("modify time").Default(time.Now()).UpdateDefault(time.Now),
 		field.Time("ctime").Comment("create time").Default(time.Now())}

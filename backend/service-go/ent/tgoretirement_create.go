@@ -120,6 +120,20 @@ func (trc *TGoRetirementCreate) SetNillableTokenType(s *string) *TGoRetirementCr
 	return trc
 }
 
+// SetRetirementMessage sets the "retirement_message" field.
+func (trc *TGoRetirementCreate) SetRetirementMessage(s string) *TGoRetirementCreate {
+	trc.mutation.SetRetirementMessage(s)
+	return trc
+}
+
+// SetNillableRetirementMessage sets the "retirement_message" field if the given value is not nil.
+func (trc *TGoRetirementCreate) SetNillableRetirementMessage(s *string) *TGoRetirementCreate {
+	if s != nil {
+		trc.SetRetirementMessage(*s)
+	}
+	return trc
+}
+
 // SetRetirementTime sets the "retirement_time" field.
 func (trc *TGoRetirementCreate) SetRetirementTime(t time.Time) *TGoRetirementCreate {
 	trc.mutation.SetRetirementTime(t)
@@ -265,6 +279,10 @@ func (trc *TGoRetirementCreate) defaults() {
 		v := tgoretirement.DefaultTokenType
 		trc.mutation.SetTokenType(v)
 	}
+	if _, ok := trc.mutation.RetirementMessage(); !ok {
+		v := tgoretirement.DefaultRetirementMessage
+		trc.mutation.SetRetirementMessage(v)
+	}
 	if _, ok := trc.mutation.Mtime(); !ok {
 		v := tgoretirement.DefaultMtime
 		trc.mutation.SetMtime(v)
@@ -297,6 +315,9 @@ func (trc *TGoRetirementCreate) check() error {
 	}
 	if _, ok := trc.mutation.TokenType(); !ok {
 		return &ValidationError{Name: "token_type", err: errors.New(`ent: missing required field "TGoRetirement.token_type"`)}
+	}
+	if _, ok := trc.mutation.RetirementMessage(); !ok {
+		return &ValidationError{Name: "retirement_message", err: errors.New(`ent: missing required field "TGoRetirement.retirement_message"`)}
 	}
 	if _, ok := trc.mutation.RetirementTime(); !ok {
 		return &ValidationError{Name: "retirement_time", err: errors.New(`ent: missing required field "TGoRetirement.retirement_time"`)}
@@ -396,6 +417,14 @@ func (trc *TGoRetirementCreate) createSpec() (*TGoRetirement, *sqlgraph.CreateSp
 			Column: tgoretirement.FieldTokenType,
 		})
 		_node.TokenType = value
+	}
+	if value, ok := trc.mutation.RetirementMessage(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tgoretirement.FieldRetirementMessage,
+		})
+		_node.RetirementMessage = value
 	}
 	if value, ok := trc.mutation.RetirementTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -562,6 +591,18 @@ func (u *TGoRetirementUpsert) SetTokenType(v string) *TGoRetirementUpsert {
 // UpdateTokenType sets the "token_type" field to the value that was provided on create.
 func (u *TGoRetirementUpsert) UpdateTokenType() *TGoRetirementUpsert {
 	u.SetExcluded(tgoretirement.FieldTokenType)
+	return u
+}
+
+// SetRetirementMessage sets the "retirement_message" field.
+func (u *TGoRetirementUpsert) SetRetirementMessage(v string) *TGoRetirementUpsert {
+	u.Set(tgoretirement.FieldRetirementMessage, v)
+	return u
+}
+
+// UpdateRetirementMessage sets the "retirement_message" field to the value that was provided on create.
+func (u *TGoRetirementUpsert) UpdateRetirementMessage() *TGoRetirementUpsert {
+	u.SetExcluded(tgoretirement.FieldRetirementMessage)
 	return u
 }
 
@@ -753,6 +794,20 @@ func (u *TGoRetirementUpsertOne) SetTokenType(v string) *TGoRetirementUpsertOne 
 func (u *TGoRetirementUpsertOne) UpdateTokenType() *TGoRetirementUpsertOne {
 	return u.Update(func(s *TGoRetirementUpsert) {
 		s.UpdateTokenType()
+	})
+}
+
+// SetRetirementMessage sets the "retirement_message" field.
+func (u *TGoRetirementUpsertOne) SetRetirementMessage(v string) *TGoRetirementUpsertOne {
+	return u.Update(func(s *TGoRetirementUpsert) {
+		s.SetRetirementMessage(v)
+	})
+}
+
+// UpdateRetirementMessage sets the "retirement_message" field to the value that was provided on create.
+func (u *TGoRetirementUpsertOne) UpdateRetirementMessage() *TGoRetirementUpsertOne {
+	return u.Update(func(s *TGoRetirementUpsert) {
+		s.UpdateRetirementMessage()
 	})
 }
 
@@ -1115,6 +1170,20 @@ func (u *TGoRetirementUpsertBulk) SetTokenType(v string) *TGoRetirementUpsertBul
 func (u *TGoRetirementUpsertBulk) UpdateTokenType() *TGoRetirementUpsertBulk {
 	return u.Update(func(s *TGoRetirementUpsert) {
 		s.UpdateTokenType()
+	})
+}
+
+// SetRetirementMessage sets the "retirement_message" field.
+func (u *TGoRetirementUpsertBulk) SetRetirementMessage(v string) *TGoRetirementUpsertBulk {
+	return u.Update(func(s *TGoRetirementUpsert) {
+		s.SetRetirementMessage(v)
+	})
+}
+
+// UpdateRetirementMessage sets the "retirement_message" field to the value that was provided on create.
+func (u *TGoRetirementUpsertBulk) UpdateRetirementMessage() *TGoRetirementUpsertBulk {
+	return u.Update(func(s *TGoRetirementUpsert) {
+		s.UpdateRetirementMessage()
 	})
 }
 

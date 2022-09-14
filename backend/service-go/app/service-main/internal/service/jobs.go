@@ -38,7 +38,7 @@ func checkCronErr(entryId cron3.EntryID, err error) {
 }
 
 func (s *MainService) initJobs() {
-	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadRetirementData, "loadRetirementData"))
+	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadRetirementData, "loadRetirementData",cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 1h", s.loadENS, "loadENS"))
 	checkCronErr(s.cronUtil.AddFunc("@every 15s", s.loadNCTRetirementList, "loadNCTRetirementList", cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 5s", s.loadAddressToTUserMap, "loadAddressToTUserMap", cron.PreLoad()))
@@ -149,6 +149,7 @@ func (s *MainService) loadRetirementData(ctx context.Context) (err error) {
 					SetTokenAddress(retirement.Token.GetAddress()).
 					SetTokenName(retirement.Token.GetName()).
 					SetTokenType("nct").
+					SetRetirementMessage(retirement.Certificate.GetRetirementMessage()).
 					SetRetirementTime(time.Unix(timestamp, 0)),
 				)
 			}

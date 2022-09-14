@@ -77,14 +77,18 @@ func init() {
 	tgoretirementDescTokenType := tgoretirementFields[7].Descriptor()
 	// tgoretirement.DefaultTokenType holds the default value on creation for the token_type field.
 	tgoretirement.DefaultTokenType = tgoretirementDescTokenType.Default.(string)
+	// tgoretirementDescRetirementMessage is the schema descriptor for retirement_message field.
+	tgoretirementDescRetirementMessage := tgoretirementFields[8].Descriptor()
+	// tgoretirement.DefaultRetirementMessage holds the default value on creation for the retirement_message field.
+	tgoretirement.DefaultRetirementMessage = tgoretirementDescRetirementMessage.Default.(string)
 	// tgoretirementDescMtime is the schema descriptor for mtime field.
-	tgoretirementDescMtime := tgoretirementFields[9].Descriptor()
+	tgoretirementDescMtime := tgoretirementFields[10].Descriptor()
 	// tgoretirement.DefaultMtime holds the default value on creation for the mtime field.
 	tgoretirement.DefaultMtime = tgoretirementDescMtime.Default.(time.Time)
 	// tgoretirement.UpdateDefaultMtime holds the default value on update for the mtime field.
 	tgoretirement.UpdateDefaultMtime = tgoretirementDescMtime.UpdateDefault.(func() time.Time)
 	// tgoretirementDescCtime is the schema descriptor for ctime field.
-	tgoretirementDescCtime := tgoretirementFields[10].Descriptor()
+	tgoretirementDescCtime := tgoretirementFields[11].Descriptor()
 	// tgoretirement.DefaultCtime holds the default value on creation for the ctime field.
 	tgoretirement.DefaultCtime = tgoretirementDescCtime.Default.(time.Time)
 	tuserFields := schema.TUser{}.Fields()

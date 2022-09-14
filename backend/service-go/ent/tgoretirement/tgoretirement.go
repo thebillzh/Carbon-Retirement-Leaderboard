@@ -25,6 +25,8 @@ const (
 	FieldTokenName = "token_name"
 	// FieldTokenType holds the string denoting the token_type field in the database.
 	FieldTokenType = "token_type"
+	// FieldRetirementMessage holds the string denoting the retirement_message field in the database.
+	FieldRetirementMessage = "retirement_message"
 	// FieldRetirementTime holds the string denoting the retirement_time field in the database.
 	FieldRetirementTime = "retirement_time"
 	// FieldMtime holds the string denoting the mtime field in the database.
@@ -45,6 +47,7 @@ var Columns = []string{
 	FieldTokenAddress,
 	FieldTokenName,
 	FieldTokenType,
+	FieldRetirementMessage,
 	FieldRetirementTime,
 	FieldMtime,
 	FieldCtime,
@@ -75,6 +78,8 @@ var (
 	DefaultTokenName string
 	// DefaultTokenType holds the default value on creation for the "token_type" field.
 	DefaultTokenType string
+	// DefaultRetirementMessage holds the default value on creation for the "retirement_message" field.
+	DefaultRetirementMessage string
 	// DefaultMtime holds the default value on creation for the "mtime" field.
 	DefaultMtime time.Time
 	// UpdateDefaultMtime holds the default value on update for the "mtime" field.

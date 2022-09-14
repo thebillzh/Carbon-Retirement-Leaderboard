@@ -31,6 +31,8 @@ type TGoRetirement struct {
 	TokenName string `json:"token_name,omitempty"`
 	// type of token such as nct, bct...
 	TokenType string `json:"token_type,omitempty"`
+	// message  of retirement
+	RetirementMessage string `json:"retirement_message,omitempty"`
 	// time of retirement
 	RetirementTime time.Time `json:"retirement_time,omitempty"`
 	// modify time
@@ -48,7 +50,7 @@ func (*TGoRetirement) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullFloat64)
 		case tgoretirement.FieldID:
 			values[i] = new(sql.NullInt64)
-		case tgoretirement.FieldCreationTx, tgoretirement.FieldCreatorAddress, tgoretirement.FieldBeneficiaryAddress, tgoretirement.FieldTokenAddress, tgoretirement.FieldTokenName, tgoretirement.FieldTokenType:
+		case tgoretirement.FieldCreationTx, tgoretirement.FieldCreatorAddress, tgoretirement.FieldBeneficiaryAddress, tgoretirement.FieldTokenAddress, tgoretirement.FieldTokenName, tgoretirement.FieldTokenType, tgoretirement.FieldRetirementMessage:
 			values[i] = new(sql.NullString)
 		case tgoretirement.FieldRetirementTime, tgoretirement.FieldMtime, tgoretirement.FieldCtime:
 			values[i] = new(sql.NullTime)
@@ -114,6 +116,12 @@ func (tr *TGoRetirement) assignValues(columns []string, values []interface{}) er
 				return fmt.Errorf("unexpected type %T for field token_type", values[i])
 			} else if value.Valid {
 				tr.TokenType = value.String
+			}
+		case tgoretirement.FieldRetirementMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field retirement_message", values[i])
+			} else if value.Valid {
+				tr.RetirementMessage = value.String
 			}
 		case tgoretirement.FieldRetirementTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -181,6 +189,9 @@ func (tr *TGoRetirement) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("token_type=")
 	builder.WriteString(tr.TokenType)
+	builder.WriteString(", ")
+	builder.WriteString("retirement_message=")
+	builder.WriteString(tr.RetirementMessage)
 	builder.WriteString(", ")
 	builder.WriteString("retirement_time=")
 	builder.WriteString(tr.RetirementTime.Format(time.ANSIC))

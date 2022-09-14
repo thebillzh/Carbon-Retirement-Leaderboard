@@ -133,6 +133,20 @@ func (tru *TGoRetirementUpdate) SetNillableTokenType(s *string) *TGoRetirementUp
 	return tru
 }
 
+// SetRetirementMessage sets the "retirement_message" field.
+func (tru *TGoRetirementUpdate) SetRetirementMessage(s string) *TGoRetirementUpdate {
+	tru.mutation.SetRetirementMessage(s)
+	return tru
+}
+
+// SetNillableRetirementMessage sets the "retirement_message" field if the given value is not nil.
+func (tru *TGoRetirementUpdate) SetNillableRetirementMessage(s *string) *TGoRetirementUpdate {
+	if s != nil {
+		tru.SetRetirementMessage(*s)
+	}
+	return tru
+}
+
 // SetRetirementTime sets the "retirement_time" field.
 func (tru *TGoRetirementUpdate) SetRetirementTime(t time.Time) *TGoRetirementUpdate {
 	tru.mutation.SetRetirementTime(t)
@@ -301,6 +315,13 @@ func (tru *TGoRetirementUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Column: tgoretirement.FieldTokenType,
 		})
 	}
+	if value, ok := tru.mutation.RetirementMessage(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tgoretirement.FieldRetirementMessage,
+		})
+	}
 	if value, ok := tru.mutation.RetirementTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -442,6 +463,20 @@ func (truo *TGoRetirementUpdateOne) SetTokenType(s string) *TGoRetirementUpdateO
 func (truo *TGoRetirementUpdateOne) SetNillableTokenType(s *string) *TGoRetirementUpdateOne {
 	if s != nil {
 		truo.SetTokenType(*s)
+	}
+	return truo
+}
+
+// SetRetirementMessage sets the "retirement_message" field.
+func (truo *TGoRetirementUpdateOne) SetRetirementMessage(s string) *TGoRetirementUpdateOne {
+	truo.mutation.SetRetirementMessage(s)
+	return truo
+}
+
+// SetNillableRetirementMessage sets the "retirement_message" field if the given value is not nil.
+func (truo *TGoRetirementUpdateOne) SetNillableRetirementMessage(s *string) *TGoRetirementUpdateOne {
+	if s != nil {
+		truo.SetRetirementMessage(*s)
 	}
 	return truo
 }
@@ -642,6 +677,13 @@ func (truo *TGoRetirementUpdateOne) sqlSave(ctx context.Context) (_node *TGoReti
 			Type:   field.TypeString,
 			Value:  value,
 			Column: tgoretirement.FieldTokenType,
+		})
+	}
+	if value, ok := truo.mutation.RetirementMessage(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: tgoretirement.FieldRetirementMessage,
 		})
 	}
 	if value, ok := truo.mutation.RetirementTime(); ok {

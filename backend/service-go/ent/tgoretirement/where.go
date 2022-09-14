@@ -129,6 +129,13 @@ func TokenType(v string) predicate.TGoRetirement {
 	})
 }
 
+// RetirementMessage applies equality check predicate on the "retirement_message" field. It's identical to RetirementMessageEQ.
+func RetirementMessage(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRetirementMessage), v))
+	})
+}
+
 // RetirementTime applies equality check predicate on the "retirement_time" field. It's identical to RetirementTimeEQ.
 func RetirementTime(v time.Time) predicate.TGoRetirement {
 	return predicate.TGoRetirement(func(s *sql.Selector) {
@@ -805,6 +812,105 @@ func TokenTypeEqualFold(v string) predicate.TGoRetirement {
 func TokenTypeContainsFold(v string) predicate.TGoRetirement {
 	return predicate.TGoRetirement(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldTokenType), v))
+	})
+}
+
+// RetirementMessageEQ applies the EQ predicate on the "retirement_message" field.
+func RetirementMessageEQ(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageNEQ applies the NEQ predicate on the "retirement_message" field.
+func RetirementMessageNEQ(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageIn applies the In predicate on the "retirement_message" field.
+func RetirementMessageIn(vs ...string) predicate.TGoRetirement {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRetirementMessage), v...))
+	})
+}
+
+// RetirementMessageNotIn applies the NotIn predicate on the "retirement_message" field.
+func RetirementMessageNotIn(vs ...string) predicate.TGoRetirement {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRetirementMessage), v...))
+	})
+}
+
+// RetirementMessageGT applies the GT predicate on the "retirement_message" field.
+func RetirementMessageGT(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageGTE applies the GTE predicate on the "retirement_message" field.
+func RetirementMessageGTE(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageLT applies the LT predicate on the "retirement_message" field.
+func RetirementMessageLT(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageLTE applies the LTE predicate on the "retirement_message" field.
+func RetirementMessageLTE(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageContains applies the Contains predicate on the "retirement_message" field.
+func RetirementMessageContains(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageHasPrefix applies the HasPrefix predicate on the "retirement_message" field.
+func RetirementMessageHasPrefix(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageHasSuffix applies the HasSuffix predicate on the "retirement_message" field.
+func RetirementMessageHasSuffix(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageEqualFold applies the EqualFold predicate on the "retirement_message" field.
+func RetirementMessageEqualFold(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldRetirementMessage), v))
+	})
+}
+
+// RetirementMessageContainsFold applies the ContainsFold predicate on the "retirement_message" field.
+func RetirementMessageContainsFold(v string) predicate.TGoRetirement {
+	return predicate.TGoRetirement(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldRetirementMessage), v))
 	})
 }
 

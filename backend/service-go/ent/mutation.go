@@ -1004,6 +1004,7 @@ type TGoRetirementMutation struct {
 	token_address       *string
 	token_name          *string
 	token_type          *string
+	retirement_message  *string
 	retirement_time     *time.Time
 	mtime               *time.Time
 	ctime               *time.Time
@@ -1389,6 +1390,42 @@ func (m *TGoRetirementMutation) ResetTokenType() {
 	m.token_type = nil
 }
 
+// SetRetirementMessage sets the "retirement_message" field.
+func (m *TGoRetirementMutation) SetRetirementMessage(s string) {
+	m.retirement_message = &s
+}
+
+// RetirementMessage returns the value of the "retirement_message" field in the mutation.
+func (m *TGoRetirementMutation) RetirementMessage() (r string, exists bool) {
+	v := m.retirement_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRetirementMessage returns the old "retirement_message" field's value of the TGoRetirement entity.
+// If the TGoRetirement object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TGoRetirementMutation) OldRetirementMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRetirementMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRetirementMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRetirementMessage: %w", err)
+	}
+	return oldValue.RetirementMessage, nil
+}
+
+// ResetRetirementMessage resets all changes to the "retirement_message" field.
+func (m *TGoRetirementMutation) ResetRetirementMessage() {
+	m.retirement_message = nil
+}
+
 // SetRetirementTime sets the "retirement_time" field.
 func (m *TGoRetirementMutation) SetRetirementTime(t time.Time) {
 	m.retirement_time = &t
@@ -1516,7 +1553,7 @@ func (m *TGoRetirementMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TGoRetirementMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.creation_tx != nil {
 		fields = append(fields, tgoretirement.FieldCreationTx)
 	}
@@ -1537,6 +1574,9 @@ func (m *TGoRetirementMutation) Fields() []string {
 	}
 	if m.token_type != nil {
 		fields = append(fields, tgoretirement.FieldTokenType)
+	}
+	if m.retirement_message != nil {
+		fields = append(fields, tgoretirement.FieldRetirementMessage)
 	}
 	if m.retirement_time != nil {
 		fields = append(fields, tgoretirement.FieldRetirementTime)
@@ -1569,6 +1609,8 @@ func (m *TGoRetirementMutation) Field(name string) (ent.Value, bool) {
 		return m.TokenName()
 	case tgoretirement.FieldTokenType:
 		return m.TokenType()
+	case tgoretirement.FieldRetirementMessage:
+		return m.RetirementMessage()
 	case tgoretirement.FieldRetirementTime:
 		return m.RetirementTime()
 	case tgoretirement.FieldMtime:
@@ -1598,6 +1640,8 @@ func (m *TGoRetirementMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldTokenName(ctx)
 	case tgoretirement.FieldTokenType:
 		return m.OldTokenType(ctx)
+	case tgoretirement.FieldRetirementMessage:
+		return m.OldRetirementMessage(ctx)
 	case tgoretirement.FieldRetirementTime:
 		return m.OldRetirementTime(ctx)
 	case tgoretirement.FieldMtime:
@@ -1661,6 +1705,13 @@ func (m *TGoRetirementMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTokenType(v)
+		return nil
+	case tgoretirement.FieldRetirementMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRetirementMessage(v)
 		return nil
 	case tgoretirement.FieldRetirementTime:
 		v, ok := value.(time.Time)
@@ -1767,6 +1818,9 @@ func (m *TGoRetirementMutation) ResetField(name string) error {
 		return nil
 	case tgoretirement.FieldTokenType:
 		m.ResetTokenType()
+		return nil
+	case tgoretirement.FieldRetirementMessage:
+		m.ResetRetirementMessage()
 		return nil
 	case tgoretirement.FieldRetirementTime:
 		m.ResetRetirementTime()

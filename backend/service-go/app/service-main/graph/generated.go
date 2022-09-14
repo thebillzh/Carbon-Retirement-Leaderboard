@@ -82,12 +82,18 @@ func (v *GetRetirementListRetirementsRetirement) GetCertificate() GetRetirementL
 
 // GetRetirementListRetirementsRetirementCertificate includes the requested fields of the GraphQL type RetirementCertificate.
 type GetRetirementListRetirementsRetirementCertificate struct {
-	Beneficiary GetRetirementListRetirementsRetirementCertificateBeneficiaryUser `json:"beneficiary"`
+	Beneficiary       GetRetirementListRetirementsRetirementCertificateBeneficiaryUser `json:"beneficiary"`
+	RetirementMessage string                                                           `json:"retirementMessage"`
 }
 
 // GetBeneficiary returns GetRetirementListRetirementsRetirementCertificate.Beneficiary, and is useful for accessing the field via an interface.
 func (v *GetRetirementListRetirementsRetirementCertificate) GetBeneficiary() GetRetirementListRetirementsRetirementCertificateBeneficiaryUser {
 	return v.Beneficiary
+}
+
+// GetRetirementMessage returns GetRetirementListRetirementsRetirementCertificate.RetirementMessage, and is useful for accessing the field via an interface.
+func (v *GetRetirementListRetirementsRetirementCertificate) GetRetirementMessage() string {
+	return v.RetirementMessage
 }
 
 // GetRetirementListRetirementsRetirementCertificateBeneficiaryUser includes the requested fields of the GraphQL type User.
@@ -192,6 +198,7 @@ query GetRetirementList ($tokenList: [String!], $skip: Int, $pageSize: Int) {
 			beneficiary {
 				id
 			}
+			retirementMessage
 		}
 	}
 }

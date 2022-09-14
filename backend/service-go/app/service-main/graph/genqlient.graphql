@@ -33,6 +33,7 @@ query GetRetirementList($tokenList: [String!], $skip: Int, $pageSize: Int) {
       beneficiary {
         id
       }
+      retirementMessage
     }
   }
 }

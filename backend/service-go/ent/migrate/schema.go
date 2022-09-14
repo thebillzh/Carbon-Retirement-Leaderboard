@@ -47,6 +47,7 @@ var (
 		{Name: "token_address", Type: field.TypeString, Default: ""},
 		{Name: "token_name", Type: field.TypeString, Default: ""},
 		{Name: "token_type", Type: field.TypeString, Default: ""},
+		{Name: "retirement_message", Type: field.TypeString, Default: ""},
 		{Name: "retirement_time", Type: field.TypeTime},
 		{Name: "mtime", Type: field.TypeTime},
 		{Name: "ctime", Type: field.TypeTime},
