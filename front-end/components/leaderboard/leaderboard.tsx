@@ -164,7 +164,7 @@ const getUserNameLink = (user: LeaderboardReturnItem) => {
 };
 
 const getUserDisplayName = (user: LeaderboardReturnItem) => {
-  return user?.ens || ToucanAddressMapping[user?.address] || user?.address;
+  return user?.uname || user?.ens || ToucanAddressMapping[user?.address] || user?.address;
 };
 
 export default function Leaderboard({
