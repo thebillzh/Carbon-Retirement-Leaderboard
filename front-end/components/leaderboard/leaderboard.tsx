@@ -290,7 +290,7 @@ export default function Leaderboard({
   useEffect(() => {
     const checkEligibility = async () => {
       const r = await axios.get<GetAvailableNFTListResp>(
-        `https://api-go.toucanleader.xyz/service/main/v1/getAvailableNFTList?wallet_pub=${user.wallet_pub}`
+        `/proxy/service/main/v1/getAvailableNFTList?wallet_pub=${user.wallet_pub}`
       );
       setMintEligible(r.data.list.length > 0);
     };
@@ -320,6 +320,11 @@ export default function Leaderboard({
                     method: "post",
                     path: "/nft/mint",
                   });
+                  if (resp == null || resp.hash === "") {
+                    alert("Error when minting");
+                  } else {
+                    alert(`Success. Here is tx hash: ${resp.hash}`)
+                  }
                   console.log(resp);
                 }}
                 className="mr-4 sm:mr-6 lg:mr-8 ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
@@ -597,8 +602,8 @@ export default function Leaderboard({
                     </Dialog.Title>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        NFTs will be on Mumbai TestNet. We will roll out MATIC
-                        NFTs soon.
+                        NFTs are on Mumbai TestNet. We will roll out on MATIC
+                        soon.
                       </p>
                     </div>
                   </div>
