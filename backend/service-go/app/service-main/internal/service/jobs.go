@@ -372,6 +372,7 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 		}
 		if tUser, ok := addressToTUserMap[strings.ToLower(address)]; ok {
 			user.Uname = tUser.Uname
+			user.Twitter = tUser.Twitter
 		}
 		if e, ok := addressToEnsMap[address]; ok {
 			user.ENS = e

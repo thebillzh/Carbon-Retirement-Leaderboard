@@ -5,5 +5,6 @@ type User struct {
 	Uname         string
 	RetiredAmount float64
 	ENS           string
+	Twitter       string
 	IsContract    bool
 }

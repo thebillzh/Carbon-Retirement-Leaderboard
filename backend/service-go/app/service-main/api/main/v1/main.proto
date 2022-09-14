@@ -43,7 +43,8 @@ message LeaderboardItem {
   string uname = 2;
   string retired_amount = 3 [json_name = "retired_amount"];
   string ens = 4;
-  bool is_contract = 5 [json_name = "is_contract"];
+  string twitter = 5;
+  bool is_contract = 6 [json_name = "is_contract"];
 }
 
 message GetLeaderboardResp {
