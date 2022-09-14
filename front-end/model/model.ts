@@ -44,4 +44,5 @@ export interface LeaderboardReturnItem {
   ens: string;
   total_retirement: number;
   is_contract: boolean;
+  twitter: string;
 }
