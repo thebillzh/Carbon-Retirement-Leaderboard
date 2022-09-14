@@ -24,3 +24,6 @@ export const RANKING_API_BASE_URL =
   "https://api-go.toucanleader.xyz/service/main/v1/getLeaderboard";
 export const RANKING_API_BASE_URL_PROXY =
   "/proxy/service/main/v1/getLeaderboard"; // use proxy (set in nextjs config) to resolve cors issues
+
+export const MUMBAI_MINT_CONTRACT =
+  "0xcD6Bd98B4d5d99Dee507BaEf14170AE923FCA81a";
