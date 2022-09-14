@@ -8,6 +8,7 @@ import { useLoading } from "@contexts/loadingProvider";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/outline";
 import useABC from "@lib/common/abc";
+import { HoverCard } from "@mantine/core";
 import { LeaderboardReturnItem } from "@model/model";
 import axios from "axios";
 import _ from "lodash";
@@ -293,6 +294,7 @@ export default function Leaderboard({
         `/proxy/service/main/v1/getAvailableNFTList?wallet_pub=${user.wallet_pub}`
       );
       setMintEligible(r.data.list.length > 0);
+      console.log(r.data, r.data.list.length > 0);
     };
     if (user) checkEligibility();
   }, [user]);
@@ -324,23 +326,51 @@ export default function Leaderboard({
         <div>
           {user &&
             (mintEligible ? (
-              <button
-                type="button"
-                onClick={async () => {
-                  setOpenNFTNotice(true);
-                }}
-                className="mr-4 sm:mr-6 lg:mr-8 ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-              >
-                Claim NFT Badges
-              </button>
+              <span className="mr-4 sm:mr-6 lg:mr-8 ml-3 inline-flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setOpenNFTNotice(true);
+                  }}
+                  className="justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                >
+                  Claim NFT Badges
+                </button>
+              </span>
             ) : (
-              <button
-                disabled
-                className="mr-4 sm:mr-6 lg:mr-8 ml-3 inline-flex justify-center py-2 px-4 
+              <span className="mr-4 sm:mr-6 lg:mr-8 ml-3  inline-flex items-center space-x-2">
+                <button
+                  disabled
+                  className="inline-flex justify-center py-2 px-4 
             shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 opacity-50 cursor-not-allowed"
-              >
-                You are not eligible
-              </button>
+                >
+                  You are not eligible
+                </button>
+                <HoverCard width={320} shadow="md">
+                  <HoverCard.Target>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-teal-300 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <p className="text-sm sm:text-base">
+                      This minting event is only available to those who had made NCT retirement by Aug 31,
+                      2022. More will be announced in the future.
+                    </p>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </span>
             ))}
         </div>
       </div>
@@ -607,9 +637,10 @@ export default function Leaderboard({
                         you are eligible to receive NFT badages that will
                         display your monthly and/or quarterly ranks. <br />
                         <br />
-                        NFTs are currently on Mumbai TestNet. We will collect community feedbacks on this iteration and roll out
-                        on MATIC later (which likely includes airdrops to those
-                        who have minted on Mumbai).
+                        NFTs are currently on Mumbai TestNet. We will collect
+                        community feedbacks on this iteration and roll out on
+                        MATIC later (which likely includes airdrops to those who
+                        have minted on Mumbai).
                       </p>
                     </div>
                   </div>
