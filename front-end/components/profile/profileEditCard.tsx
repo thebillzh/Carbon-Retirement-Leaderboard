@@ -146,7 +146,7 @@ export default function ProfileEditCard({
                     <div className="mt-1">
                       <Input
                         id="twitter"
-                        placeholder="Your Twitter"
+                        placeholder="Your Twitter handle"
                         register={register}
                       />
                     </div>
@@ -169,7 +169,7 @@ export default function ProfileEditCard({
                           name="about"
                           rows={3}
                           className="shadow-sm block w-full focus:ring-teal-500 focus:border-teal-500 sm:text-sm border border-gray-300 rounded-md"
-                          placeholder="Write a few sentences about yourself."
+                          placeholder="Say a few words. Introduce yourself to the community."
                           {...register("about")}
                         />
                       </div>
