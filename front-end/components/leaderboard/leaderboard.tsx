@@ -297,6 +297,19 @@ export default function Leaderboard({
     if (user) checkEligibility();
   }, [user]);
 
+  const callMint = async () => {
+    const resp = await call<NFTMintResp>({
+      method: "post",
+      path: "/nft/mint",
+    });
+    if (resp == null || resp.hash === "") {
+      alert("Error when minting");
+    } else {
+      alert(`Success. Here is tx hash: ${resp.hash}`);
+    }
+    console.log(resp);
+  };
+
   return (
     <div className="py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -315,17 +328,6 @@ export default function Leaderboard({
                 type="button"
                 onClick={async () => {
                   setOpenNFTNotice(true);
-
-                  const resp = await call<NFTMintResp>({
-                    method: "post",
-                    path: "/nft/mint",
-                  });
-                  if (resp == null || resp.hash === "") {
-                    alert("Error when minting");
-                  } else {
-                    alert(`Success. Here is tx hash: ${resp.hash}`)
-                  }
-                  console.log(resp);
                 }}
                 className="mr-4 sm:mr-6 lg:mr-8 ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
               >
@@ -575,7 +577,6 @@ export default function Leaderboard({
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            {/* This element is to trick the browser into centering the modal contents. */}
             <span
               className="hidden sm:inline-block sm:align-middle sm:h-screen"
               aria-hidden="true"
@@ -601,9 +602,14 @@ export default function Leaderboard({
                       This is a Testnet mint
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        NFTs are on Mumbai TestNet. We will roll out on MATIC
-                        soon.
+                      <p className="text-sm text-left text-gray-500">
+                        Since you had made NCT retirement before Aug 31, 2022,
+                        you are eligible to receive NFT badages that will
+                        display your monthly and/or quarterly ranks. <br />
+                        <br />
+                        NFTs are currently on Mumbai TestNet. We will collect community feedbacks on this iteration and roll out
+                        on MATIC later (which likely includes airdrops to those
+                        who have minted on Mumbai).
                       </p>
                     </div>
                   </div>
@@ -612,7 +618,10 @@ export default function Leaderboard({
                   <button
                     type="button"
                     className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:text-sm"
-                    onClick={() => setOpenNFTNotice(false)}
+                    onClick={async () => {
+                      setOpenNFTNotice(false);
+                      await callMint();
+                    }}
                   >
                     Continue
                   </button>
