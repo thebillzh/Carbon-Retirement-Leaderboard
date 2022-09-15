@@ -5,6 +5,8 @@ import {
 import auth from "@lib/api/middlewares/auth";
 import error from "@lib/api/middlewares/error";
 import verify from "@lib/api/middlewares/verify";
+import logger from "@lib/common/logger";
+import prisma from "@lib/common/prisma";
 import { ApiRequest } from "@model/model";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -23,6 +25,7 @@ export interface GetAvailableNFTListResp {
 }
 
 interface AvailableNFT {
+  id: number;
   rank_type: number;
   rank_year: number;
   rank_season: number;
@@ -598,7 +601,7 @@ const handler = async (
   req: ApiRequest<null, null>,
   resp: NextApiResponse<NFTMintResp>
 ) => {
-  const r = await axios.get<GetAvailableNFTListResp>(
+  const availableNFTListResp = await axios.get<GetAvailableNFTListResp>(
     `https://api-go.toucanleader.xyz/service/main/v1/getAvailableNFTList?wallet_pub=${req.user.wallet_pub}`
   );
 
@@ -609,7 +612,7 @@ const handler = async (
   );
 
   const mintMetadataList = new Array<MintMetadata>();
-  for (const nft of r.data.list) {
+  for (const nft of availableNFTListResp.data.list) {
     // Compute message hash
     const messageHash = ethers.utils.id(
       `${req.user.wallet_pub}:${nft.rank_type}:${nft.rank_year}:${nft.rank_season}`
@@ -633,10 +636,31 @@ const handler = async (
   }
   if (mintMetadataList.length > 0) {
     const contract = new ethers.Contract(MUMBAI_MINT_CONTRACT, abi, signer);
-    const res = await contract.mintMulti(req.user.wallet_pub, mintMetadataList);
-    resp.status(200).json({ hash: res.hash });
+    try {
+      const res = await contract.mintMulti(
+        req.user.wallet_pub,
+        mintMetadataList
+      );
+      await prisma.t_go_nfts.updateMany({
+        where: {
+          id: { in: availableNFTListResp.data.list.map((item) => item.id) },
+        },
+        data: {
+          mint_tx: res.hash,
+        },
+      });
+      resp.status(200).json({ hash: res.hash });
+    } catch (err) {
+      if (err.error.reason.startsWith("execution reverted: 0x")) {
+        throw new Error(
+          `This NFT has already been minted: ${err.error.reason}`
+        );
+      }
+      logger.errorc(req, `Error calling contract: ${err.error}`);
+      throw new Error(`Unexpected error happend when minting your NFTs`);
+    }
   } else {
-    resp.status(200).json({ hash: "" });
+    throw new Error(`You are not eligible`);
   }
 };
 

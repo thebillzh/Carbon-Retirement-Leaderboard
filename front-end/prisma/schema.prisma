@@ -46,10 +46,27 @@ model t_go_retirements {
   token_address       String   @default("") @db.VarChar(255)
   token_name          String   @default("") @db.VarChar(255)
   token_type          String   @default("") @db.VarChar(255)
+  retirement_message  String   @default(dbgenerated("(_utf8mb4\\'\\')")) @db.Text
   retirement_time     DateTime @default(dbgenerated("'0001-01-01 00:00:00'")) @db.DateTime(0)
   mtime               DateTime @default(now()) @db.DateTime(0)
   ctime               DateTime @default(now()) @db.DateTime(0)
 
   @@index([beneficiary_address], map: "ix_beneficiary_address")
   @@index([mtime], map: "ix_mtime")
+}
+
+model t_go_nfts {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  wallet_pub  String   @default("") @db.VarChar(127)
+  rank_type   Int      @default(0)
+  rank_year   Int      @default(0)
+  rank_season Int      @default(0)
+  rank        Int      @default(0)
+  mint_tx     String   @default("") @db.VarChar(255)
+  mtime       DateTime @default(now()) @db.DateTime(0)
+  ctime       DateTime @default(now()) @db.DateTime(0)
+
+  @@index([mint_tx], map: "ix_mint_tx")
+  @@index([mtime], map: "ix_mtime")
+  @@index([wallet_pub], map: "ix_wallet_pub")
 }
