@@ -24,3 +24,6 @@ export const RANKING_API_BASE_URL =
   "https://api-go.toucanleader.xyz/service/main/v1/getLeaderboard";
 export const RANKING_API_BASE_URL_PROXY =
   "/proxy/service/main/v1/getLeaderboard"; // use proxy (set in nextjs config) to resolve cors issues
+
+export const MUMBAI_MINT_CONTRACT =
+  "0x292EAc1704F5A15ECCd3650777c8e0dDBE6A795F"; // contract to mint nft, production: 0x292EAc1704F5A15ECCd3650777c8e0dDBE6A795F

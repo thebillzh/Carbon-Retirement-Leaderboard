@@ -3,14 +3,22 @@ import {
   RANKING_API_BASE_URL,
   RANKING_API_BASE_URL_PROXY,
 } from "@constants/constants";
+import { useCommonContext } from "@contexts/commonContextProvider";
 import { useLoading } from "@contexts/loadingProvider";
+import { Dialog, Transition } from "@headlessui/react";
+import { CheckIcon } from "@heroicons/react/outline";
+import useABC from "@lib/common/abc";
+import { HoverCard } from "@mantine/core";
 import { LeaderboardReturnItem } from "@model/model";
+import axios from "axios";
 import _ from "lodash";
 import moment, { Moment } from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { HomeProps } from "pages";
+import { GetAvailableNFTListResp, NFTMintResp } from "pages/api/nft/mint";
 import {
+  Fragment,
   MutableRefObject,
   useEffect,
   useReducer,
@@ -164,13 +172,19 @@ const getUserNameLink = (user: LeaderboardReturnItem) => {
 };
 
 const getUserDisplayName = (user: LeaderboardReturnItem) => {
-  return user?.uname || user?.ens || ToucanAddressMapping[user?.address] || user?.address;
+  return (
+    user?.uname ||
+    user?.ens ||
+    ToucanAddressMapping[user?.address] ||
+    user?.address
+  );
 };
 
 export default function Leaderboard({
   firstAllTimeRankData,
   firstAllTimeAPIURL,
 }: HomeProps) {
+  const { call } = useABC();
   const today = new Date();
   const currentMonth = today.getMonth() + 1; // getMonth is 0-based
   const currentQuarter = Math.floor(today.getMonth() / 3 + 1);
@@ -268,15 +282,97 @@ export default function Leaderboard({
     setLoading({ visible: status === "fetching", isNeedBackground: true });
   }, [setLoading, status]);
 
+  const [openNFTNotice, setOpenNFTNotice] = useState(false);
+
+  const [mintEligible, setMintEligible] = useState(false);
+
+  const { user } = useCommonContext();
+
+  useEffect(() => {
+    const checkEligibility = async () => {
+      const r = await axios.get<GetAvailableNFTListResp>(
+        `/proxy/service/main/v1/getAvailableNFTList?wallet_pub=${user.wallet_pub}`
+      );
+      setMintEligible(r.data.list.length > 0);
+      console.log(r.data, r.data.list.length > 0);
+    };
+    if (user) checkEligibility();
+  }, [user]);
+
+  const callMint = async () => {
+    const resp = await call<NFTMintResp>({
+      method: "post",
+      path: "/nft/mint",
+    });
+    if (resp == null || resp.hash === "") {
+      alert("Error when minting");
+    } else {
+      alert(`Success. Here is tx hash: ${resp.hash}`);
+    }
+    console.log(resp);
+  };
+
   return (
     <div className="py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold leading-tight text-gray-900">
-          NCT Retirement Leaderboard
-        </h1>
-        <p className="mt-2 text-sm text-gray-700">
-          Ranking of Nature Carbon Tonne (NCT) Retirement on Toucan
-        </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold leading-tight text-gray-900">
+            NCT Retirement Leaderboard
+          </h1>
+          <p className="mt-2 text-sm text-gray-700">
+            Ranking of Nature Carbon Tonne (NCT) Retirement on Toucan
+          </p>
+        </div>
+        <div>
+          {user &&
+            (mintEligible ? (
+              <span className="mr-4 sm:mr-6 lg:mr-8 ml-3 inline-flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setOpenNFTNotice(true);
+                  }}
+                  className="justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                >
+                  Claim NFT Badges
+                </button>
+              </span>
+            ) : (
+              <span className="mr-4 sm:mr-6 lg:mr-8 ml-3  inline-flex items-center space-x-2">
+                <button
+                  disabled
+                  className="inline-flex justify-center py-2 px-4 
+            shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 opacity-50 cursor-not-allowed"
+                >
+                  No NFT available to claim at the moment
+                </button>
+                <HoverCard width={320} shadow="md">
+                  <HoverCard.Target>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-teal-300 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <p className="text-sm sm:text-base">
+                      This minting event is only available to those who had made NCT retirement by Aug 31,
+                      2022. More will be announced in the future.
+                    </p>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </span>
+            ))}
+        </div>
       </div>
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="px-4 sm:px-6 lg:px-8">
@@ -492,6 +588,80 @@ export default function Leaderboard({
           </div>
         </div>
       </div>
+      <Transition.Root show={openNFTNotice} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed z-10 inset-0 overflow-y-auto"
+          onClose={setOpenNFTNotice}
+        >
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
+
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            >
+              <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+                <div>
+                  <div className="mt-3 text-center sm:mt-5">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-lg leading-6 font-medium text-gray-900"
+                    >
+                      This is a Testnet mint
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-left text-gray-500">
+                        Since you had made NCT retirement before Aug 31, 2022,
+                        you are eligible to receive NFT badages that will
+                        display your monthly and/or quarterly ranks. <br />
+                        <br />
+                        NFTs are currently on Mumbai TestNet. We will collect
+                        community feedbacks on this iteration and roll out on
+                        MATIC later (which likely includes airdrops to those who
+                        have minted on Mumbai).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 sm:mt-6">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:text-sm"
+                    onClick={async () => {
+                      setOpenNFTNotice(false);
+                      await callMint();
+                    }}
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </div>
   );
 }
