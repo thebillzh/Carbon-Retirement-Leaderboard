@@ -158,6 +158,7 @@ func (s *MainService) GetAvailableNFTList(ctx context.Context, req *v1.GetAvaila
 	if availableNFTList, ok := addressToAvailableNFTListMap[strings.ToLower(req.GetWalletPub())]; ok {
 		for _, availableNFT := range availableNFTList {
 			resp.List = append(resp.List, &v1.AvailableNFT{
+				Id:         int64(availableNFT.ID),
 				RankType:   int64(availableNFT.RankType),
 				RankYear:   int64(availableNFT.RankYear),
 				RankSeason: int64(availableNFT.RankSeason),

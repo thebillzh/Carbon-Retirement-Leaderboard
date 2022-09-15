@@ -761,6 +761,8 @@ func (m *AvailableNFT) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for Id
+
 	// no validation rules for RankType
 
 	// no validation rules for RankYear

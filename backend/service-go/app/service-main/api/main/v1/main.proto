@@ -62,10 +62,11 @@ message GetAvailableNFTListReq {
 }
 
 message AvailableNFT {
-  int64 rank_type = 1 [json_name = "rank_type"];
-  int64 rank_year = 2 [json_name = "rank_year"];
-  int64 rank_season = 3 [json_name = "rank_season"];
-  int64 rank = 4;
+  int64 id = 1;
+  int64 rank_type = 2 [json_name = "rank_type"];
+  int64 rank_year = 3 [json_name = "rank_year"];
+  int64 rank_season = 4 [json_name = "rank_season"];
+  int64 rank = 5;
 }
 
 message GetAvailableNFTListResp {

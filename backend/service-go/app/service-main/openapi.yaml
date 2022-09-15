@@ -75,6 +75,9 @@ components:
         AvailableNFT:
             type: object
             properties:
+                id:
+                    type: integer
+                    format: int64
                 rank_type:
                     type: integer
                     format: int64
