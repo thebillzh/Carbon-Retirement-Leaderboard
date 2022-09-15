@@ -45,8 +45,8 @@ func (s *MainService) initJobs() {
 	checkCronErr(s.cronUtil.AddFunc("@every 15s", s.loadAddressToEnsMap, "loadAddressToEnsMap", cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 30s", s.loadRealtimeNCTLeaderboard, "loadRealtimeNCTLeaderboard", cron.PreLoad()))
 	checkCronErr(s.cronUtil.AddFunc("@every 30s", s.loadAddressToAvailableNFTListMap, "loadAddressToAvailableNFTListMap", cron.PreLoad()))
-	//checkCronErr(s.cronUtil.AddFunc("@every 30m", s.loadMonthlyNFTs, "loadMonthlyNFTs"))
-	//checkCronErr(s.cronUtil.AddFunc("@every 30m", s.loadQuarterlyNFTs, "loadQuarterlyNFTs"))
+	checkCronErr(s.cronUtil.AddFunc("0 0 1 1 * ?", s.loadMonthlyNFTs, "loadMonthlyNFTs"))
+	checkCronErr(s.cronUtil.AddFunc("0 0 1 1 1,4,7,10 ?", s.loadQuarterlyNFTs, "loadQuarterlyNFTs"))
 }
 
 func (s *MainService) getNCTRedeemTokenList(ctx context.Context) (tokenList []string, err error) {

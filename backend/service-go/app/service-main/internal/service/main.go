@@ -9,6 +9,7 @@ import (
 	"github.com/shopspring/decimal"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -154,7 +155,7 @@ func (s *MainService) GetAvailableNFTList(ctx context.Context, req *v1.GetAvaila
 		err = v1.ErrorInternalServerError("unexpected error")
 		return
 	}
-	if availableNFTList, ok := addressToAvailableNFTListMap[req.GetWalletPub()]; ok {
+	if availableNFTList, ok := addressToAvailableNFTListMap[strings.ToLower(req.GetWalletPub())]; ok {
 		for _, availableNFT := range availableNFTList {
 			resp.List = append(resp.List, &v1.AvailableNFT{
 				RankType:   int64(availableNFT.RankType),
