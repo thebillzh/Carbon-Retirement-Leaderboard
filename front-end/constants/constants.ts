@@ -26,4 +26,4 @@ export const RANKING_API_BASE_URL_PROXY =
   "/proxy/service/main/v1/getLeaderboard"; // use proxy (set in nextjs config) to resolve cors issues
 
 export const MUMBAI_MINT_CONTRACT =
-  "0xcD6Bd98B4d5d99Dee507BaEf14170AE923FCA81a";
+  "0x9475373816116aDe2Df070b5b965468108502d25";

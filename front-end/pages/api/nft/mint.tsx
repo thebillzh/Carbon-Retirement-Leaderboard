@@ -641,22 +641,32 @@ const handler = async (
         req.user.wallet_pub,
         mintMetadataList
       );
-      await prisma.t_go_nfts.updateMany({
-        where: {
-          id: { in: availableNFTListResp.data.list.map((item) => item.id) },
-        },
-        data: {
-          mint_tx: res.hash,
-        },
-      });
-      resp.status(200).json({ hash: res.hash });
-    } catch (err) {
-      if (err.error.reason.startsWith("execution reverted: 0x")) {
-        throw new Error(
-          `This NFT has already been minted: ${err.error.reason}`
+      try {
+        await prisma.t_go_nfts.updateMany({
+          where: {
+            id: {
+              in: availableNFTListResp.data.list.map((item) => BigInt(item.id)),
+            },
+          },
+          data: {
+            mint_tx: res.hash,
+          },
+        });
+      } catch (err) {
+        logger.errorc(
+          req,
+          `Saving status to db error: ${err}, tx: ${res.hash}`
         );
       }
-      logger.errorc(req, `Error calling contract: ${err.error}`);
+
+      resp.status(200).json({ hash: res.hash });
+    } catch (err) {
+      if (err?.error?.reason?.startsWith("execution reverted: 0x")) {
+        throw new Error(
+          `This NFT has already been minted: ${err?.error?.reason}`
+        );
+      }
+      logger.errorc(req, `Error calling contract: ${err?.error}`);
       throw new Error(`Unexpected error happend when minting your NFTs`);
     }
   } else {
