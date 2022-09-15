@@ -7,6 +7,7 @@ import error from "@lib/api/middlewares/error";
 import verify from "@lib/api/middlewares/verify";
 import logger from "@lib/common/logger";
 import prisma from "@lib/common/prisma";
+import { CommonError } from "@model/error";
 import { ApiRequest } from "@model/model";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -662,15 +663,19 @@ const handler = async (
       resp.status(200).json({ hash: res.hash });
     } catch (err) {
       if (err?.error?.reason?.startsWith("execution reverted: 0x")) {
-        throw new Error(
-          `This NFT has already been minted: ${err?.error?.reason}`
+        throw new CommonError(
+          400,
+          "This NFT has already been minted: ${err?.error?.reason}"
         );
       }
       logger.errorc(req, `Error calling contract: ${err?.error}`);
-      throw new Error(`Unexpected error happend when minting your NFTs`);
+      throw new CommonError(
+        500,
+        "Unexpected error happend when minting your NFTs"
+      );
     }
   } else {
-    throw new Error(`You are not eligible`);
+    throw new CommonError(400, "You are not eligible");
   }
 };
 
