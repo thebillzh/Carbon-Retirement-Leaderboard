@@ -314,7 +314,7 @@ export default function Leaderboard({
 
   return (
     <div className="py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold leading-tight text-gray-900">
             NCT Retirement Leaderboard
@@ -344,7 +344,7 @@ export default function Leaderboard({
                   className="inline-flex justify-center py-2 px-4 
             shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 opacity-50 cursor-not-allowed"
                 >
-                  You are not eligible
+                  No NFT available to claim at the moment
                 </button>
                 <HoverCard width={320} shadow="md">
                   <HoverCard.Target>
