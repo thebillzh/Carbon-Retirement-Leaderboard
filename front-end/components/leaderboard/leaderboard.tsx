@@ -366,7 +366,7 @@ export default function Leaderboard({
                   <HoverCard.Dropdown>
                     <p className="text-sm sm:text-base">
                       This minting event is only available to those who had made NCT retirement by Aug 31,
-                      2022. More will be announced in the future.
+                      2022.
                     </p>
                   </HoverCard.Dropdown>
                 </HoverCard>
