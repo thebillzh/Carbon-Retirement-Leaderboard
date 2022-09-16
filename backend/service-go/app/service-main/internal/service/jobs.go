@@ -324,6 +324,9 @@ func (s *MainService) buildLeaderboard(ctx context.Context, startTime time.Time,
 			addressList = append(addressList, address)
 		}
 		sort.SliceStable(addressList, func(i, j int) bool {
+			return addressList[i] > addressList[j]
+		})
+		sort.SliceStable(addressList, func(i, j int) bool {
 			return addressToRetiredAmountMap[addressList[i]] > addressToRetiredAmountMap[addressList[j]]
 		})
 		return
