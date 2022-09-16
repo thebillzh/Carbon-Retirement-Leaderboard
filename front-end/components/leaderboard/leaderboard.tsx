@@ -104,6 +104,18 @@ const useFetch = (
       case "FETCHING":
         return { ...initialState, status: "fetching" };
       case "FETCHED":
+        let rank = 0;
+        let lastAmount = -1;
+        for (let index = 0; index < action.payload.length; index++) {
+          const item = action.payload[index];
+          if (lastAmount === item.total_retirement) {
+            item.rank = rank;
+          } else {
+            lastAmount = item.total_retirement;
+            item.rank = index + 1;
+            rank = index + 1;
+          }
+        }
         return { ...initialState, status: "fetched", data: action.payload };
       case "FETCH_ERROR":
         return { ...initialState, status: "error", error: action.payload };
@@ -365,8 +377,9 @@ export default function Leaderboard({
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
                     <p className="text-sm sm:text-base">
-                      This minting event is only available to those who had made NCT retirement by Aug 31,
-                      2022. More will be announced in the future.
+                      This minting event is only available to those who had made
+                      NCT retirement by Aug 31, 2022. More will be announced in
+                      the future.
                     </p>
                   </HoverCard.Dropdown>
                 </HoverCard>
@@ -498,37 +511,37 @@ export default function Leaderboard({
                     <tbody className="bg-white">
                       {status === "fetched" &&
                         rankingData?.map(
-                          (user: LeaderboardReturnItem, index) => (
+                          (user: LeaderboardReturnItem, index: number) => (
                             <tr
                               key={user.address}
                               className={
                                 index % 2 === 0 ? undefined : "bg-gray-50"
                               }
                             >
-                              {index === 0 && (
+                              {user.rank === 1 && (
                                 <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                   <div className="w-8 h-8 rounded-full bg-[#F3C23C] text-white flex justify-center items-center">
-                                    {index + 1}
+                                    {user.rank}
                                   </div>
                                 </td>
                               )}
-                              {index === 1 && (
+                              {user.rank === 2 && (
                                 <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                   <div className="w-8 h-8 rounded-full bg-[#BDCBD8] text-white flex justify-center items-center">
-                                    {index + 1}
+                                    {user.rank}
                                   </div>
                                 </td>
                               )}
-                              {index === 2 && (
+                              {user.rank === 3 && (
                                 <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                   <div className="w-8 h-8 rounded-full bg-[#D7A778] text-white flex justify-center items-center">
-                                    {index + 1}
+                                    {user.rank}
                                   </div>
                                 </td>
                               )}
-                              {index > 2 && (
+                              {user.rank > 3 && (
                                 <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-center text-gray-900 sm:pl-6">
-                                  {index + 1}
+                                  {user.rank}
                                 </td>
                               )}
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
