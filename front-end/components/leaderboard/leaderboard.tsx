@@ -378,8 +378,7 @@ export default function Leaderboard({
                   <HoverCard.Dropdown>
                     <p className="text-sm sm:text-base">
                       This minting event is only available to those who had made
-                      NCT retirement by Aug 31, 2022. More will be announced in
-                      the future.
+                      NCT retirement by Aug 31, 2022.
                     </p>
                   </HoverCard.Dropdown>
                 </HoverCard>
@@ -518,30 +517,30 @@ export default function Leaderboard({
                                 index % 2 === 0 ? undefined : "bg-gray-50"
                               }
                             >
-                              {user.rank === 1 && (
+                              {(user as any).rank === 1 && (
                                 <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                   <div className="w-8 h-8 rounded-full bg-[#F3C23C] text-white flex justify-center items-center">
-                                    {user.rank}
+                                    {(user as any).rank}
                                   </div>
                                 </td>
                               )}
-                              {user.rank === 2 && (
+                              {(user as any).rank === 2 && (
                                 <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                   <div className="w-8 h-8 rounded-full bg-[#BDCBD8] text-white flex justify-center items-center">
-                                    {user.rank}
+                                    {(user as any).rank}
                                   </div>
                                 </td>
                               )}
-                              {user.rank === 3 && (
+                              {(user as any).rank === 3 && (
                                 <td className="whitespace-nowrap w-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                   <div className="w-8 h-8 rounded-full bg-[#D7A778] text-white flex justify-center items-center">
-                                    {user.rank}
+                                    {(user as any).rank}
                                   </div>
                                 </td>
                               )}
-                              {user.rank > 3 && (
+                              {(user as any).rank > 3 && (
                                 <td className="whitespace-nowrap w-4 py-4 pl-4 pr-3 text-sm font-medium text-center text-gray-900 sm:pl-6">
-                                  {user.rank}
+                                  {(user as any).rank}
                                 </td>
                               )}
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
