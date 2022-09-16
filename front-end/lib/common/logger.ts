@@ -4,8 +4,8 @@ import { logflarePinoVercel } from "pino-logflare";
 
 // create pino-logflare console stream for serverless functions and send function for browser logs
 const { stream, send } = logflarePinoVercel({
-  apiKey: process.env.NEXT_PUBLIC_LOGFLARE_API_KEY,
-  sourceToken: process.env.NEXT_PUBLIC_LOGFLARE_SOURCE_TOKEN,
+  apiKey: "APl_q_OYG0jR",
+  sourceToken: "f05e9587-a8df-4cbb-b309-d8449c09d4fa",
 });
 
 interface CustomLogger extends pino.Logger {

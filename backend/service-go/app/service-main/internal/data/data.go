@@ -27,7 +27,7 @@ type Data struct {
 func NewData(c *conf.Data) (d *Data, cleanup func(), err error) {
 	d = &Data{}
 
-	db, err := ent.Open(dialect.MySQL, os.Getenv("DATABASE_URL"))
+	db, err := ent.Open(dialect.MySQL, os.Getenv("mysql://e308mxz8xdfl5e86sooh:pscale_pw_7ZBu1GyLMuRzL7Hg5Z0p9TgjCNbhSvyqaNqli1UV5zR@us-east.connect.psdb.cloud/toucan?sslaccept=strict&connection_limit=5&pool_timeout=0&parseTime=true&loc=Asia%2FShanghai&charset=utf8mb4,utf8"))
 	if err != nil {
 		log.Fatal("[NewData] ent.Open error:%+v", err)
 	}
