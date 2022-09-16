@@ -24,13 +24,20 @@ func (s *MainService) loadMonthlyNFTs(ctx context.Context) (err error) {
 		return
 	}
 	var tGoNFTCreates []*ent.TGoNFTCreate
-	for rank, user := range leaderboard {
+	rank, lastAmount := 0, float64(-1)
+	for index, user := range leaderboard {
+		thisRank := rank
+		if user.RetiredAmount != lastAmount {
+			thisRank = index + 1
+			rank = thisRank
+			lastAmount = user.RetiredAmount
+		}
 		tGoNFTCreates = append(tGoNFTCreates, s.data.DB.TGoNFT.Create().
 			SetWalletPub(strings.ToLower(user.WalletPub)).
 			SetRankType(0).
 			SetRankYear(lastMonth.Year()).
 			SetRankSeason(int(lastMonth.Month())).
-			SetRank(rank+1),
+			SetRank(thisRank),
 		)
 	}
 	_, err = s.data.DB.TGoNFT.CreateBulk(tGoNFTCreates...).Save(ctx)
@@ -62,13 +69,20 @@ func (s *MainService) loadQuarterlyNFTs(ctx context.Context) (err error) {
 		return
 	}
 	var tGoNFTCreates []*ent.TGoNFTCreate
-	for rank, user := range leaderboard {
+	rank, lastAmount := 0, float64(-1)
+	for index, user := range leaderboard {
+		thisRank := rank
+		if user.RetiredAmount != lastAmount {
+			thisRank = index + 1
+			rank = thisRank
+			lastAmount = user.RetiredAmount
+		}
 		tGoNFTCreates = append(tGoNFTCreates, s.data.DB.TGoNFT.Create().
 			SetWalletPub(strings.ToLower(user.WalletPub)).
 			SetRankType(1).
 			SetRankYear(year).
 			SetRankSeason(quarter).
-			SetRank(rank+1),
+			SetRank(thisRank),
 		)
 	}
 	_, err = s.data.DB.TGoNFT.CreateBulk(tGoNFTCreates...).Save(ctx)
