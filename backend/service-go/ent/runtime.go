@@ -25,13 +25,13 @@ func init() {
 	// tgocacheDescMtime is the schema descriptor for mtime field.
 	tgocacheDescMtime := tgocacheFields[3].Descriptor()
 	// tgocache.DefaultMtime holds the default value on creation for the mtime field.
-	tgocache.DefaultMtime = tgocacheDescMtime.Default.(time.Time)
+	tgocache.DefaultMtime = tgocacheDescMtime.Default.(func() time.Time)
 	// tgocache.UpdateDefaultMtime holds the default value on update for the mtime field.
 	tgocache.UpdateDefaultMtime = tgocacheDescMtime.UpdateDefault.(func() time.Time)
 	// tgocacheDescCtime is the schema descriptor for ctime field.
 	tgocacheDescCtime := tgocacheFields[4].Descriptor()
 	// tgocache.DefaultCtime holds the default value on creation for the ctime field.
-	tgocache.DefaultCtime = tgocacheDescCtime.Default.(time.Time)
+	tgocache.DefaultCtime = tgocacheDescCtime.Default.(func() time.Time)
 	tgoensFields := schema.TGoEns{}.Fields()
 	_ = tgoensFields
 	// tgoensDescEns is the schema descriptor for ens field.
@@ -41,13 +41,13 @@ func init() {
 	// tgoensDescMtime is the schema descriptor for mtime field.
 	tgoensDescMtime := tgoensFields[3].Descriptor()
 	// tgoens.DefaultMtime holds the default value on creation for the mtime field.
-	tgoens.DefaultMtime = tgoensDescMtime.Default.(time.Time)
+	tgoens.DefaultMtime = tgoensDescMtime.Default.(func() time.Time)
 	// tgoens.UpdateDefaultMtime holds the default value on update for the mtime field.
 	tgoens.UpdateDefaultMtime = tgoensDescMtime.UpdateDefault.(func() time.Time)
 	// tgoensDescCtime is the schema descriptor for ctime field.
 	tgoensDescCtime := tgoensFields[4].Descriptor()
 	// tgoens.DefaultCtime holds the default value on creation for the ctime field.
-	tgoens.DefaultCtime = tgoensDescCtime.Default.(time.Time)
+	tgoens.DefaultCtime = tgoensDescCtime.Default.(func() time.Time)
 	tgonftFields := schema.TGoNFT{}.Fields()
 	_ = tgonftFields
 	// tgonftDescWalletPub is the schema descriptor for wallet_pub field.
@@ -77,13 +77,13 @@ func init() {
 	// tgonftDescMtime is the schema descriptor for mtime field.
 	tgonftDescMtime := tgonftFields[7].Descriptor()
 	// tgonft.DefaultMtime holds the default value on creation for the mtime field.
-	tgonft.DefaultMtime = tgonftDescMtime.Default.(time.Time)
+	tgonft.DefaultMtime = tgonftDescMtime.Default.(func() time.Time)
 	// tgonft.UpdateDefaultMtime holds the default value on update for the mtime field.
 	tgonft.UpdateDefaultMtime = tgonftDescMtime.UpdateDefault.(func() time.Time)
 	// tgonftDescCtime is the schema descriptor for ctime field.
 	tgonftDescCtime := tgonftFields[8].Descriptor()
 	// tgonft.DefaultCtime holds the default value on creation for the ctime field.
-	tgonft.DefaultCtime = tgonftDescCtime.Default.(time.Time)
+	tgonft.DefaultCtime = tgonftDescCtime.Default.(func() time.Time)
 	tgoretirementFields := schema.TGoRetirement{}.Fields()
 	_ = tgoretirementFields
 	// tgoretirementDescCreationTx is the schema descriptor for creation_tx field.
@@ -121,29 +121,29 @@ func init() {
 	// tgoretirementDescMtime is the schema descriptor for mtime field.
 	tgoretirementDescMtime := tgoretirementFields[10].Descriptor()
 	// tgoretirement.DefaultMtime holds the default value on creation for the mtime field.
-	tgoretirement.DefaultMtime = tgoretirementDescMtime.Default.(time.Time)
+	tgoretirement.DefaultMtime = tgoretirementDescMtime.Default.(func() time.Time)
 	// tgoretirement.UpdateDefaultMtime holds the default value on update for the mtime field.
 	tgoretirement.UpdateDefaultMtime = tgoretirementDescMtime.UpdateDefault.(func() time.Time)
 	// tgoretirementDescCtime is the schema descriptor for ctime field.
 	tgoretirementDescCtime := tgoretirementFields[11].Descriptor()
 	// tgoretirement.DefaultCtime holds the default value on creation for the ctime field.
-	tgoretirement.DefaultCtime = tgoretirementDescCtime.Default.(time.Time)
+	tgoretirement.DefaultCtime = tgoretirementDescCtime.Default.(func() time.Time)
 	tuserFields := schema.TUser{}.Fields()
 	_ = tuserFields
 	// tuserDescLastLoginTime is the schema descriptor for last_login_time field.
 	tuserDescLastLoginTime := tuserFields[9].Descriptor()
 	// tuser.DefaultLastLoginTime holds the default value on creation for the last_login_time field.
-	tuser.DefaultLastLoginTime = tuserDescLastLoginTime.Default.(time.Time)
+	tuser.DefaultLastLoginTime = tuserDescLastLoginTime.Default.(func() time.Time)
 	// tuser.UpdateDefaultLastLoginTime holds the default value on update for the last_login_time field.
 	tuser.UpdateDefaultLastLoginTime = tuserDescLastLoginTime.UpdateDefault.(func() time.Time)
 	// tuserDescMtime is the schema descriptor for mtime field.
 	tuserDescMtime := tuserFields[10].Descriptor()
 	// tuser.DefaultMtime holds the default value on creation for the mtime field.
-	tuser.DefaultMtime = tuserDescMtime.Default.(time.Time)
+	tuser.DefaultMtime = tuserDescMtime.Default.(func() time.Time)
 	// tuser.UpdateDefaultMtime holds the default value on update for the mtime field.
 	tuser.UpdateDefaultMtime = tuserDescMtime.UpdateDefault.(func() time.Time)
 	// tuserDescCtime is the schema descriptor for ctime field.
 	tuserDescCtime := tuserFields[11].Descriptor()
 	// tuser.DefaultCtime holds the default value on creation for the ctime field.
-	tuser.DefaultCtime = tuserDescCtime.Default.(time.Time)
+	tuser.DefaultCtime = tuserDescCtime.Default.(func() time.Time)
 }

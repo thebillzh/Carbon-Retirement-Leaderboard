@@ -158,11 +158,11 @@ func (tcc *TGoCacheCreate) defaults() {
 		tcc.mutation.SetCacheValue(v)
 	}
 	if _, ok := tcc.mutation.Mtime(); !ok {
-		v := tgocache.DefaultMtime
+		v := tgocache.DefaultMtime()
 		tcc.mutation.SetMtime(v)
 	}
 	if _, ok := tcc.mutation.Ctime(); !ok {
-		v := tgocache.DefaultCtime
+		v := tgocache.DefaultCtime()
 		tcc.mutation.SetCtime(v)
 	}
 }

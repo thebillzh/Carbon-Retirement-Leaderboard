@@ -26,8 +26,8 @@ func (TGoRetirement) Fields() []ent.Field {
 		field.String("token_type").Default("").Comment("type of token such as nct, bct..."),
 		field.String("retirement_message").Default("").Comment("message  of retirement"),
 		field.Time("retirement_time").Comment("time of retirement"),
-		field.Time("mtime").Comment("modify time").Default(time.Now()).UpdateDefault(time.Now),
-		field.Time("ctime").Comment("create time").Default(time.Now())}
+		field.Time("mtime").Comment("modify time").Default(time.Now).UpdateDefault(time.Now),
+		field.Time("ctime").Comment("create time").Default(time.Now)}
 }
 func (TGoRetirement) Edges() []ent.Edge {
 	return nil

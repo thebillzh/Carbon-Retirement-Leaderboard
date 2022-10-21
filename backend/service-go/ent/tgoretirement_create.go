@@ -284,11 +284,11 @@ func (trc *TGoRetirementCreate) defaults() {
 		trc.mutation.SetRetirementMessage(v)
 	}
 	if _, ok := trc.mutation.Mtime(); !ok {
-		v := tgoretirement.DefaultMtime
+		v := tgoretirement.DefaultMtime()
 		trc.mutation.SetMtime(v)
 	}
 	if _, ok := trc.mutation.Ctime(); !ok {
-		v := tgoretirement.DefaultCtime
+		v := tgoretirement.DefaultCtime()
 		trc.mutation.SetCtime(v)
 	}
 }

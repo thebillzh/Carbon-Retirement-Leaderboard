@@ -19,8 +19,8 @@ func (TGoCache) Fields() []ent.Field {
 		field.Uint64("id").Comment("auto increment primary key"),
 		field.String("cache_key").Unique().Comment("cache key"),
 		field.String("cache_value").Default("").Comment("cached value"),
-		field.Time("mtime").Comment("modify time").Default(time.Now()).UpdateDefault(time.Now),
-		field.Time("ctime").Comment("create time").Default(time.Now()),
+		field.Time("mtime").Comment("modify time").Default(time.Now).UpdateDefault(time.Now),
+		field.Time("ctime").Comment("create time").Default(time.Now),
 	}
 }
 func (TGoCache) Edges() []ent.Edge {

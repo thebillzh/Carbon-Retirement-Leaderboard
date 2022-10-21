@@ -23,8 +23,8 @@ func (TGoNFT) Fields() []ent.Field {
 		field.Int("rank_season").Default(0).Comment("season of rank, 1-12 for monthly, 1-4 for quarterly, 0 for yearly"),
 		field.Int("rank").Default(0).Comment("rank in the leaderboard"),
 		field.String("mint_tx").Default("").Comment("hash of mint tx"),
-		field.Time("mtime").Comment("modify time").Default(time.Now()).UpdateDefault(time.Now),
-		field.Time("ctime").Comment("create time").Default(time.Now())}
+		field.Time("mtime").Comment("modify time").Default(time.Now).UpdateDefault(time.Now),
+		field.Time("ctime").Comment("create time").Default(time.Now)}
 }
 func (TGoNFT) Edges() []ent.Edge {
 	return nil

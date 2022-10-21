@@ -158,11 +158,11 @@ func (tec *TGoEnsCreate) defaults() {
 		tec.mutation.SetEns(v)
 	}
 	if _, ok := tec.mutation.Mtime(); !ok {
-		v := tgoens.DefaultMtime
+		v := tgoens.DefaultMtime()
 		tec.mutation.SetMtime(v)
 	}
 	if _, ok := tec.mutation.Ctime(); !ok {
-		v := tgoens.DefaultCtime
+		v := tgoens.DefaultCtime()
 		tec.mutation.SetCtime(v)
 	}
 }

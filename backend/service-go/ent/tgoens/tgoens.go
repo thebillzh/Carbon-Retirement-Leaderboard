@@ -46,9 +46,9 @@ var (
 	// DefaultEns holds the default value on creation for the "ens" field.
 	DefaultEns string
 	// DefaultMtime holds the default value on creation for the "mtime" field.
-	DefaultMtime time.Time
+	DefaultMtime func() time.Time
 	// UpdateDefaultMtime holds the default value on update for the "mtime" field.
 	UpdateDefaultMtime func() time.Time
 	// DefaultCtime holds the default value on creation for the "ctime" field.
-	DefaultCtime time.Time
+	DefaultCtime func() time.Time
 )

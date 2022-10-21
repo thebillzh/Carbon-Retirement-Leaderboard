@@ -242,11 +242,11 @@ func (tnc *TGoNFTCreate) defaults() {
 		tnc.mutation.SetMintTx(v)
 	}
 	if _, ok := tnc.mutation.Mtime(); !ok {
-		v := tgonft.DefaultMtime
+		v := tgonft.DefaultMtime()
 		tnc.mutation.SetMtime(v)
 	}
 	if _, ok := tnc.mutation.Ctime(); !ok {
-		v := tgonft.DefaultCtime
+		v := tgonft.DefaultCtime()
 		tnc.mutation.SetCtime(v)
 	}
 }

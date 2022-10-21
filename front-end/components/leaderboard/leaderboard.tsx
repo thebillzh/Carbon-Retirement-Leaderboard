@@ -1,19 +1,17 @@
 import { ToucanAddressMapping } from "@constants/addressMapping";
 import {
   RANKING_API_BASE_URL,
-  RANKING_API_BASE_URL_PROXY,
+  RANKING_API_BASE_URL_PROXY
 } from "@constants/constants";
 import { useCommonContext } from "@contexts/commonContextProvider";
 import { useLoading } from "@contexts/loadingProvider";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/outline";
 import useABC from "@lib/common/abc";
 import { HoverCard } from "@mantine/core";
 import { LeaderboardReturnItem } from "@model/model";
 import axios from "axios";
 import _ from "lodash";
-import moment, { Moment } from "moment";
-import Link from "next/link";
+import moment from "moment";
 import { useRouter } from "next/router";
 import { HomeProps } from "pages";
 import { GetAvailableNFTListResp, NFTMintResp } from "pages/api/nft/mint";
@@ -23,7 +21,7 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
+  useState
 } from "react";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

@@ -196,15 +196,15 @@ func (tc *TUserCreate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (tc *TUserCreate) defaults() {
 	if _, ok := tc.mutation.LastLoginTime(); !ok {
-		v := tuser.DefaultLastLoginTime
+		v := tuser.DefaultLastLoginTime()
 		tc.mutation.SetLastLoginTime(v)
 	}
 	if _, ok := tc.mutation.Mtime(); !ok {
-		v := tuser.DefaultMtime
+		v := tuser.DefaultMtime()
 		tc.mutation.SetMtime(v)
 	}
 	if _, ok := tc.mutation.Ctime(); !ok {
-		v := tuser.DefaultCtime
+		v := tuser.DefaultCtime()
 		tc.mutation.SetCtime(v)
 	}
 }
