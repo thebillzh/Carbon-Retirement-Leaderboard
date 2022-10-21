@@ -7,6 +7,7 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/shopspring/decimal"
+	"math"
 	"net/http"
 	"os"
 	"strings"
@@ -113,6 +114,13 @@ func (s *MainService) GetLeaderboard(ctx context.Context, req *v1.GetLeaderboard
 	rawRealtimeNCTLeaderboard, ok := s.leaderboardMap.Load(leaderboardKey)
 	if ok {
 		leaderboard = rawRealtimeNCTLeaderboard.([]*model.User)
+	}
+	now := time.Now()
+	nowQuarter := math.Floor(float64(now.Month()-1)/3) + 1
+	startTimeQuarter := math.Floor(float64(startTime.Month()-1)/3) + 1
+	if startTime.Month() == now.Month() || startTimeQuarter == nowQuarter {
+		log.Infoc(ctx, "%+v %+v %+v %+v", startTime.Month(), now.Month(), startTimeQuarter, nowQuarter)
+		leaderboard = nil
 	}
 	if leaderboard == nil {
 		leaderboard, err = s.buildLeaderboard(ctx, startTime, endTime)
