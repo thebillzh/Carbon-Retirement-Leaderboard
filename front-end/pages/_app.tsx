@@ -6,6 +6,7 @@ import { MetaMask } from "@web3-react/metamask";
 import type { AppProps } from "next/app";
 import { hooks as metaMaskHooks, metaMask } from "../connectors/metaMask";
 import "../styles/globals.css";
+import { Analytics } from "@vercel/analytics/react";
 
 const connectors: [MetaMask, Web3ReactHooks][] = [[metaMask, metaMaskHooks]];
 
@@ -16,6 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <LoadingProvider>
           <ModalProvider>
             <Component {...pageProps} />
+            <Analytics />
           </ModalProvider>
         </LoadingProvider>
       </Web3ReactProvider>
