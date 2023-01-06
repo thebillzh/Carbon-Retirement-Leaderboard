@@ -9,7 +9,7 @@ const nextConfig = {
     return [
       {
         source: "/proxy/:path*",
-        destination: "https://api-go.toucanleader.xyz/:path*",
+        destination: "https://api.i.loli.co/:path*",
       },
     ];
   },

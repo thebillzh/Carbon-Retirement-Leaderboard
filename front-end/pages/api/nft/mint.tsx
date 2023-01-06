@@ -603,7 +603,7 @@ const handler = async (
   resp: NextApiResponse<NFTMintResp>
 ) => {
   const availableNFTListResp = await axios.get<GetAvailableNFTListResp>(
-    `https://api-go.toucanleader.xyz/service/main/v1/getAvailableNFTList?wallet_pub=${req.user.wallet_pub}`
+    `https://api.i.loli.co/service/main/v1/getAvailableNFTList?wallet_pub=${req.user.wallet_pub}`
   );
 
   const provider = new ethers.providers.JsonRpcProvider(POLYGON_MUMBAI_RPC_URL);
