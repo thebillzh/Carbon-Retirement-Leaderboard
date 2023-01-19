@@ -21,9 +21,9 @@ export const POLYGON_MUMBAI_RPC_URL =
 export const POLYGON_MUMBAI_CHAIN_ID = 80001;
 
 export const RANKING_API_BASE_URL =
-  "https://api.i.loli.co/service/main/v1/getLeaderboard";
+  "https://external.loli.co/toucan-leaderboard/service-main/v1/getLeaderboard";
 export const RANKING_API_BASE_URL_PROXY =
-  "/proxy/service/main/v1/getLeaderboard"; // use proxy (set in nextjs config) to resolve cors issues
+  "/p/toucan-leaderboard/service-main/v1/getLeaderboard"; // use proxy (set in nextjs config) to resolve cors issues
 
 export const MUMBAI_MINT_CONTRACT =
   "0x292EAc1704F5A15ECCd3650777c8e0dDBE6A795F"; // contract to mint nft, production: 0x292EAc1704F5A15ECCd3650777c8e0dDBE6A795F

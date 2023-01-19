@@ -301,7 +301,7 @@ export default function Leaderboard({
   useEffect(() => {
     const checkEligibility = async () => {
       const r = await axios.get<GetAvailableNFTListResp>(
-        `/proxy/service/main/v1/getAvailableNFTList?wallet_pub=${user.wallet_pub}`
+        `/p/toucan-leaderboard/service-main/v1/getAvailableNFTList?wallet_pub=${user.wallet_pub}`
       );
       setMintEligible(r.data.list.length > 0);
       console.log(r.data, r.data.list.length > 0);

@@ -8,8 +8,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/proxy/:path*",
-        destination: "https://api.i.loli.co/:path*",
+        source: "/p/:path*",
+        destination: "https://external.loli.co/:path*",
       },
     ];
   },
