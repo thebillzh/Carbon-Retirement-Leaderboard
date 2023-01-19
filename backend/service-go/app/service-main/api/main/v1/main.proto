@@ -13,17 +13,17 @@ option java_outer_classname = "MainProtoV1";
 service Main {
   rpc Ping (PingReq) returns (PingResp) {
     option (google.api.http) = {
-      get: "/service/main/v1/ping"
+      get: "/toucan-leaderboard/service-main/v1/ping"
     };
   }
   rpc GetLeaderboard (GetLeaderboardReq) returns (GetLeaderboardResp) {
     option (google.api.http) = {
-      get: "/service/main/v1/getLeaderboard"
+      get: "/toucan-leaderboard/service-main/v1/getLeaderboard"
     };
   }
   rpc GetAvailableNFTList (GetAvailableNFTListReq) returns (GetAvailableNFTListResp) {
     option (google.api.http) = {
-      get: "/service/main/v1/getAvailableNFTList"
+      get: "/toucan-leaderboard/service-main/v1/getAvailableNFTList"
     };
   }
 }

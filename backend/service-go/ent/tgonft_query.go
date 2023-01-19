@@ -261,7 +261,6 @@ func (tnq *TGoNFTQuery) Clone() *TGoNFTQuery {
 //		GroupBy(tgonft.FieldWalletPub).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (tnq *TGoNFTQuery) GroupBy(field string, fields ...string) *TGoNFTGroupBy {
 	grbuild := &TGoNFTGroupBy{config: tnq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -288,7 +287,6 @@ func (tnq *TGoNFTQuery) GroupBy(field string, fields ...string) *TGoNFTGroupBy {
 //	client.TGoNFT.Query().
 //		Select(tgonft.FieldWalletPub).
 //		Scan(ctx, &v)
-//
 func (tnq *TGoNFTQuery) Select(fields ...string) *TGoNFTSelect {
 	tnq.fields = append(tnq.fields, fields...)
 	selbuild := &TGoNFTSelect{TGoNFTQuery: tnq}

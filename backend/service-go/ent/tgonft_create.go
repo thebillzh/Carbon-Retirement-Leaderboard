@@ -394,7 +394,6 @@ func (tnc *TGoNFTCreate) createSpec() (*TGoNFT, *sqlgraph.CreateSpec) {
 //			SetWalletPub(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tnc *TGoNFTCreate) OnConflict(opts ...sql.ConflictOption) *TGoNFTUpsertOne {
 	tnc.conflict = opts
 	return &TGoNFTUpsertOne{
@@ -408,7 +407,6 @@ func (tnc *TGoNFTCreate) OnConflict(opts ...sql.ConflictOption) *TGoNFTUpsertOne
 //	client.TGoNFT.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tnc *TGoNFTCreate) OnConflictColumns(columns ...string) *TGoNFTUpsertOne {
 	tnc.conflict = append(tnc.conflict, sql.ConflictColumns(columns...))
 	return &TGoNFTUpsertOne{
@@ -560,7 +558,6 @@ func (u *TGoNFTUpsert) UpdateCtime() *TGoNFTUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TGoNFTUpsertOne) UpdateNewValues() *TGoNFTUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -574,10 +571,9 @@ func (u *TGoNFTUpsertOne) UpdateNewValues() *TGoNFTUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.TGoNFT.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.TGoNFT.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *TGoNFTUpsertOne) Ignore() *TGoNFTUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -873,7 +869,6 @@ func (tncb *TGoNFTCreateBulk) ExecX(ctx context.Context) {
 //			SetWalletPub(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tncb *TGoNFTCreateBulk) OnConflict(opts ...sql.ConflictOption) *TGoNFTUpsertBulk {
 	tncb.conflict = opts
 	return &TGoNFTUpsertBulk{
@@ -887,7 +882,6 @@ func (tncb *TGoNFTCreateBulk) OnConflict(opts ...sql.ConflictOption) *TGoNFTUpse
 //	client.TGoNFT.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tncb *TGoNFTCreateBulk) OnConflictColumns(columns ...string) *TGoNFTUpsertBulk {
 	tncb.conflict = append(tncb.conflict, sql.ConflictColumns(columns...))
 	return &TGoNFTUpsertBulk{
@@ -912,7 +906,6 @@ type TGoNFTUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TGoNFTUpsertBulk) UpdateNewValues() *TGoNFTUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -932,7 +925,6 @@ func (u *TGoNFTUpsertBulk) UpdateNewValues() *TGoNFTUpsertBulk {
 //	client.TGoNFT.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *TGoNFTUpsertBulk) Ignore() *TGoNFTUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

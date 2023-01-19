@@ -469,7 +469,6 @@ func (trc *TGoRetirementCreate) createSpec() (*TGoRetirement, *sqlgraph.CreateSp
 //			SetCreationTx(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (trc *TGoRetirementCreate) OnConflict(opts ...sql.ConflictOption) *TGoRetirementUpsertOne {
 	trc.conflict = opts
 	return &TGoRetirementUpsertOne{
@@ -483,7 +482,6 @@ func (trc *TGoRetirementCreate) OnConflict(opts ...sql.ConflictOption) *TGoRetir
 //	client.TGoRetirement.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (trc *TGoRetirementCreate) OnConflictColumns(columns ...string) *TGoRetirementUpsertOne {
 	trc.conflict = append(trc.conflict, sql.ConflictColumns(columns...))
 	return &TGoRetirementUpsertOne{
@@ -653,7 +651,6 @@ func (u *TGoRetirementUpsert) UpdateCtime() *TGoRetirementUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TGoRetirementUpsertOne) UpdateNewValues() *TGoRetirementUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -667,10 +664,9 @@ func (u *TGoRetirementUpsertOne) UpdateNewValues() *TGoRetirementUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.TGoRetirement.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.TGoRetirement.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *TGoRetirementUpsertOne) Ignore() *TGoRetirementUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -987,7 +983,6 @@ func (trcb *TGoRetirementCreateBulk) ExecX(ctx context.Context) {
 //			SetCreationTx(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (trcb *TGoRetirementCreateBulk) OnConflict(opts ...sql.ConflictOption) *TGoRetirementUpsertBulk {
 	trcb.conflict = opts
 	return &TGoRetirementUpsertBulk{
@@ -1001,7 +996,6 @@ func (trcb *TGoRetirementCreateBulk) OnConflict(opts ...sql.ConflictOption) *TGo
 //	client.TGoRetirement.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (trcb *TGoRetirementCreateBulk) OnConflictColumns(columns ...string) *TGoRetirementUpsertBulk {
 	trcb.conflict = append(trcb.conflict, sql.ConflictColumns(columns...))
 	return &TGoRetirementUpsertBulk{
@@ -1026,7 +1020,6 @@ type TGoRetirementUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TGoRetirementUpsertBulk) UpdateNewValues() *TGoRetirementUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1046,7 +1039,6 @@ func (u *TGoRetirementUpsertBulk) UpdateNewValues() *TGoRetirementUpsertBulk {
 //	client.TGoRetirement.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *TGoRetirementUpsertBulk) Ignore() *TGoRetirementUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

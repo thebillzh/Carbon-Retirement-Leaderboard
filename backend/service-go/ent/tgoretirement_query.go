@@ -261,7 +261,6 @@ func (trq *TGoRetirementQuery) Clone() *TGoRetirementQuery {
 //		GroupBy(tgoretirement.FieldCreationTx).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (trq *TGoRetirementQuery) GroupBy(field string, fields ...string) *TGoRetirementGroupBy {
 	grbuild := &TGoRetirementGroupBy{config: trq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -288,7 +287,6 @@ func (trq *TGoRetirementQuery) GroupBy(field string, fields ...string) *TGoRetir
 //	client.TGoRetirement.Query().
 //		Select(tgoretirement.FieldCreationTx).
 //		Scan(ctx, &v)
-//
 func (trq *TGoRetirementQuery) Select(fields ...string) *TGoRetirementSelect {
 	trq.fields = append(trq.fields, fields...)
 	selbuild := &TGoRetirementSelect{TGoRetirementQuery: trq}

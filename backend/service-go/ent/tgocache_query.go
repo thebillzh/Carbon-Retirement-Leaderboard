@@ -261,7 +261,6 @@ func (tcq *TGoCacheQuery) Clone() *TGoCacheQuery {
 //		GroupBy(tgocache.FieldCacheKey).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (tcq *TGoCacheQuery) GroupBy(field string, fields ...string) *TGoCacheGroupBy {
 	grbuild := &TGoCacheGroupBy{config: tcq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -288,7 +287,6 @@ func (tcq *TGoCacheQuery) GroupBy(field string, fields ...string) *TGoCacheGroup
 //	client.TGoCache.Query().
 //		Select(tgocache.FieldCacheKey).
 //		Scan(ctx, &v)
-//
 func (tcq *TGoCacheQuery) Select(fields ...string) *TGoCacheSelect {
 	tcq.fields = append(tcq.fields, fields...)
 	selbuild := &TGoCacheSelect{TGoCacheQuery: tcq}

@@ -266,7 +266,6 @@ func (tec *TGoEnsCreate) createSpec() (*TGoEns, *sqlgraph.CreateSpec) {
 //			SetWalletPub(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tec *TGoEnsCreate) OnConflict(opts ...sql.ConflictOption) *TGoEnsUpsertOne {
 	tec.conflict = opts
 	return &TGoEnsUpsertOne{
@@ -280,7 +279,6 @@ func (tec *TGoEnsCreate) OnConflict(opts ...sql.ConflictOption) *TGoEnsUpsertOne
 //	client.TGoEns.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tec *TGoEnsCreate) OnConflictColumns(columns ...string) *TGoEnsUpsertOne {
 	tec.conflict = append(tec.conflict, sql.ConflictColumns(columns...))
 	return &TGoEnsUpsertOne{
@@ -360,7 +358,6 @@ func (u *TGoEnsUpsert) UpdateCtime() *TGoEnsUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TGoEnsUpsertOne) UpdateNewValues() *TGoEnsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -374,10 +371,9 @@ func (u *TGoEnsUpsertOne) UpdateNewValues() *TGoEnsUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.TGoEns.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.TGoEns.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *TGoEnsUpsertOne) Ignore() *TGoEnsUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -589,7 +585,6 @@ func (tecb *TGoEnsCreateBulk) ExecX(ctx context.Context) {
 //			SetWalletPub(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tecb *TGoEnsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TGoEnsUpsertBulk {
 	tecb.conflict = opts
 	return &TGoEnsUpsertBulk{
@@ -603,7 +598,6 @@ func (tecb *TGoEnsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TGoEnsUpse
 //	client.TGoEns.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tecb *TGoEnsCreateBulk) OnConflictColumns(columns ...string) *TGoEnsUpsertBulk {
 	tecb.conflict = append(tecb.conflict, sql.ConflictColumns(columns...))
 	return &TGoEnsUpsertBulk{
@@ -628,7 +622,6 @@ type TGoEnsUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TGoEnsUpsertBulk) UpdateNewValues() *TGoEnsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -648,7 +641,6 @@ func (u *TGoEnsUpsertBulk) UpdateNewValues() *TGoEnsUpsertBulk {
 //	client.TGoEns.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *TGoEnsUpsertBulk) Ignore() *TGoEnsUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

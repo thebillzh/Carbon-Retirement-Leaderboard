@@ -385,7 +385,6 @@ func (tc *TUserCreate) createSpec() (*TUser, *sqlgraph.CreateSpec) {
 //			SetWalletPub(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tc *TUserCreate) OnConflict(opts ...sql.ConflictOption) *TUserUpsertOne {
 	tc.conflict = opts
 	return &TUserUpsertOne{
@@ -399,7 +398,6 @@ func (tc *TUserCreate) OnConflict(opts ...sql.ConflictOption) *TUserUpsertOne {
 //	client.TUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tc *TUserCreate) OnConflictColumns(columns ...string) *TUserUpsertOne {
 	tc.conflict = append(tc.conflict, sql.ConflictColumns(columns...))
 	return &TUserUpsertOne{
@@ -563,7 +561,6 @@ func (u *TUserUpsert) UpdateCtime() *TUserUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TUserUpsertOne) UpdateNewValues() *TUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -577,10 +574,9 @@ func (u *TUserUpsertOne) UpdateNewValues() *TUserUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.TUser.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.TUser.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *TUserUpsertOne) Ignore() *TUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -890,7 +886,6 @@ func (tcb *TUserCreateBulk) ExecX(ctx context.Context) {
 //			SetWalletPub(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (tcb *TUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *TUserUpsertBulk {
 	tcb.conflict = opts
 	return &TUserUpsertBulk{
@@ -904,7 +899,6 @@ func (tcb *TUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *TUserUpsertB
 //	client.TUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (tcb *TUserCreateBulk) OnConflictColumns(columns ...string) *TUserUpsertBulk {
 	tcb.conflict = append(tcb.conflict, sql.ConflictColumns(columns...))
 	return &TUserUpsertBulk{
@@ -929,7 +923,6 @@ type TUserUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *TUserUpsertBulk) UpdateNewValues() *TUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -949,7 +942,6 @@ func (u *TUserUpsertBulk) UpdateNewValues() *TUserUpsertBulk {
 //	client.TUser.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *TUserUpsertBulk) Ignore() *TUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

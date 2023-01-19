@@ -261,7 +261,6 @@ func (teq *TGoEnsQuery) Clone() *TGoEnsQuery {
 //		GroupBy(tgoens.FieldWalletPub).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (teq *TGoEnsQuery) GroupBy(field string, fields ...string) *TGoEnsGroupBy {
 	grbuild := &TGoEnsGroupBy{config: teq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -288,7 +287,6 @@ func (teq *TGoEnsQuery) GroupBy(field string, fields ...string) *TGoEnsGroupBy {
 //	client.TGoEns.Query().
 //		Select(tgoens.FieldWalletPub).
 //		Scan(ctx, &v)
-//
 func (teq *TGoEnsQuery) Select(fields ...string) *TGoEnsSelect {
 	teq.fields = append(teq.fields, fields...)
 	selbuild := &TGoEnsSelect{TGoEnsQuery: teq}

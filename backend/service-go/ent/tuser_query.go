@@ -261,7 +261,6 @@ func (tq *TUserQuery) Clone() *TUserQuery {
 //		GroupBy(tuser.FieldWalletPub).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (tq *TUserQuery) GroupBy(field string, fields ...string) *TUserGroupBy {
 	grbuild := &TUserGroupBy{config: tq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -288,7 +287,6 @@ func (tq *TUserQuery) GroupBy(field string, fields ...string) *TUserGroupBy {
 //	client.TUser.Query().
 //		Select(tuser.FieldWalletPub).
 //		Scan(ctx, &v)
-//
 func (tq *TUserQuery) Select(fields ...string) *TUserSelect {
 	tq.fields = append(tq.fields, fields...)
 	selbuild := &TUserSelect{TUserQuery: tq}
